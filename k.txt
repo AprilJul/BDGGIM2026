@@ -1,0 +1,154 @@
+<div class="modal-backdrop" id="modal1">
+    <div class="modal">
+        <div class="modal-header">Privacy Policy</div>
+        <div class="modal-content">
+            <h2 class="mb-6">Kebijakan Privasi</h2>
+
+            <ol class="space-y-6">
+                <li>
+                    <b><strong class="block mb-2">Pendahuluan</strong></b>
+                    <p class="mb-4">
+                        Kebijakan Privasi ini menjelaskan bagaimana FinTuner mengumpulkan, menggunakan, menyimpan, dan melindungi Data Pribadi Anda. Kami berkomitmen untuk melindungi privasi Anda dan mematuhi <strong>UU No. 27 Tahun 2022 tentang Perlindungan Data Pribadi (UU PDP)</strong>, <strong>UU No. 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik (UU ITE)</strong>, serta peraturan terkait lainnya.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Data yang Kami Kumpulkan</strong>
+                    <div class="mb-4">
+                        <p class="mb-2"><strong>a. Informasi Pribadi</strong>:</p>
+                        <ul class="ml-4 mb-4 space-y-1">
+                            <li>Nama lengkap</li>
+                            <li>Tanggal lahir</li>
+                            <li>Pekerjaan</li>
+                            <li>Alamat email</li>
+                            <li>Nomor telepon</li>
+                        </ul>
+
+                        <p class="mb-2"><strong>b. Data Finansial</strong>:</p>
+                        <ul class="ml-4 mb-4 space-y-1">
+                            <li>Pendapatan</li>
+                            <li>Pengeluaran</li>
+                            <li>Aset dan hutang</li>
+                            <li>Profil risiko</li>
+                        </ul>
+
+                        <p class="mb-2"><strong>c. Data Teknis</strong>:</p>
+                        <ul class="ml-4 space-y-1">
+                            <li>Alamat IP</li>
+                            <li>Data perangkat (jenis perangkat, sistem operasi)</li>
+                            <li>Cookie dan teknologi pelacakan serupa</li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Tujuan Pengumpulan dan Penggunaan Data</strong>
+                    <p class="mb-2">Kami mengumpulkan dan menggunakan Data Pribadi Anda untuk tujuan berikut:</p>
+                    <ul class="ml-4 mb-4 space-y-2">
+                        <li><strong>Penyediaan Layanan</strong>: Memberikan rekomendasi finansial yang relevan dan personalisasi layanan.</li>
+                        <li><strong>Peningkatan Layanan</strong>: Menganalisis penggunaan Layanan untuk meningkatkan fitur dan fungsionalitas.</li>
+                        <li><strong>Komunikasi</strong>: Mengirimkan pemberitahuan, pembaruan, dan informasi terkait akun atau Layanan.</li>
+                        <li><strong>Kepatuhan Hukum</strong>: Memenuhi kewajiban hukum dan peraturan yang berlaku.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Dasar Hukum Pemrosesan Data</strong>
+                    <p class="mb-2">Kami memproses Data Pribadi Anda berdasarkan:</p>
+                    <ul class="ml-4 mb-4 space-y-2">
+                        <li><strong>Persetujuan</strong>: Dengan menggunakan Layanan, Anda memberikan persetujuan untuk pemrosesan Data Pribadi Anda.</li>
+                        <li><strong>Pelaksanaan Kontrak</strong>: Pemrosesan diperlukan untuk pelaksanaan perjanjian antara Anda dan FinTuner.</li>
+                        <li><strong>Kepentingan yang Sah</strong>: Untuk tujuan peningkatan Layanan dan keamanan.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Hak Pengguna</strong>
+                    <p class="mb-2">Anda memiliki hak sebagai berikut:</p>
+                    <ul class="ml-4 mb-4 space-y-2">
+                        <li><strong>Akses Data</strong>: Meminta salinan Data Pribadi yang kami simpan tentang Anda.</li>
+                        <li><strong>Perbaikan Data</strong>: Meminta koreksi atas Data Pribadi yang tidak akurat atau tidak lengkap.</li>
+                        <li><strong>Penghapusan Data</strong>: Meminta penghapusan Data Pribadi.</li>
+                        <li><strong>Pembatasan Pemrosesan</strong>: Meminta pembatasan pemrosesan Data Pribadi Anda.</li>
+                        <li><strong>Penarikan Persetujuan</strong>: Menarik persetujuan Anda kapan saja.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Penyimpanan dan Keamanan Data</strong>
+                    <p class="mb-4">
+                        Data Pribadi Anda disimpan di server aman di Indonesia. Kami menggunakan teknologi enkripsi, firewall, dan langkah-langkah keamanan lainnya untuk melindungi Data Pribadi Anda dari akses, penggunaan, atau pengungkapan yang tidak sah.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Retensi Data</strong>
+                    <p class="mb-4">
+                        Kami akan menyimpan Data Pribadi Anda selama akun Anda aktif atau selama diperlukan untuk menyediakan Layanan. Setelah akun dinonaktifkan, Data Pribadi Anda akan dihapus atau dianonimkan dalam waktu 6 bulan, kecuali jika diperlukan oleh hukum untuk menyimpannya lebih lama.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Pengungkapan kepada Pihak Ketiga</strong>
+                    <p class="mb-2">Kami tidak akan menjual atau menyewakan Data Pribadi Anda kepada pihak ketiga. Kami dapat membagikan Data Pribadi Anda dengan:</p>
+                    <ul class="ml-4 mb-4 space-y-2">
+                        <li>- <strong>Penyedia Layanan</strong>: Pihak ketiga yang membantu kami dalam menyediakan Layanan.</li>
+                        <li>- <strong>Kepatuhan Hukum</strong>: Jika diwajibkan oleh hukum atau proses hukum lainnya.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Transfer Internasional Data</strong>
+                    <p class="mb-4">
+                        Jika diperlukan, Data Pribadi Anda dapat ditransfer dan diproses di negara lain yang mungkin memiliki hukum perlindungan data yang berbeda. Kami akan memastikan bahwa perlindungan yang sesuai diterapkan sesuai dengan peraturan yang berlaku.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Cookie dan Teknologi Pelacakan</strong>
+                    <p class="mb-4">
+                        Kami menggunakan cookie dan teknologi pelacakan serupa untuk meningkatkan pengalaman Pengguna. Anda dapat mengatur browser Anda untuk menolak cookie, namun hal ini dapat mempengaruhi fungsi Layanan.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Keamanan Data</strong>
+                    <p class="mb-4">
+                        Kami berkomitmen untuk menjaga keamanan Data Pribadi Anda. Namun, tidak ada metode transmisi melalui internet atau metode penyimpanan elektronik yang 100% aman. Oleh karena itu, kami tidak dapat menjamin keamanan absolut.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Data Anak-anak</strong>
+                    <p class="mb-4">
+                        Layanan kami tidak ditujukan untuk individu di bawah usia 18 tahun. Kami tidak secara sengaja mengumpulkan Data Pribadi dari anak-anak di bawah usia tersebut. Jika kami mengetahui bahwa kami telah mengumpulkan Data Pribadi dari anak-anak tanpa verifikasi izin orang tua, kami akan mengambil langkah untuk menghapus informasi tersebut.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Perubahan Kebijakan Privasi</strong>
+                    <p class="mb-4">
+                        Kami dapat memperbarui Kebijakan Privasi ini dari waktu ke waktu. Perubahan akan diberitahukan melalui email atau pemberitahuan dalam Aplikasi. Kami menganjurkan Anda untuk meninjau Kebijakan Privasi ini secara berkala.
+                    </p>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Kontak</strong>
+                    <p class="mb-2">Jika Anda memiliki pertanyaan atau permintaan terkait Kebijakan Privasi ini, silakan hubungi kami di:</p>
+                    <ul class="ml-4 mb-4 space-y-2">
+                        <li>Email: <strong>privacy@fintuner.co.id</strong></li>
+                        <li>Alamat Kantor: <strong>Jl. Mawar No. 123, Jakarta, Indonesia</strong></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong class="block mb-2">Penyelesaian Sengketa</strong>
+                    <p class="mb-4">
+                        Jika Anda merasa bahwa hak-hak Anda terkait Data Pribadi telah dilanggar, Anda dapat menghubungi kami melalui detail kontak di atas. Kami akan berusaha untuk menyelesaikan keluhan Anda secepat mungkin.
+                    </p>
+                </li>
+            </ol>
+        </div>
+        <button class="modal-close">Close</button>
+    </div>
+</div>
