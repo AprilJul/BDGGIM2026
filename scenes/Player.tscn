@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://bvcikxlnam8v"]
+
+[ext_resource type="Script" uid="uid://dghxbxeplh3o1" path="res://scripts/Player.gd" id="1_p0vlq"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5q5h1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v6fml"]
+radius = 80.0
+
+[node name="Player" type="CharacterBody2D" unique_id=516679446]
+script = ExtResource("1_p0vlq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2036431164]
+shape = SubResource("CapsuleShape2D_5q5h1")
+
+[node name="Sprite2D" type="ColorRect" parent="." unique_id=2026717552]
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+color = Color(0.6336018, 0.6556897, 1.1551381e-06, 1)
+
+[node name="InteractionDetector" type="Area2D" parent="." unique_id=1576545215]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector" unique_id=40627957]
+shape = SubResource("CircleShape2D_v6fml")

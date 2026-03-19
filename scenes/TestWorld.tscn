@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://v03tvq0xa4df"]
+
+[ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="1_ptb5a"]
+[ext_resource type="PackedScene" uid="uid://csk1jphbeol58" path="res://scenes/panels/CoolantPanel.tscn" id="2_o2kn8"]
+
+[node name="TestWorld" type="Node2D" unique_id=1142662351]
+
+[node name="Player" parent="." unique_id=516679446 groups=["player"] instance=ExtResource("1_ptb5a")]
+position = Vector2(3, 5)
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1640430237 groups=["player_camera"]]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="CoolantPanel" parent="." unique_id=1142271356 instance=ExtResource("2_o2kn8")]
+position = Vector2(211, -15)
