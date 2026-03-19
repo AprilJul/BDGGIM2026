@@ -1,10 +1,7 @@
-[gd_scene load_steps=32 format=3 uid="uid://cb2cwrjgxfsvw"]
+[gd_scene load_steps=26 format=3 uid="uid://cb2cwrjgxfsvw"]
 
 [ext_resource type="Script" uid="uid://cqp0qlrmdbooj" path="res://player/player.gd" id="1_rkbax"]
 [ext_resource type="Texture2D" uid="uid://drl1b3b351hks" path="res://art/Character/mc.png" id="2_g1dw6"]
-[ext_resource type="Resource" uid="uid://c0onb0ffpq24j" path="res://player/inventory/player_inventory.tres" id="2_yw30f"]
-[ext_resource type="PackedScene" uid="uid://cw4l07ij2hjyt" path="res://player/player_hud/player_hud.tscn" id="4_qjkh3"]
-[ext_resource type="PackedScene" uid="uid://bibbe8pn3jui0" path="res://instruction/InstructionPopup.tscn" id="5_qjkh3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yw30f"]
 atlas = ExtResource("2_g1dw6")
@@ -189,62 +186,13 @@ height = 20.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yw30f"]
 size = Vector2(15, 5)
 
-[sub_resource type="Animation" id="Animation_qjkh3"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/path = NodePath("AnimatedSprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_yw30f"]
-resource_name = "sleep"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/path = NodePath("AnimatedSprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AnimatedSprite2D:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [-1.5708]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_qjkh3"]
-_data = {
-&"RESET": SubResource("Animation_qjkh3"),
-&"sleep": SubResource("Animation_yw30f")
-}
-
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_rkbax")
-inv = ExtResource("2_yw30f")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -15)
 sprite_frames = SubResource("SpriteFrames_g4c7l")
-animation = &"sleep"
+animation = &"walk_right"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -11)
@@ -259,12 +207,3 @@ shape = SubResource("RectangleShape2D_yw30f")
 target_position = Vector2(0, 0)
 collision_mask = 4
 collide_with_areas = true
-
-[node name="PlayerHUD" parent="." instance=ExtResource("4_qjkh3")]
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_qjkh3")
-}
-
-[node name="Marker2D" parent="." instance=ExtResource("5_qjkh3")]
