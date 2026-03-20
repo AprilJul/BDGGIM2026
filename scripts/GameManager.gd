@@ -43,12 +43,30 @@ var current_room: String = "control_room"
 # SYSTEMS
 # ============================================================
 var vent_active: bool = false
+var vent_cooldown: float = 0.0
+const VENT_COOLDOWN_TIME: float = 30.0   # detik cooldown
+const VENT_DROP_AMOUNT: float = 400.0    # PSI yang di-drop sekali vent
+const VENT_OFF_THRESHOLD: float = 200.0  # PSI — vent otomatis off di bawah ini
 var coolant_capacity: float = 100.0
 var cpu_temp: float = 20.0
 var input_delay: float = 0.0          # detik — Tweak 1
 
+# ECCS
 var eccs_charges: int = 3
-var mcs_used: bool = false
+var eccs_cooling: bool = false        # sedang aktif mendinginkan
+var eccs_cooldown: float = 0.0
+const ECCS_TEMP_DROP: float = 80.0   # °C yang di-drop
+const ECCS_COOLDOWN_TIME: float = 20.0
+
+# Emergency Vent
+var emergency_vent_cooldown: float = 0.0
+const EMERGENCY_VENT_COOLDOWN: float = 120.0
+const EMERGENCY_VENT_DROP: float = 1200.0  # PSI drop instan
+
+# MCS
+var mcs_used_count: int = 0
+var mcs_active: bool = false
+var mcs_broken: bool = false          # butuh repair manual di Reactor Room
 
 # ============================================================
 # TIME
@@ -80,6 +98,10 @@ func _process(delta: float) -> void:
 	time_elapsed += delta
 	_update_day_night_cycle()
 	_update_reactor(delta)
+	_update_vent(delta)
+	_update_eccs(delta)    
+	_update_emergency_vent(delta)    
+	_update_mcs(delta)
 	_update_cpu(delta)
 	_update_armor(delta)
 	_check_win_lose()
@@ -107,7 +129,25 @@ func _update_reactor(delta: float) -> void:
 
 	# Suhu tinggi menaikkan pressure (skala PSI)
 	var temp_ratio = (reactor_temp - 150.0) / TEMP_MAX
-	reactor_pressure += temp_ratio * 40.0 * delta
+	var extract_pressure = (extraction_level / 100.0) * 25.0
+	reactor_pressure += (temp_ratio * 40.0 + extract_pressure) * delta
+	
+	# Laser stress naik saat laser_intensity tinggi
+	if not laser_broken:
+		laser_stress += (laser_intensity / 100.0) * 0.8 * delta
+		# Laser stress turun sendiri saat intensity rendah
+		if laser_intensity < 20.0:
+			laser_stress -= 1.5 * delta
+		laser_stress = clamp(laser_stress, 0.0, 100.0)
+		if laser_stress >= 100.0:
+			laser_broken = true
+			laser_intensity = 0.0
+	else:
+		# Laser pelan-pelan dingin sendiri saat rusak
+		laser_stress -= 0.5 * delta
+		laser_stress = clamp(laser_stress, 0.0, 100.0)
+		if laser_stress <= 0.0:
+			laser_broken = false
 
 	# Extraction
 	if not extractor_broken:
@@ -142,6 +182,10 @@ func _update_reactor_state() -> void:
 
 	if reactor_state != old_state:
 		emit_signal("reactor_state_changed", reactor_state)
+
+func repair_laser() -> void:
+	laser_broken = false
+	laser_stress = 0.0
 
 func _update_cpu(delta: float) -> void:
 	# CPU memanas seiring reaktor panas
@@ -182,14 +226,104 @@ func set_extraction(value: float) -> void:
 	if not extractor_broken:
 		extraction_level = clamp(value, 0.0, 100.0)
 
-func toggle_vent(state: bool) -> void:
-	vent_active = state
+func activate_vent() -> void:
+	# Hanya bisa diaktifkan kalau tidak cooldown
+	if vent_cooldown > 0.0:
+		return
+	vent_active = true
 
-func use_eccs() -> void:
-	if eccs_charges > 0:
-		reactor_temp -= 30.0
-		reactor_temp = clamp(reactor_temp, 0.0, 100.0)
-		eccs_charges -= 1
+func _update_vent(delta: float) -> void:
+	if vent_cooldown > 0.0:
+		vent_cooldown -= delta
+		vent_cooldown = clamp(vent_cooldown, 0.0, VENT_COOLDOWN_TIME)
+
+	if not vent_active:
+		return
+
+	# Drop pressure
+	var vent_efficiency = 1.0 if reactor_pressure > PRESSURE_WARNING else 0.4
+	reactor_pressure -= VENT_DROP_AMOUNT * vent_efficiency * delta
+
+	# Auto off saat pressure sudah cukup rendah
+	if reactor_pressure <= VENT_OFF_THRESHOLD:
+		reactor_pressure = VENT_OFF_THRESHOLD
+		vent_active = false
+		vent_cooldown = VENT_COOLDOWN_TIME
 
 func set_room(room_name: String) -> void:
 	current_room = room_name
+
+# ============================================================
+# EMERGENCY SYSTEMS
+# ============================================================
+func use_eccs() -> void:
+	if eccs_charges <= 0 or eccs_cooldown > 0.0:
+		return
+	eccs_charges -= 1
+	eccs_cooldown = ECCS_COOLDOWN_TIME
+	# Drop suhu instan
+	reactor_temp -= ECCS_TEMP_DROP
+	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
+	# Awas: kalau suhu drop terlalu rendah bisa trigger blackhole!
+	print("ECCS activated! Charges left: ", eccs_charges)
+
+func use_emergency_vent() -> void:
+	if emergency_vent_cooldown > 0.0:
+		return
+	emergency_vent_cooldown = EMERGENCY_VENT_COOLDOWN
+	reactor_pressure -= EMERGENCY_VENT_DROP
+	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
+	print("Emergency Vent activated!")
+
+func use_mcs() -> void:
+	if mcs_broken:
+		return
+	mcs_used_count += 1
+	# Penggunaan pertama: 100% berhasil
+	if mcs_used_count == 1:
+		_mcs_success()
+		return
+	# Penggunaan kedua+: 50% RNG
+	if randf() < 0.5:
+		_mcs_success()
+	else:
+		_mcs_fail()
+
+func _mcs_success() -> void:
+	mcs_active = true
+	# Matikan semua sistem reaktor
+	laser_intensity = 0.0
+	extraction_level = 0.0
+	vent_active = false
+	# Suhu dan pressure perlahan stabil (ditangani di _update_mcs)
+	print("MCS SUCCESS — reactor shutting down")
+
+func _mcs_fail() -> void:
+	mcs_broken = true
+	mcs_active = false
+	# EMP merusak semua sistem sementara
+	laser_broken = true
+	extractor_broken = true
+	print("MCS FAILED — CPU module damaged, go to Reactor Room!")
+
+func refill_eccs() -> void:
+	# Dipanggil saat player di Coolant Room
+	eccs_charges = 3
+	print("ECCS recharged!")
+
+func _update_eccs(delta: float) -> void:
+	if eccs_cooldown > 0.0:
+		eccs_cooldown -= delta
+		eccs_cooldown = clamp(eccs_cooldown, 0.0, ECCS_COOLDOWN_TIME)
+
+func _update_emergency_vent(delta: float) -> void:
+	if emergency_vent_cooldown > 0.0:
+		emergency_vent_cooldown -= delta
+		emergency_vent_cooldown = clamp(emergency_vent_cooldown, 0.0, EMERGENCY_VENT_COOLDOWN)
+
+func _update_mcs(delta: float) -> void:
+	if not mcs_active:
+		return
+	# Saat MCS aktif, reaktor perlahan stabil menuju titik aman
+	reactor_temp = move_toward(reactor_temp, 150.0, 20.0 * delta)
+	reactor_pressure = move_toward(reactor_pressure, 800.0, 200.0 * delta)

@@ -96,9 +96,12 @@ func _ready() -> void:
 	interaction_detector.area_exited.connect(_on_left_panel)
 
 func _on_near_panel(area: Area2D) -> void:
+	print("Area entered: ", area.name, " | groups: ", area.get_groups())
 	if area.is_in_group("interaction_panel"):
 		nearby_panel = area.get_parent()
+		print("Panel ditemukan: ", nearby_panel.name)
 
 func _on_left_panel(area: Area2D) -> void:
+	print("Area exited: ", area.name)
 	if area.get_parent() == nearby_panel:
 		nearby_panel = null

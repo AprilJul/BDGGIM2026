@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bvcikxlnam8v"]
+[gd_scene format=3 uid="uid://bvcikxlnam8v"]
 
 [ext_resource type="Script" uid="uid://dghxbxeplh3o1" path="res://scripts/Player.gd" id="1_p0vlq"]
 [ext_resource type="Texture2D" uid="uid://drl1b3b351hks" path="res://art/Character/mc.png" id="2_v6fml"]
@@ -176,22 +176,18 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_v6fml"]
 radius = 80.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1076995185]
 script = ExtResource("1_p0vlq")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1656512916]
 sprite_frames = SubResource("SpriteFrames_6e537")
 animation = &"walk_front"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1132195643]
 shape = SubResource("CapsuleShape2D_5q5h1")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(0, -15)
-zoom = Vector2(3, 3)
-
-[node name="InteractionDetector" type="Area2D" parent="."]
+[node name="InteractionDetector" type="Area2D" parent="." unique_id=1814274523]
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector" unique_id=1277268450]
 shape = SubResource("CircleShape2D_v6fml")
