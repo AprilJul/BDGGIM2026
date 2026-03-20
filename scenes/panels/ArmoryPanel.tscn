@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://dosgn2tq0veo8"]
+
+[ext_resource type="Script" uid="uid://cpos2wcy45duq" path="res://scripts/ArmoryPanel.gd" id="1_gj6ye"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dgqm3"]
+size = Vector2(321, 270)
+
+[node name="ArmoryPanel" type="Node2D" unique_id=887371778]
+script = ExtResource("1_gj6ye")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1338515183]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2014351084]
+position = Vector2(150.5, 125)
+shape = SubResource("RectangleShape2D_dgqm3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1304679140]
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=425172226]
+unique_name_in_owner = true
+
+[node name="PanelContainer" type="Control" parent="PanelUI" unique_id=1308071701]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(380, 320)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=39906320]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=37211836]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1364741935]
+layout_mode = 2
+text = "🛡 ARMORY"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1787667273]
+layout_mode = 2
+
+[node name="HazmatRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1968684077]
+layout_mode = 2
+
+[node name="BtnHazmat" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HazmatRow" unique_id=1587010491]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+toggle_mode = true
+text = "EQUIP HAZMAT"
+
+[node name="HazmatStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HazmatRow" unique_id=1477230151]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UNEQUIPPED"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1533412009]
+layout_mode = 2
+
+[node name="ArmorRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=131446830]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ArmorRow" unique_id=1053702920]
+layout_mode = 2
+text = "ARMOR"
+
+[node name="ArmorBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ArmorRow" unique_id=1880000948]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+
+[node name="ArmorValueLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ArmorRow" unique_id=683834528]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RepairProgress" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1500352677]
+layout_mode = 2
+
+[node name="RepairLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RepairProgress" unique_id=537577665]
+unique_name_in_owner = true
+layout_mode = 2
+text = "REPAIR READY"
+
+[node name="RepairBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RepairProgress" unique_id=2068085539]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 14)
+layout_mode = 2
+max_value = 1.0
+
+[node name="BtnRepair" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=717095631]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+text = "REPAIR ARMOR"
+
+[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=741365614]
+layout_mode = 2
+
+[node name="StockLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1183252211]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Armor Patch Kit: 0"

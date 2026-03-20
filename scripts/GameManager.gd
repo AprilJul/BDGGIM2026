@@ -36,8 +36,22 @@ const ELECTRICITY_TARGET: float = 1000.0
 # PLAYER
 # ============================================================
 var player_hp: float = 100.0
-var armor_hp: float = 100.0
+var armor_hp: float = 0.0
 var current_room: String = "control_room"
+
+# ============================================================
+# HAZMAT & ARMOR
+# ============================================================
+var hazmat_equipped: bool = false
+var armor_repairing: bool = false
+var armor_repair_timer: float = 0.0
+const ARMOR_REPAIR_DURATION: float = 8.0   # detik
+
+# Hazmat suit mengurangi radiation damage
+const HAZMAT_RADIATION_REDUCTION: float = 0.6  # 60% damage reduction
+
+signal armor_repair_completed
+signal hazmat_toggled(equipped: bool)
 
 # ============================================================
 # SYSTEMS
@@ -111,6 +125,7 @@ var inv_extractor_part: int = 0
 var inv_mcs_module: int = 0
 var inv_coolant_kit: int = 0
 var inv_cpu_module: int = 0
+var inv_armor_patch: int = 0
 
 # Crafting queue — hanya 1 item bisa di-craft sekaligus
 var crafting_item: String = ""       # nama item yang sedang di-craft
@@ -122,6 +137,7 @@ const CRAFT_TIME_EXTRACTOR: float = 15.0
 const CRAFT_TIME_MCS: float = 25.0
 const CRAFT_TIME_COOLANT_KIT: float = 10.0
 const CRAFT_TIME_CPU: float = 20.0
+const CRAFT_TIME_ARMOR_PATCH: float = 12.0
 
 signal crafting_started(item: String, duration: float)
 signal crafting_completed(item: String)
@@ -171,6 +187,7 @@ func _process(delta: float) -> void:
 	_update_cpu(delta)
 	_update_coolant(delta)
 	_update_crafting(delta)
+	_update_armor_repair(delta) 
 	_update_control_room_shield(delta)
 	_update_armor(delta)
 	_check_win_lose()
@@ -309,16 +326,21 @@ func _update_cpu(delta: float) -> void:
 	input_delay = max(0.0, (cpu_temp - 60.0) * 0.05)
 
 func _update_armor(delta: float) -> void:
+	if not hazmat_equipped:
+		if current_room == "reactor_room":
+			var temp_ratio = reactor_temp / TEMP_MAX
+			player_hp -= RADIATION_REACTOR * temp_ratio * 0.3 * delta
+			player_hp = clamp(player_hp, 0.0, 100.0)
+		return
+	
 	var radiation_damage = _get_radiation_damage()
 	
 	if radiation_damage <= 0.0:
-		# Armor perlahan recover saat di zona aman
-		armor_hp = min(armor_hp + 2.0 * delta, 100.0)
+		# HAPUS baris armor recover — armor tidak auto-recover
 		grace_period_active = false
 		grace_timer = 0.0
 		return
 	
-	# Kurangi armor dulu
 	armor_hp -= radiation_damage * delta
 	armor_hp = clamp(armor_hp, 0.0, 100.0)
 	
@@ -327,16 +349,15 @@ func _update_armor(delta: float) -> void:
 
 func _get_radiation_damage() -> float:
 	var temp_ratio = reactor_temp / TEMP_MAX
+	var reduction = HAZMAT_RADIATION_REDUCTION if hazmat_equipped else 1.0
 	
 	match current_room:
 		"reactor_room":
-			# Makin panas reaktor, makin besar radiasi
-			return RADIATION_REACTOR * temp_ratio
+			return RADIATION_REACTOR * temp_ratio * reduction
 		"control_room":
-			# Hanya tembus kalau shield di bawah 40%
 			if control_room_shield < 40.0:
 				var breach_ratio = (40.0 - control_room_shield) / 40.0
-				return RADIATION_CONTROL * breach_ratio * temp_ratio
+				return RADIATION_CONTROL * breach_ratio * temp_ratio * reduction
 			return 0.0
 		_:
 			return 0.0
@@ -419,6 +440,44 @@ func _update_vent(delta: float) -> void:
 
 func set_room(room_name: String) -> void:
 	current_room = room_name
+
+func toggle_hazmat() -> void:
+	hazmat_equipped = not hazmat_equipped
+	if hazmat_equipped:
+		armor_hp = 100.0    # langsung penuh saat equip
+	else:
+		armor_hp = 0.0      # langsung 0 saat unequip
+		grace_period_active = false
+		grace_timer = 0.0
+	emit_signal("hazmat_toggled", hazmat_equipped)
+
+func start_armor_repair() -> void:
+	if inv_armor_patch <= 0:
+		print("Tidak ada Armor Patch Kit!")
+		return
+	if armor_repairing:
+		print("Sudah dalam proses repair!")
+		return
+	if armor_hp >= 100.0:
+		print("Armor sudah penuh!")
+		return
+	inv_armor_patch -= 1
+	armor_repairing = true
+	armor_repair_timer = ARMOR_REPAIR_DURATION
+	print("Armor repair started!")
+
+func _update_armor_repair(delta: float) -> void:
+	if not armor_repairing:
+		return
+	armor_repair_timer -= delta
+	armor_repair_timer = max(armor_repair_timer, 0.0)
+	if armor_repair_timer <= 0.0:
+		armor_hp = 100.0
+		armor_repairing = false
+		grace_period_active = false
+		grace_timer = 0.0
+		emit_signal("armor_repair_completed")
+		print("Armor fully repaired!")
 
 # ============================================================
 # COOLANT ACTIONS
@@ -508,6 +567,8 @@ func start_craft(item: String) -> void:
 			duration = CRAFT_TIME_COOLANT_KIT
 		"cpu_module":
 			duration = CRAFT_TIME_CPU
+		"armor_patch":                          # ← tambah
+			duration = CRAFT_TIME_ARMOR_PATCH
 		_:
 			print("Unknown item: ", item)
 			return
@@ -546,6 +607,8 @@ func _complete_craft() -> void:
 			inv_coolant_kit += 1
 		"cpu_module":
 			inv_cpu_module += 1
+		"armor_patch": 
+			inv_armor_patch += 1
 	
 	print("Crafting complete: ", crafting_item)
 	emit_signal("crafting_completed", crafting_item)

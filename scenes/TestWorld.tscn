@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b8atvjfo4ack" path="res://scenes/panels/ReactorPanel.tscn" id="4_0j05m"]
 [ext_resource type="PackedScene" uid="uid://bd84tl8f210xe" path="res://scenes/panels/EmergencyPanel.tscn" id="5_yv73f"]
 [ext_resource type="PackedScene" uid="uid://d3xxsc7v7qed4" path="res://scenes/panels/LabPanel.tscn" id="6_o15s1"]
+[ext_resource type="PackedScene" uid="uid://dosgn2tq0veo8" path="res://scenes/panels/ArmoryPanel.tscn" id="7_wej8e"]
 
 [node name="TestWorld" type="Node2D" unique_id=1142662351]
 
@@ -17,14 +18,18 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
 [node name="CoolantPanel" parent="." unique_id=1142271356 instance=ExtResource("2_o2kn8")]
-position = Vector2(-300, -50)
+position = Vector2(-231, -64)
 
 [node name="HUD" parent="." unique_id=399444015 instance=ExtResource("3_devkw")]
 
 [node name="ReactorPanel" parent="." unique_id=448180539 instance=ExtResource("4_0j05m")]
-position = Vector2(3, 1)
+position = Vector2(-147, 203)
 
 [node name="EmergencyPanel" parent="." unique_id=294257623 instance=ExtResource("5_yv73f")]
+position = Vector2(-208, 29)
 
 [node name="LabPanel" parent="." unique_id=1319787272 instance=ExtResource("6_o15s1")]
-position = Vector2(300, -400)
+position = Vector2(212, -171)
+
+[node name="ArmoryPanel" parent="." unique_id=887371778 instance=ExtResource("7_wej8e")]
+position = Vector2(-348, 432)

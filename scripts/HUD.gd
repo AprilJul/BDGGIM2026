@@ -80,13 +80,31 @@ func _update_bars() -> void:
 		shield_status.text = "NOMINAL"
 		shield_status.modulate = Color("#3B9E7A")
 	
+	# Hazmat indicator di armor label
+	var armor_label = $MarginContainer/VBoxContainer/PlayerBars/ArmorBar/Label
+	if GameManager.hazmat_equipped:
+		armor_label.text = "ARMOR 🛡"
+	else:
+		armor_label.text = "ARMOR"
+	
 	# Grace period countdown
 	if GameManager.grace_period_active:
 		radiation_warning.text = "☢ ARMOR GONE — %.0fs" % GameManager.grace_timer
-	elif GameManager.armor_hp <= 20.0:
+		radiation_warning.modulate = Color("#E8593C")
+	elif not GameManager.hazmat_equipped and GameManager.current_room == "reactor_room":
+		radiation_warning.text = "⚠ NO HAZMAT — taking direct damage!"
+		radiation_warning.modulate = Color("#E8593C")
+	elif GameManager.hazmat_equipped and GameManager.armor_hp <= 20.0:
+		# Hanya warning armor critical kalau hazmat equipped DAN di zona berbahaya
 		radiation_warning.text = "⚠ ARMOR CRITICAL"
+		radiation_warning.modulate = Color("#E8593C")
 	else:
 		radiation_warning.text = ""
+	
+	# Warning kalau di reactor room tanpa hazmat
+	if GameManager.current_room == "reactor_room" and not GameManager.hazmat_equipped:
+		radiation_warning.text = "⚠ NO HAZMAT — taking direct damage!"
+		radiation_warning.modulate = Color("#E8593C")
 
 func _update_status() -> void:
 	if GameManager.reactor_shutdown:

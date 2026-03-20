@@ -12,6 +12,7 @@ func _ready() -> void:
 	%BtnCraftCoolant.pressed.connect(func(): _on_craft("coolant_kit"))
 	%BtnCraftCPU.pressed.connect(func(): _on_craft("cpu_module"))
 	%BtnCancel.pressed.connect(_on_cancel)
+	%BtnCraftArmor.pressed.connect(func(): _on_craft("armor_patch"))
 
 	GameManager.crafting_started.connect(_on_crafting_started)
 	GameManager.crafting_completed.connect(_on_crafting_completed)
@@ -102,18 +103,22 @@ func _update_item_buttons() -> void:
 	%MCSStock.text = "Stock: %d" % GameManager.inv_mcs_module
 	%CoolantStock.text = "Stock: %d" % GameManager.inv_coolant_kit
 	%CPUStock.text = "Stock: %d" % GameManager.inv_cpu_module
+	%ArmorStock.text = "Stock: %d" % GameManager.inv_armor_patch
 
 	# Warna stock label — hijau kalau ada, abu kalau kosong
 	%ExtractorStock.modulate = Color("#3B9E7A") if GameManager.inv_extractor_part > 0 else Color("#888780")
 	%MCSStock.modulate = Color("#3B9E7A") if GameManager.inv_mcs_module > 0 else Color("#888780")
 	%CoolantStock.modulate = Color("#3B9E7A") if GameManager.inv_coolant_kit > 0 else Color("#888780")
 	%CPUStock.modulate = Color("#3B9E7A") if GameManager.inv_cpu_module > 0 else Color("#888780")
+	%ArmorStock.modulate = Color("#3B9E7A") \
+		if GameManager.inv_armor_patch > 0 else Color("#888780")
 
 	# Disable semua tombol craft kalau sedang ada crafting
 	%BtnCraftExtractor.disabled = is_crafting
 	%BtnCraftMCS.disabled = is_crafting
 	%BtnCraftCoolant.disabled = is_crafting
 	%BtnCraftCPU.disabled = is_crafting
+	%BtnCraftArmor.disabled = is_crafting
 
 	# Highlight tombol yang relevan — item yang dibutuhkan saat ini
 	_highlight_needed_items()
@@ -128,6 +133,9 @@ func _highlight_needed_items() -> void:
 		else Color.WHITE
 	%BtnCraftCoolant.modulate = Color("#E8593C") \
 		if GameManager.coolant_pump_broken and GameManager.inv_coolant_kit == 0 \
+		else Color.WHITE
+	%BtnCraftArmor.modulate = Color("#E8593C") \
+		if GameManager.armor_hp < 50.0 and GameManager.inv_armor_patch == 0 \
 		else Color.WHITE
 
 # ============================================================
@@ -173,6 +181,7 @@ func _item_display_name(item: String) -> String:
 		"mcs_module": return "MCS Module"
 		"coolant_kit": return "Coolant Kit"
 		"cpu_module": return "CPU Module"
+		"armor_patch": return "Armor Patch"
 		_: return item
 
 func _get_stock_label(item: String) -> Label:
@@ -181,4 +190,5 @@ func _get_stock_label(item: String) -> Label:
 		"mcs_module": return %MCSStock
 		"coolant_kit": return %CoolantStock
 		"cpu_module": return %CPUStock
+		"armor_patch": return %ArmorStock
 		_: return null

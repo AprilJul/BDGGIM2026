@@ -144,5 +144,23 @@ custom_minimum_size = Vector2(160, 36)
 layout_mode = 2
 text = "CRAFT 20s"
 
+[node name="ItemArmor" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=433168582]
+layout_mode = 2
+
+[node name="ArmorLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1970511503]
+layout_mode = 2
+text = "ARMOR PATCH"
+
+[node name="ArmorStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1695488592]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftArmor" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1149043160]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 12s"
+
 [node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=35067121]
 layout_mode = 2
