@@ -17,6 +17,9 @@ bg_color = Color(0.23137255, 0.61960787, 0.47843137, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rnyu1"]
 bg_color = Color(0.53333336, 0.5294118, 0.5019608, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw0id"]
+bg_color = Color(0.23137255, 0.54509807, 0.83137256, 1)
+
 [node name="HUD" type="CanvasLayer" unique_id=399444015]
 script = ExtResource("1_kw0id")
 
@@ -29,6 +32,21 @@ theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=807857226]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=829903340]
+layout_mode = 2
+
+[node name="NightLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1558303045]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "☀ SIANG"
+horizontal_alignment = 2
+
+[node name="TimerLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=821755007]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2100560746]
 layout_mode = 2
@@ -132,3 +150,33 @@ custom_minimum_size = Vector2(200, 18)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_rnyu1")
 value = 50.0
+
+[node name="ShieldRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1478265140]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=1560829973]
+layout_mode = 2
+text = "SHIELD"
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=45533814]
+custom_minimum_size = Vector2(200, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_kw0id")
+value = 100.0
+
+[node name="ShieldStatusLabel" type="Label" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=1871606782]
+layout_mode = 2
+
+[node name="RadiationWarning" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1350417812]
+modulate = Color(0.9098039, 0.34901962, 0.23529412, 1)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="NightOverlay" type="ColorRect" parent="." unique_id=249047684]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.039215688, 0.08627451, 0.15686275, 0)

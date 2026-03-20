@@ -20,21 +20,16 @@ var is_open: bool = false
 # ============================================================
 func _ready() -> void:
 	print("=== EmergencyPanel _ready() START ===")
-	
+
 	# Group dan connect DULU — tidak boleh di-skip
 	area.add_to_group("interaction_panel")
+
+	%PanelUI.visible = false
+
 	btn_eccs.pressed.connect(_on_eccs_pressed)
 	btn_event.pressed.connect(_on_event_pressed)
 	btn_mcs.pressed.connect(_on_mcs_pressed)
-	print("Signals connected!")
-	
-	# Baru cek PanelUI
-	if not has_node("PanelUI"):
-		print("ERROR: PanelUI tidak ditemukan!")
-		# Jangan return — biarkan jalan terus
-	else:
-		panel_ui.visible = false
-	
+
 	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
 
 # ============================================================

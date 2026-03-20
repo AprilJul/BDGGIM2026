@@ -69,11 +69,24 @@ var mcs_active: bool = false
 var mcs_broken: bool = false          # butuh repair manual di Reactor Room
 
 # ============================================================
+# RADIATION & ARMOR SYSTEM
+# ============================================================
+var control_room_shield: float = 100.0   # 0-100%, kalau < 40% radiasi tembus
+var grace_period_active: bool = false
+var grace_timer: float = 0.0
+const GRACE_PERIOD_DURATION: float = 10.0
+
+# Radiation level per ruangan (0-100%)
+const RADIATION_REACTOR: float = 8.0    # per detik, dikali reactor_temp ratio
+const RADIATION_CONTROL: float = 3.0    # per detik, hanya kalau shield < 40%
+
+# ============================================================
 # TIME
 # ============================================================
 var is_night: bool = false
 var time_elapsed: float = 0.0
-var day_duration: float = 300.0       # 5 menit = siang
+var day_duration: float = 10       # 5 menit = siang
+var _night_warning_sent: bool = false
 
 # ============================================================
 # STATE
@@ -89,6 +102,9 @@ signal reactor_state_changed(new_state: int)
 signal game_ended(reason: String)
 signal night_toggled(is_night: bool)
 signal mcs_state_changed(is_active: bool)
+signal night_warning
+signal grace_period_started
+signal control_room_breached(shield_level: float)
 
 # ============================================================
 # GAME LOOP
@@ -105,12 +121,23 @@ func _process(delta: float) -> void:
 	_update_emergency_vent(delta)    
 	_update_mcs(delta)
 	_update_cpu(delta)
+	_update_control_room_shield(delta)
 	_update_armor(delta)
 	_check_win_lose()
 
 func _update_day_night_cycle() -> void:
 	var was_night = is_night
-	is_night = fmod(time_elapsed, day_duration * 2) >= day_duration
+	var cycle_pos = fmod(time_elapsed, day_duration * 2)
+	is_night = cycle_pos >= day_duration
+	
+	# Warning 10 detik sebelum malam
+	var time_to_night = day_duration - cycle_pos
+	if not is_night and time_to_night <= 10.0 and not _night_warning_sent:
+		_night_warning_sent = true
+		emit_signal("night_warning")
+	elif is_night:
+		_night_warning_sent = false   # reset untuk siklus berikutnya
+	
 	if is_night != was_night:
 		emit_signal("night_toggled", is_night)
 
@@ -205,6 +232,25 @@ func repair_laser() -> void:
 	laser_broken = false
 	laser_stress = 0.0
 
+func _update_control_room_shield(delta: float) -> void:
+	var old_shield = control_room_shield
+	var temp_ratio = reactor_temp / TEMP_MAX
+	
+	# Shield terkikis saat reaktor panas
+	if reactor_state >= 3:
+		# State critical/meltdown — shield terkikis lebih cepat
+		control_room_shield -= temp_ratio * 4.0 * delta
+	elif reactor_state == 2:
+		# State warning — terkikis pelan
+		control_room_shield -= temp_ratio * 1.5 * delta
+	else:
+		# Reaktor normal — shield recover pelan
+		control_room_shield = min(control_room_shield + 1.0 * delta, 100.0)
+	
+	control_room_shield = clamp(control_room_shield, 0.0, 100.0)
+	if old_shield >= 40.0 and control_room_shield < 40.0:
+		emit_signal("control_room_breached", control_room_shield)
+
 func _update_cpu(delta: float) -> void:
 	# CPU memanas seiring reaktor panas
 	cpu_temp += (reactor_temp - 40.0) * 0.01 * delta
@@ -213,12 +259,62 @@ func _update_cpu(delta: float) -> void:
 	input_delay = max(0.0, (cpu_temp - 60.0) * 0.05)
 
 func _update_armor(delta: float) -> void:
-	if current_room == "reactor_room":
-		var radiation_damage = (reactor_temp / 100.0) * 5.0 * delta
-		armor_hp -= radiation_damage
-		armor_hp = clamp(armor_hp, 0.0, 100.0)
-		if armor_hp <= 0.0:
-			player_hp -= 2.0 * delta
+	var radiation_damage = _get_radiation_damage()
+	
+	if radiation_damage <= 0.0:
+		# Armor perlahan recover saat di zona aman
+		armor_hp = min(armor_hp + 2.0 * delta, 100.0)
+		grace_period_active = false
+		grace_timer = 0.0
+		return
+	
+	# Kurangi armor dulu
+	armor_hp -= radiation_damage * delta
+	armor_hp = clamp(armor_hp, 0.0, 100.0)
+	
+	if armor_hp <= 0.0:
+		_handle_no_armor(delta)
+
+func _get_radiation_damage() -> float:
+	var temp_ratio = reactor_temp / TEMP_MAX
+	
+	match current_room:
+		"reactor_room":
+			# Makin panas reaktor, makin besar radiasi
+			return RADIATION_REACTOR * temp_ratio
+		"control_room":
+			# Hanya tembus kalau shield di bawah 40%
+			if control_room_shield < 40.0:
+				var breach_ratio = (40.0 - control_room_shield) / 40.0
+				return RADIATION_CONTROL * breach_ratio * temp_ratio
+			return 0.0
+		_:
+			return 0.0
+
+func _handle_no_armor(delta: float) -> void:
+	if not grace_period_active:
+		grace_period_active = true
+		grace_timer = GRACE_PERIOD_DURATION
+		emit_signal("grace_period_started")
+		print("ARMOR GONE — grace period started!")
+	
+	# Hitung mundur grace period
+	grace_timer -= delta
+	
+	if grace_timer <= 0.0:
+		# Grace period habis — HP berkurang
+		player_hp -= 5.0 * delta
+		player_hp = clamp(player_hp, 0.0, 100.0)
+
+func repair_armor() -> void:
+	armor_hp = 100.0
+	grace_period_active = false
+	grace_timer = 0.0
+	print("Armor repaired!")
+
+func repair_control_room_shield() -> void:
+	control_room_shield = 100.0
+	print("Control room shield restored!")
 
 func _check_win_lose() -> void:
 	if electricity_quota >= ELECTRICITY_TARGET:
