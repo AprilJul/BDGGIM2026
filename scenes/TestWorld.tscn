@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://csk1jphbeol58" path="res://scenes/panels/CoolantPanel.tscn" id="2_o2kn8"]
 [ext_resource type="PackedScene" uid="uid://b4kqmg7nkvsux" path="res://scenes/ui/HUD.tscn" id="3_devkw"]
 [ext_resource type="PackedScene" uid="uid://b8atvjfo4ack" path="res://scenes/panels/ReactorPanel.tscn" id="4_0j05m"]
+[ext_resource type="PackedScene" uid="uid://bd84tl8f210xe" path="res://scenes/panels/EmergencyPanel.tscn" id="5_yv73f"]
 
 [node name="TestWorld" type="Node2D" unique_id=1142662351]
 
@@ -21,3 +22,5 @@ position = Vector2(-6, -11)
 
 [node name="ReactorPanel" parent="." unique_id=448180539 instance=ExtResource("4_0j05m")]
 position = Vector2(3, 1)
+
+[node name="EmergencyPanel" parent="." unique_id=294257623 instance=ExtResource("5_yv73f")]

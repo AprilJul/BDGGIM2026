@@ -1,0 +1,121 @@
+[gd_scene load_steps=2 format=3 uid="uid://2bhtgoyjdmuq"]
+
+[ext_resource type="Script" uid="uid://d1caowil61oqu" path="res://scenes/script/main_menu.gd" id="1_l6cm7"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6cm7")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Background"]
+
+[node name="MainButton" type="VBoxContainer" parent="Background/CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StartButton" type="Button" parent="Background/CanvasLayer/MainButton"]
+layout_mode = 2
+text = "Start"
+
+[node name="SettingButton" type="Button" parent="Background/CanvasLayer/MainButton"]
+layout_mode = 2
+text = "Settings"
+
+[node name="ColorRect" type="ColorRect" parent="Background/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8862745)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background/CanvasLayer/ColorRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_right = 59.0
+offset_bottom = 105.0
+grow_horizontal = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="Background/CanvasLayer/ColorRect/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Settings"
+
+[node name="MasterVolume" type="VBoxContainer" parent="Background/CanvasLayer/ColorRect/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/CanvasLayer/ColorRect/VBoxContainer/MasterVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Master Volume"
+
+[node name="MasterSlider" type="HSlider" parent="Background/CanvasLayer/ColorRect/VBoxContainer/MasterVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SFXVolume" type="VBoxContainer" parent="Background/CanvasLayer/ColorRect/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/CanvasLayer/ColorRect/VBoxContainer/SFXVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "SFX Volume"
+
+[node name="SFXSlider" type="HSlider" parent="Background/CanvasLayer/ColorRect/VBoxContainer/SFXVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="MusicVolume" type="VBoxContainer" parent="Background/CanvasLayer/ColorRect/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Background/CanvasLayer/ColorRect/VBoxContainer/MusicVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Music Volume"
+
+[node name="MusicSlider" type="HSlider" parent="Background/CanvasLayer/ColorRect/VBoxContainer/MusicVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="CloseButton" type="Button" parent="Background/CanvasLayer/ColorRect/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[connection signal="pressed" from="Background/CanvasLayer/MainButton/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="Background/CanvasLayer/MainButton/SettingButton" to="." method="_on_setting_button_pressed"]
+[connection signal="value_changed" from="Background/CanvasLayer/ColorRect/VBoxContainer/MasterVolume/MasterSlider" to="." method="_on_master_slider_value_changed"]
+[connection signal="value_changed" from="Background/CanvasLayer/ColorRect/VBoxContainer/SFXVolume/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="value_changed" from="Background/CanvasLayer/ColorRect/VBoxContainer/MusicVolume/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="pressed" from="Background/CanvasLayer/ColorRect/VBoxContainer/CloseButton" to="." method="_on_close_settings_pressed"]

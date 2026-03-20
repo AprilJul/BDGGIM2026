@@ -6,19 +6,16 @@ extends Node2D
 @onready var panel_ui = $PanelUI
 @onready var area = $Area2D
 
-@onready var laser_bar = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow/ProgressBar
-@onready var extract_bar = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow/ProgressBar
-@onready var stress_bar = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow/StressBar
-@onready var btn_laser_up = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow/BtnLaserUp
-@onready var btn_laser_down = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow/BtnLaserDown
-@onready var btn_extract_up = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow/BtnExtractUp
-@onready var btn_extract_down = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow/BtnExtractDown
-@onready var btn_vent = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/BtnVent
-@onready var charge_labels = [
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow/Charge1,
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow/Charge2,
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow/Charge3
-]
+@onready var laser_bar = %LaserBar
+@onready var extract_bar = %ExtractBar
+@onready var stress_bar = %StressBar
+@onready var laser_stress_bar = %LaserStressBar
+@onready var btn_laser_up = %BtnLaserUp
+@onready var btn_laser_down = %BtnLaserDown
+@onready var btn_extract_up = %BtnExtractUp
+@onready var btn_extract_down = %BtnExtractDown
+@onready var btn_vent = %BtnVent
+@onready var btn_restart = %BtnRestart
 
 var is_open: bool = false
 const LASER_STEP: float = 10.0
@@ -37,10 +34,13 @@ func _ready() -> void:
 	btn_laser_down.pressed.connect(_on_laser_down)
 	btn_extract_up.pressed.connect(_on_extract_up)
 	btn_extract_down.pressed.connect(_on_extract_down)
-	btn_vent.toggled.connect(_on_vent_toggled)
+	btn_vent.pressed.connect(_on_vent_pressed)
 
 	# Hubungkan sinyal GameManager
 	GameManager.reactor_state_changed.connect(_on_reactor_state_changed)
+	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
+	btn_restart.pressed.connect(_on_restart_pressed)
+	btn_restart.visible = false
 
 # ============================================================
 # PANEL OPEN / CLOSE
@@ -88,10 +88,33 @@ func _process(_delta: float) -> void:
 	if not is_open:
 		return
 
+	btn_restart.visible = GameManager.reactor_shutdown
+
+	# Disable semua kontrol saat shutdown
+	var locked = GameManager.reactor_shutdown or GameManager.mcs_active
+	btn_laser_up.disabled = locked or GameManager.laser_broken
+	btn_laser_down.disabled = locked
+	btn_extract_up.disabled = locked or GameManager.extractor_broken
+	btn_extract_down.disabled = locked
+	btn_vent.disabled = locked
+
 	# Update bar sesuai nilai GameManager
 	laser_bar.value = GameManager.laser_intensity
+	laser_stress_bar.value = GameManager.laser_stress
 	extract_bar.value = GameManager.extraction_level
 	stress_bar.value = GameManager.extraction_stress
+	
+	# Warna laser stress bar
+	if GameManager.laser_broken:
+		laser_stress_bar.modulate = Color("#E8593C")
+		btn_laser_up.disabled = true
+		btn_laser_down.disabled = true
+	elif GameManager.laser_stress > 75.0:
+		laser_stress_bar.modulate = Color("#E8593C")
+	else:
+		laser_stress_bar.modulate = Color.WHITE
+		btn_laser_up.disabled = false
+		btn_laser_down.disabled = false
 
 	# Update warna stress bar
 	if GameManager.extraction_stress > 75.0:
@@ -101,12 +124,15 @@ func _process(_delta: float) -> void:
 	else:
 		stress_bar.modulate = Color.WHITE
 
-	# Update ECCS charge indicator
-	for i in range(3):
-		if i < GameManager.eccs_charges:
-			charge_labels[i].modulate = Color("#3B9E7A")  # hijau = ada charge
-		else:
-			charge_labels[i].modulate = Color("#444441")  # abu = habis
+	if GameManager.vent_cooldown > 0.0:
+		btn_vent.text = "VENT %.0fs" % GameManager.vent_cooldown
+		btn_vent.disabled = true
+	elif GameManager.vent_active:
+		btn_vent.text = "VENTING..."
+		btn_vent.disabled = true
+	else:
+		btn_vent.text = "VENT"
+		btn_vent.disabled = false
 
 	# Disable tombol extract kalau extractor rusak
 	btn_extract_up.disabled = GameManager.extractor_broken
@@ -139,9 +165,9 @@ func _on_extract_down() -> void:
 	await get_tree().create_timer(GameManager.input_delay).timeout
 	GameManager.set_extraction(GameManager.extraction_level - EXTRACT_STEP)
 
-func _on_vent_toggled(pressed: bool) -> void:
+func _on_vent_pressed() -> void:
 	await get_tree().create_timer(GameManager.input_delay).timeout
-	GameManager.toggle_vent(pressed)
+	GameManager.activate_vent()
 
 # ============================================================
 # REACTOR STATE — ubah warna panel saat bahaya
@@ -157,3 +183,18 @@ func _on_reactor_state_changed(new_state: int) -> void:
 			panel_container.modulate = Color("#FFD0C0")  # oranye muda
 		4:
 			panel_container.modulate = Color("#FFB0B0")  # merah muda
+
+func _on_mcs_state_changed(is_active: bool) -> void:
+	btn_laser_up.disabled = is_active
+	btn_laser_down.disabled = is_active
+	btn_extract_up.disabled = is_active
+	btn_extract_down.disabled = is_active
+	btn_vent.disabled = is_active
+	if is_active:
+		btn_vent.text = "MCS ACTIVE"
+	else:
+		btn_vent.text = "VENT"
+
+func _on_restart_pressed() -> void:
+	GameManager.restart_reactor()
+	btn_restart.visible = false

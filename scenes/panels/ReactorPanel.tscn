@@ -3,7 +3,10 @@
 [ext_resource type="Script" uid="uid://biq4cilrva4qs" path="res://scripts/ReactorPanel.gd" id="1_p83e4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p83e4"]
-size = Vector2(436, 317)
+size = Vector2(436, 368)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p83e4"]
+bg_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ns18e"]
 bg_color = Color(0.9098039, 0.34901962, 0.23529412, 1)
@@ -15,7 +18,7 @@ script = ExtResource("1_p83e4")
 collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1152896331]
-position = Vector2(574, 327)
+position = Vector2(574, 324)
 shape = SubResource("RectangleShape2D_p83e4")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=137142224]
@@ -65,19 +68,35 @@ theme_override_constants/separation = 10
 layout_mode = 2
 text = "LASER"
 
-[node name="ProgressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=564400592]
+[node name="LaserBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=564400592]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 18)
 layout_mode = 2
 
 [node name="BtnLaserDown" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=241585782]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "-"
 
 [node name="BtnLaserUp" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=781682276]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "+"
+
+[node name="LaserStressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=553961640]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserStressRow" unique_id=1321923373]
+layout_mode = 2
+text = "L. STRESS"
+
+[node name="LaserStressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserStressRow" unique_id=1526899609]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 14)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_p83e4")
 
 [node name="ExtractRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1179596730]
 layout_mode = 2
@@ -88,19 +107,37 @@ theme_override_constants/separation = 10
 layout_mode = 2
 text = "EXTRACT"
 
-[node name="ProgressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=1081557467]
+[node name="ExtractBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=1081557467]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 18)
 layout_mode = 2
 
 [node name="BtnExtractDown" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=1938261997]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "-"
 
 [node name="BtnExtractUp" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=592692665]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 text = "+"
+
+[node name="StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1997967914]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=2026017371]
+layout_mode = 2
+text = "E. STRESS"
+
+[node name="StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=3181419]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_ns18e")
 
 [node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1687302338]
 layout_mode = 2
@@ -111,40 +148,18 @@ size_flags_vertical = 4
 theme_override_constants/separation = 10
 
 [node name="BtnVent" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow" unique_id=603329158]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 toggle_mode = true
 text = "VENT
 "
 
-[node name="ECCSRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow" unique_id=1831288432]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=493115068]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=970361342]
+[node name="BtnRestart" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=702439941]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-text = "ECCS:"
-
-[node name="Charge1" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=900047691]
-layout_mode = 2
-text = "●"
-
-[node name="Charge2" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=1202780520]
-layout_mode = 2
-text = "●"
-
-[node name="Charge3" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=84368494]
-layout_mode = 2
-text = "●"
-
-[node name="StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1997967914]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=2026017371]
-layout_mode = 2
-
-[node name="StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=3181419]
-custom_minimum_size = Vector2(260, 18)
-layout_mode = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_ns18e")
+text = "RESTART REACTOR"
