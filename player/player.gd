@@ -1,57 +1,54 @@
 extends CharacterBody2D
 
+@onready var world = get_parent()
+
 var speed = 100
-var player_state
-var can_move := true
-
-@onready var shape_cast = $ShapeCast2D
-@onready var map_system = get_node_or_null("/root/MainHouse/MapCanvas/MapSystem")
-
+var player_state = "idle"
+var waiting_for_tutorial_move = false
+var can_move = true
 
 func _physics_process(_delta):
-	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	
+	# This part effectively "freezes" the keys 
 	if not can_move:
 		velocity = Vector2.ZERO
-		#print("Player can't move now.")
+		player_state = "idle"         # Force state to idle
+		play_animation(Vector2.ZERO)  # Trigger the idle animation
 		return
-		
+
+	# 1. Get Input Direction
+	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	
+	# 2. Set Velocity and State
 	if direction == Vector2.ZERO:
 		player_state = "idle"
 		velocity = Vector2.ZERO
 	else:
 		player_state = "walking"
-		
-		if _can_move_to(direction):
-			velocity = direction * speed
-		else:
-			velocity = Vector2.ZERO
+		velocity = direction * speed
 	
+	# 3. Move and Animate
 	move_and_slide()
 	play_animation(direction)
+	
+	# For continue the dialogue after admin said the movement button
+	if direction != Vector2.ZERO and waiting_for_tutorial_move:
+		waiting_for_tutorial_move = false
+		trigger_delayed_dialogue() # Call a new helper function
 
-	var map = get_tree().get_first_node_in_group("Map")
+# Triggering the after_movement dialogue
+func trigger_delayed_dialogue():
+	# Wait for 1.5 seconds (adjust this number to your liking)
+	await get_tree().create_timer(1.5).timeout
 	
-	if map and map.visible:
-		velocity = Vector2.ZERO
-		move_and_slide()
-		return
-		
-
-func _can_move_to(dir: Vector2) -> bool:
-	shape_cast.target_position = dir * 4
-	shape_cast.force_shapecast_update()
-	
-	if shape_cast.is_colliding():
-		return true 
-	
-	print("No floor detected at: ", global_position + (dir * 4))
-	return false
+	# Now tell the world to start the next part
+	if world.has_method("start_my_dialogue"):
+		world.start_my_dialogue("after_movement")
 
 func play_animation(dir):
 	if player_state == "idle":
 		$AnimatedSprite2D.play("idle")
 	elif player_state == "walking":
+		# Choose horizontal vs vertical animation based on strongest input
 		if abs(dir.x) > abs(dir.y):
 			$AnimatedSprite2D.play("walk_right" if dir.x > 0 else "walk_left")
 		else:
