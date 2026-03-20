@@ -1,19 +1,34 @@
 extends Node
 
 # ============================================================
-# REACTOR VARIABLES
+# REACTOR VARIABLES — unit realistis
 # ============================================================
-var reactor_temp: float = 30.0        # 0–100 persen
-var reactor_pressure: float = 20.0    # 0–100 persen
-var laser_intensity: float = 0.0      # 0–100 persen
+var reactor_temp: float = 180.0       # Celcius, range 0–350°C
+var reactor_pressure: float = 800.0   # PSI, range 0–2200 PSI
+var laser_intensity: float = 0.0      # 0–100% (kontrol internal)
+
+# Batas bahaya
+const TEMP_MAX: float = 350.0
+const TEMP_MIN: float = 0.0
+const TEMP_OPTIMAL_LOW: float = 150.0
+const TEMP_OPTIMAL_HIGH: float = 250.0
+const TEMP_WARNING: float = 245.0     # 70% dari 350
+const TEMP_CRITICAL: float = 298.0    # 85% dari 350
+const TEMP_MELTDOWN: float = 333.0    # 95% dari 350
+const TEMP_SUBZERO: float = 35.0      # 10% dari 350
+
+const PRESSURE_MAX: float = 2200.0
+const PRESSURE_WARNING: float = 1760.0  # 80% dari 2200
 
 # ============================================================
-# ELECTRICITY
+# ELECTRICITY — unit MW/h
 # ============================================================
-var electricity_output: float = 0.0   # output per detik
-var electricity_quota: float = 0.0    # total terkumpul (target 100)
-var extraction_level: float = 0.0     # 0–100 persen
-var extraction_stress: float = 0.0    # 0–100, kalau > 100 extractor rusak
+var electricity_output: float = 0.0   # MW/h output saat ini
+var electricity_quota: float = 0.0    # MW/h terkumpul (target 1000)
+var extraction_level: float = 0.0     # 0–100% kontrol
+var extraction_stress: float = 0.0    # 0–100%
+
+const ELECTRICITY_TARGET: float = 1000.0
 
 # ============================================================
 # PLAYER
@@ -74,55 +89,54 @@ func _update_day_night_cycle() -> void:
 		emit_signal("night_toggled", is_night)
 
 func _update_reactor(delta: float) -> void:
-	# Ambient modifier: malam = pendingin alami, tapi di Tweak 2 kita balik jadi negatif
-	var ambient_modifier: float = -0.5 if not is_night else 2.0
+	# Malam: ambient jadi pemanas, bukan pendingin
+	var ambient_modifier: float = -1.5 if not is_night else 10.0
 
-	# Laser menaikkan suhu
-	reactor_temp += laser_intensity * 0.05 * delta
+	# Laser menaikkan suhu (skala ke unit Celcius)
+	reactor_temp += laser_intensity * 0.3 * delta
 
 	# Ambient effect
 	reactor_temp += ambient_modifier * delta
 
-	# Vent menurunkan pressure (tapi efisiensinya turun kalau pressure > 80)
+	# Vent menurunkan pressure
 	if vent_active:
-		var vent_efficiency = 1.0 if reactor_pressure <= 80.0 else 0.4
-		reactor_pressure -= 15.0 * vent_efficiency * delta
+		var vent_efficiency = 1.0 if reactor_pressure <= PRESSURE_WARNING else 0.4
+		reactor_pressure -= 180.0 * vent_efficiency * delta
 
-	# Suhu tinggi menaikkan pressure
-	reactor_pressure += (reactor_temp - 50.0) * 0.02 * delta
+	# Suhu tinggi menaikkan pressure (skala PSI)
+	var temp_ratio = (reactor_temp - 150.0) / TEMP_MAX
+	reactor_pressure += temp_ratio * 40.0 * delta
 
-	# Extraction stress
+	# Extraction
 	if not extractor_broken:
 		extraction_stress += extraction_level * 0.01 * delta
-		electricity_output = extraction_level * 0.5
+		electricity_output = extraction_level * 10.0   # max 1000 MW/h
 		electricity_quota += electricity_output * delta * 0.01
 		if extraction_stress >= 100.0:
 			extractor_broken = true
 			electricity_output = 0.0
 
-	# Clamp semua nilai biar tidak keluar batas
-	reactor_temp = clamp(reactor_temp, 0.0, 100.0)
-	reactor_pressure = clamp(reactor_pressure, 0.0, 100.0)
-	electricity_quota = clamp(electricity_quota, 0.0, 100.0)
+	# Clamp
+	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
+	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
+	electricity_quota = clamp(electricity_quota, 0.0, ELECTRICITY_TARGET)
 	extraction_stress = clamp(extraction_stress, 0.0, 100.0)
 
 	_update_reactor_state()
 
 func _update_reactor_state() -> void:
 	var old_state = reactor_state
-	if reactor_temp < 10.0:
+	if reactor_temp < TEMP_SUBZERO:
 		reactor_state = -1
-	elif reactor_temp < 50.0:
+	elif reactor_temp < TEMP_WARNING:
 		reactor_state = 1
-	elif reactor_temp < 70.0:
-		reactor_state = 1
-	elif reactor_temp < 85.0:
+	elif reactor_temp < TEMP_CRITICAL:
 		reactor_state = 2
-	elif reactor_temp < 95.0:
+	elif reactor_temp < TEMP_MELTDOWN:
 		reactor_state = 3
 	else:
 		reactor_state = 4
-		extraction_stress = 100.0   # auto shutdown
+		extraction_stress = 100.0
 
 	if reactor_state != old_state:
 		emit_signal("reactor_state_changed", reactor_state)
@@ -143,11 +157,11 @@ func _update_armor(delta: float) -> void:
 			player_hp -= 2.0 * delta
 
 func _check_win_lose() -> void:
-	if electricity_quota >= 100.0:
+	if electricity_quota >= ELECTRICITY_TARGET:
 		_end_game("win")
-	elif reactor_temp >= 100.0 and reactor_pressure >= 100.0:
+	elif reactor_temp >= TEMP_MAX and reactor_pressure >= PRESSURE_MAX:
 		_end_game("meltdown")
-	elif reactor_temp <= 0.0 and reactor_pressure <= 0.0:
+	elif reactor_temp <= 5.0 and reactor_pressure <= 50.0:
 		_end_game("blackhole")
 	elif player_hp <= 0.0:
 		_end_game("death")
