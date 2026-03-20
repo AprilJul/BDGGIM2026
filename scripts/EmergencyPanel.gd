@@ -1,21 +1,17 @@
 extends Node2D
 
-@onready var panel_ui = $PanelUI
+@onready var panel_ui = %PanelUI
 @onready var area = $Area2D
 
-@onready var btn_eccs = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow/BtnECCS
-@onready var btn_event = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow/BtnEVent
-@onready var btn_mcs = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow/BtnMCS
+@onready var btn_eccs = %BtnECCS
+@onready var btn_event = %BtnEVent
+@onready var btn_mcs = %BtnMCS
 
-@onready var charge_labels = [
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow/Charge1,
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow/Charge2,
-	$PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow/Charge3
-]
-@onready var eccs_cooldown_label = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow/ECCSCooldownLabel
-@onready var event_cooldown_label = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow/EVentCooldownLabel
-@onready var mcs_status_label = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow/MCSStatusLabel
-@onready var mcs_warning_label = $PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow/MCSWarningLabel
+@onready var charge_labels = [%Charge1, %Charge2, %Charge3]
+@onready var eccs_cooldown_label = %ECCSCooldownLabel
+@onready var event_cooldown_label = %EVentCooldownLabel
+@onready var mcs_status_label = %MCSStatusLabel
+@onready var mcs_warning_label = %MCSWarningLabel
 
 var is_open: bool = false
 
@@ -25,23 +21,21 @@ var is_open: bool = false
 func _ready() -> void:
 	print("=== EmergencyPanel _ready() START ===")
 	
-	# Cek manual apakah node ditemukan
-	if not has_node("Area2D"):
-		print("ERROR: Area2D tidak ditemukan!")
-		return
-	if not has_node("PanelUI"):
-		print("ERROR: PanelUI tidak ditemukan!")
-		return
-		
-	panel_ui.visible = false
+	# Group dan connect DULU — tidak boleh di-skip
 	area.add_to_group("interaction_panel")
-	print("EmergencyPanel ready, groups: ", area.get_groups())
-	
 	btn_eccs.pressed.connect(_on_eccs_pressed)
 	btn_event.pressed.connect(_on_event_pressed)
 	btn_mcs.pressed.connect(_on_mcs_pressed)
+	print("Signals connected!")
 	
-	print("=== EmergencyPanel _ready() DONE ===")
+	# Baru cek PanelUI
+	if not has_node("PanelUI"):
+		print("ERROR: PanelUI tidak ditemukan!")
+		# Jangan return — biarkan jalan terus
+	else:
+		panel_ui.visible = false
+	
+	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
 
 # ============================================================
 # OPEN / CLOSE
@@ -51,9 +45,8 @@ func open_panel() -> void:
 	is_open = true
 	GameManager.is_in_panel_mode = true
 	panel_ui.visible = true
-	var panel_container = $PanelUI/PanelContainer
 	var viewport_size = get_viewport().get_visible_rect().size
-	panel_container.position = (viewport_size - panel_container.size) / 2.0
+	%PanelContainer.position = (viewport_size - %PanelContainer.size) / 2.0
 	_zoom_in()
 
 func close_panel() -> void:
@@ -161,3 +154,8 @@ func _on_event_pressed() -> void:
 func _on_mcs_pressed() -> void:
 	# MCS terlalu berbahaya untuk kena input delay — langsung eksekusi
 	GameManager.use_mcs()
+
+func _on_mcs_state_changed(is_active: bool) -> void:
+	btn_eccs.disabled = is_active
+	btn_event.disabled = is_active
+	# MCS button tetap disabled saat active — sudah ditangani _update_mcs_ui

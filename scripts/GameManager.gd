@@ -82,11 +82,13 @@ var reactor_state: int = 1            # -1, 0, 1, 2, 3, 4
 var game_over: bool = false
 var extractor_broken: bool = false
 var is_in_panel_mode: bool = false
+var reactor_shutdown: bool = false 
 
 # Sinyal untuk memberi tahu UI
 signal reactor_state_changed(new_state: int)
 signal game_ended(reason: String)
 signal night_toggled(is_night: bool)
+signal mcs_state_changed(is_active: bool)
 
 # ============================================================
 # GAME LOOP
@@ -113,6 +115,12 @@ func _update_day_night_cycle() -> void:
 		emit_signal("night_toggled", is_night)
 
 func _update_reactor(delta: float) -> void:
+		# Kalau shutdown, reaktor dingin sendiri perlahan, tidak ada proses
+	if reactor_shutdown:
+		reactor_temp = move_toward(reactor_temp, 20.0, 3.0 * delta)
+		reactor_pressure = move_toward(reactor_pressure, 100.0, 50.0 * delta)
+		return   # skip semua kalkulasi normal
+
 	# Malam: ambient jadi pemanas, bukan pendingin
 	var ambient_modifier: float = -1.5 if not is_night else 10.0
 
@@ -182,6 +190,16 @@ func _update_reactor_state() -> void:
 
 	if reactor_state != old_state:
 		emit_signal("reactor_state_changed", reactor_state)
+
+func restart_reactor() -> void:
+	if not reactor_shutdown:
+		return
+	reactor_shutdown = false
+	reactor_temp = 80.0       # startup dari cold
+	reactor_pressure = 400.0
+	reactor_state = 0         # kembali ke startup state
+	print("Reactor manually restarted")
+	emit_signal("reactor_state_changed", reactor_state)
 
 func repair_laser() -> void:
 	laser_broken = false
@@ -257,54 +275,55 @@ func set_room(room_name: String) -> void:
 # EMERGENCY SYSTEMS
 # ============================================================
 func use_eccs() -> void:
+	print("use_eccs() called — charges: ", eccs_charges, " cooldown: ", eccs_cooldown)
 	if eccs_charges <= 0 or eccs_cooldown > 0.0:
+		print("ECCS blocked!")
 		return
 	eccs_charges -= 1
 	eccs_cooldown = ECCS_COOLDOWN_TIME
-	# Drop suhu instan
 	reactor_temp -= ECCS_TEMP_DROP
 	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
-	# Awas: kalau suhu drop terlalu rendah bisa trigger blackhole!
-	print("ECCS activated! Charges left: ", eccs_charges)
+	print("ECCS fired! Temp now: ", reactor_temp)
 
 func use_emergency_vent() -> void:
+	print("use_emergency_vent() called — cooldown: ", emergency_vent_cooldown)
 	if emergency_vent_cooldown > 0.0:
+		print("E-Vent blocked!")
 		return
 	emergency_vent_cooldown = EMERGENCY_VENT_COOLDOWN
 	reactor_pressure -= EMERGENCY_VENT_DROP
 	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
-	print("Emergency Vent activated!")
+	print("E-Vent fired! Pressure now: ", reactor_pressure)
 
 func use_mcs() -> void:
+	print("use_mcs() called — used_count: ", mcs_used_count)
 	if mcs_broken:
+		print("MCS broken!")
 		return
 	mcs_used_count += 1
-	# Penggunaan pertama: 100% berhasil
 	if mcs_used_count == 1:
 		_mcs_success()
 		return
-	# Penggunaan kedua+: 50% RNG
 	if randf() < 0.5:
 		_mcs_success()
 	else:
 		_mcs_fail()
 
 func _mcs_success() -> void:
+	print("MCS SUCCESS!")
 	mcs_active = true
-	# Matikan semua sistem reaktor
 	laser_intensity = 0.0
 	extraction_level = 0.0
 	vent_active = false
-	# Suhu dan pressure perlahan stabil (ditangani di _update_mcs)
-	print("MCS SUCCESS — reactor shutting down")
+	reactor_shutdown = false   # belum shutdown, masih dalam proses
+	emit_signal("mcs_state_changed", true)
 
 func _mcs_fail() -> void:
+	print("MCS FAILED!")
 	mcs_broken = true
 	mcs_active = false
-	# EMP merusak semua sistem sementara
 	laser_broken = true
 	extractor_broken = true
-	print("MCS FAILED — CPU module damaged, go to Reactor Room!")
 
 func refill_eccs() -> void:
 	# Dipanggil saat player di Coolant Room
@@ -324,6 +343,15 @@ func _update_emergency_vent(delta: float) -> void:
 func _update_mcs(delta: float) -> void:
 	if not mcs_active:
 		return
-	# Saat MCS aktif, reaktor perlahan stabil menuju titik aman
-	reactor_temp = move_toward(reactor_temp, 150.0, 20.0 * delta)
-	reactor_pressure = move_toward(reactor_pressure, 800.0, 200.0 * delta)
+	reactor_temp = move_toward(reactor_temp, 50.0, 20.0 * delta)      # ← target 50°C, bukan 150
+	reactor_pressure = move_toward(reactor_pressure, 200.0, 200.0 * delta)  # ← target 200 PSI
+	var temp_stable = abs(reactor_temp - 50.0) < 5.0
+	var pressure_stable = abs(reactor_pressure - 200.0) < 20.0
+	if temp_stable and pressure_stable:
+		mcs_active = false
+		reactor_shutdown = true    # ← reaktor sekarang cold shutdown
+		laser_intensity = 0.0
+		extraction_level = 0.0
+		emit_signal("mcs_state_changed", false)
+		emit_signal("reactor_state_changed", reactor_state)
+		print("MCS complete — reactor in cold shutdown")

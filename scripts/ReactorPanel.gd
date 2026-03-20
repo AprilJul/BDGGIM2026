@@ -15,6 +15,7 @@ extends Node2D
 @onready var btn_extract_up = %BtnExtractUp
 @onready var btn_extract_down = %BtnExtractDown
 @onready var btn_vent = %BtnVent
+@onready var btn_restart = %BtnRestart
 
 var is_open: bool = false
 const LASER_STEP: float = 10.0
@@ -37,6 +38,9 @@ func _ready() -> void:
 
 	# Hubungkan sinyal GameManager
 	GameManager.reactor_state_changed.connect(_on_reactor_state_changed)
+	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
+	btn_restart.pressed.connect(_on_restart_pressed)
+	btn_restart.visible = false
 
 # ============================================================
 # PANEL OPEN / CLOSE
@@ -83,6 +87,16 @@ func _zoom_out() -> void:
 func _process(_delta: float) -> void:
 	if not is_open:
 		return
+
+	btn_restart.visible = GameManager.reactor_shutdown
+
+	# Disable semua kontrol saat shutdown
+	var locked = GameManager.reactor_shutdown or GameManager.mcs_active
+	btn_laser_up.disabled = locked or GameManager.laser_broken
+	btn_laser_down.disabled = locked
+	btn_extract_up.disabled = locked or GameManager.extractor_broken
+	btn_extract_down.disabled = locked
+	btn_vent.disabled = locked
 
 	# Update bar sesuai nilai GameManager
 	laser_bar.value = GameManager.laser_intensity
@@ -169,3 +183,18 @@ func _on_reactor_state_changed(new_state: int) -> void:
 			panel_container.modulate = Color("#FFD0C0")  # oranye muda
 		4:
 			panel_container.modulate = Color("#FFB0B0")  # merah muda
+
+func _on_mcs_state_changed(is_active: bool) -> void:
+	btn_laser_up.disabled = is_active
+	btn_laser_down.disabled = is_active
+	btn_extract_up.disabled = is_active
+	btn_extract_down.disabled = is_active
+	btn_vent.disabled = is_active
+	if is_active:
+		btn_vent.text = "MCS ACTIVE"
+	else:
+		btn_vent.text = "VENT"
+
+func _on_restart_pressed() -> void:
+	GameManager.restart_reactor()
+	btn_restart.visible = false

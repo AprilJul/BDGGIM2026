@@ -18,8 +18,10 @@ shape = SubResource("RectangleShape2D_ul0dy")
 [node name="Sprite2D" type="Sprite2D" parent="Area2D" unique_id=1627959223]
 
 [node name="PanelUI" type="CanvasLayer" parent="Area2D" unique_id=1262650788]
+unique_name_in_owner = true
 
 [node name="PanelContainer" type="PanelContainer" parent="Area2D/PanelUI" unique_id=439837427]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(380, 320)
 anchors_preset = 8
 anchor_left = 0.5
@@ -52,23 +54,28 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="BtnECCS" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1147534251]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 text = "ECCS — ACTIVATE"
 
 [node name="Charge1" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=682399835]
+unique_name_in_owner = true
 layout_mode = 2
 text = "●"
 
 [node name="Charge2" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=743887241]
+unique_name_in_owner = true
 layout_mode = 2
 text = "●"
 
 [node name="Charge3" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1545671219]
+unique_name_in_owner = true
 layout_mode = 2
 text = "●"
 
 [node name="ECCSCooldownLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1036215605]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSeparator2" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=942346779]
@@ -78,11 +85,13 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="BtnEVent" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow" unique_id=1012597158]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 text = "EMERGENCY VENT"
 
 [node name="EVentCooldownLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow" unique_id=1288210960]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSeparator3" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2132114436]
@@ -92,13 +101,16 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="BtnMCS" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=1701974048]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 text = "MCS — INITIATE SHUTDOWN"
 
 [node name="MCSStatusLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=17202407]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="MCSWarningLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=286452278]
+unique_name_in_owner = true
 layout_mode = 2
 text = "WARNING: 2nd use has 50% failure rate"

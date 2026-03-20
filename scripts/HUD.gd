@@ -27,6 +27,7 @@ func _ready() -> void:
 
 	GameManager.game_ended.connect(_on_game_ended)
 	GameManager.night_toggled.connect(_on_night_toggled)
+	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
 
 func _process(_delta: float) -> void:
 	_update_bars()
@@ -46,6 +47,11 @@ func _update_bars() -> void:
 	electricity_label.text = "%.1f / 1000 MW/h" % GameManager.electricity_quota
 
 func _update_status() -> void:
+	if GameManager.reactor_shutdown:
+		status_label.text = "■ COLD SHUTDOWN"
+		status_label.modulate = Color("#888780")
+		return
+
 	match GameManager.reactor_state:
 		-1:
 			status_label.text = "⚠ SUB-ZERO"
@@ -62,6 +68,12 @@ func _update_status() -> void:
 		4:
 			status_label.text = "☢ MELTDOWN"
 			status_label.modulate = Color("#E8593C")
+			
+
+func _on_mcs_state_changed(is_active: bool) -> void:
+	if is_active:
+		status_label.text = "⬇ MCS SHUTDOWN ACTIVE"
+		status_label.modulate = Color("#3B8BD4")
 
 func _on_game_ended(reason: String) -> void:
 	match reason:

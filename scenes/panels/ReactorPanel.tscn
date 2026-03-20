@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://biq4cilrva4qs" path="res://scripts/ReactorPanel.gd" id="1_p83e4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p83e4"]
-size = Vector2(436, 317)
+size = Vector2(436, 368)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p83e4"]
 bg_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
@@ -18,7 +18,7 @@ script = ExtResource("1_p83e4")
 collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1152896331]
-position = Vector2(574, 327)
+position = Vector2(574, 324)
 shape = SubResource("RectangleShape2D_p83e4")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=137142224]
@@ -154,3 +154,12 @@ layout_mode = 2
 toggle_mode = true
 text = "VENT
 "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=493115068]
+layout_mode = 2
+
+[node name="BtnRestart" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer" unique_id=702439941]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "RESTART REACTOR"
