@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://bd84tl8f210xe"]
+
+[ext_resource type="Script" uid="uid://cyfkvu2g2f2nr" path="res://scripts/EmergencyPanel.gd" id="1_ul0dy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ul0dy"]
+size = Vector2(419, 384)
+
+[node name="EmergencyPanel" type="Node2D" unique_id=294257623]
+script = ExtResource("1_ul0dy")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=280735998]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1269974681]
+position = Vector2(-203.5, 171)
+shape = SubResource("RectangleShape2D_ul0dy")
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D" unique_id=1627959223]
+
+[node name="PanelUI" type="CanvasLayer" parent="Area2D" unique_id=1262650788]
+unique_name_in_owner = true
+
+[node name="PanelContainer" type="PanelContainer" parent="Area2D/PanelUI" unique_id=439837427]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(380, 320)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -965.0
+offset_top = -310.0
+offset_right = -585.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Area2D/PanelUI/PanelContainer" unique_id=1410369635]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Area2D/PanelUI/PanelContainer/MarginContainer" unique_id=1931794835]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1657007449]
+layout_mode = 2
+text = "⚠ EMERGENCY SYSTEMS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1754367563]
+layout_mode = 2
+
+[node name="ECCSRow" type="HBoxContainer" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1859818671]
+layout_mode = 2
+
+[node name="BtnECCS" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1147534251]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "ECCS — ACTIVATE"
+
+[node name="Charge1" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=682399835]
+unique_name_in_owner = true
+layout_mode = 2
+text = "●"
+
+[node name="Charge2" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=743887241]
+unique_name_in_owner = true
+layout_mode = 2
+text = "●"
+
+[node name="Charge3" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1545671219]
+unique_name_in_owner = true
+layout_mode = 2
+text = "●"
+
+[node name="ECCSCooldownLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRow" unique_id=1036215605]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=942346779]
+layout_mode = 2
+
+[node name="EVentRow" type="HBoxContainer" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=353522633]
+layout_mode = 2
+
+[node name="BtnEVent" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow" unique_id=1012597158]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "EMERGENCY VENT"
+
+[node name="EVentCooldownLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow" unique_id=1288210960]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2132114436]
+layout_mode = 2
+
+[node name="MCSRow" type="VBoxContainer" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=140000293]
+layout_mode = 2
+
+[node name="BtnMCS" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=1701974048]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "MCS — INITIATE SHUTDOWN"
+
+[node name="MCSStatusLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=17202407]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MCSWarningLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=286452278]
+unique_name_in_owner = true
+layout_mode = 2
+text = "WARNING: 2nd use has 50% failure rate"
