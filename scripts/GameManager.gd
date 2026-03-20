@@ -27,6 +27,8 @@ var electricity_output: float = 0.0   # MW/h output saat ini
 var electricity_quota: float = 0.0    # MW/h terkumpul (target 1000)
 var extraction_level: float = 0.0     # 0–100% kontrol
 var extraction_stress: float = 0.0    # 0–100%
+var laser_stress: float = 0.0        # 0–100%, laser overheat
+var laser_broken: bool = false
 
 const ELECTRICITY_TARGET: float = 1000.0
 
