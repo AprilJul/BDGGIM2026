@@ -1,8 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://ctl3v6bxucmqv"]
+[gd_scene load_steps=13 format=3 uid="uid://2paq77xqijv4"]
 
-[ext_resource type="Script" uid="uid://d1bpuqi27kiek" path="res://dialogue/balloon.gd" id="1_36de5"]
+[ext_resource type="Script" path="res://dialogue/balloon.gd" id="1_36de5"]
 [ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_a8ve6"]
-[ext_resource type="Texture2D" uid="uid://b78ik8dfv5n3v" path="res://art/Character/character_dialogue_placeholder.png" id="3_3fodd"]
+[ext_resource type="Texture2D" path="res://art/Character/character_dialogue_placeholder.png" id="3_3fodd"]
 [ext_resource type="Script" uid="uid://bb52rsfwhkxbn" path="res://addons/dialogue_manager/dialogue_responses_menu.gd" id="3_72ixx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]

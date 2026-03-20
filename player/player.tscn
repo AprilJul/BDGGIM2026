@@ -1,6 +1,6 @@
-[gd_scene load_steps=26 format=3 uid="uid://cb2cwrjgxfsvw"]
+[gd_scene load_steps=26 format=3 uid="uid://cbo3s2q0583co"]
 
-[ext_resource type="Script" uid="uid://cqp0qlrmdbooj" path="res://player/player.gd" id="1_rkbax"]
+[ext_resource type="Script" path="res://player/player.gd" id="1_rkbax"]
 [ext_resource type="Texture2D" uid="uid://drl1b3b351hks" path="res://art/Character/mc.png" id="2_g1dw6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yw30f"]
@@ -192,7 +192,7 @@ script = ExtResource("1_rkbax")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -15)
 sprite_frames = SubResource("SpriteFrames_g4c7l")
-animation = &"walk_right"
+animation = &"walk_back"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -11)
