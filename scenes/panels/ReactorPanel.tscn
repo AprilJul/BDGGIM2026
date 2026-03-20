@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://b8atvjfo4ack"]
+
+[ext_resource type="Script" uid="uid://biq4cilrva4qs" path="res://scripts/ReactorPanel.gd" id="1_p83e4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p83e4"]
+size = Vector2(436, 317)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ns18e"]
+bg_color = Color(0.9098039, 0.34901962, 0.23529412, 1)
+
+[node name="ReactorPanel" type="Node2D" unique_id=448180539]
+script = ExtResource("1_p83e4")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=156654501]
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1152896331]
+position = Vector2(574, 327)
+shape = SubResource("RectangleShape2D_p83e4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=137142224]
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=180586700]
+layer = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelUI" unique_id=1028684982]
+custom_minimum_size = Vector2(420, 300)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -150.0
+offset_right = 210.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=29211959]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=961992820]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=546387968]
+layout_mode = 2
+text = "☢ REACTOR CONTROL"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1863669896]
+layout_mode = 2
+
+[node name="LaserRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2095030058]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=1427366986]
+layout_mode = 2
+text = "LASER"
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=564400592]
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+
+[node name="BtnLaserDown" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=241585782]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "-"
+
+[node name="BtnLaserUp" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=781682276]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "+"
+
+[node name="ExtractRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1179596730]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=2355633]
+layout_mode = 2
+text = "EXTRACT"
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=1081557467]
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+
+[node name="BtnExtractDown" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=1938261997]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "-"
+
+[node name="BtnExtractUp" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ExtractRow" unique_id=592692665]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "+"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1687302338]
+layout_mode = 2
+
+[node name="BottomRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2133963931]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="BtnVent" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow" unique_id=603329158]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+toggle_mode = true
+text = "VENT
+"
+
+[node name="ECCSRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow" unique_id=1831288432]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=970361342]
+layout_mode = 2
+text = "ECCS:"
+
+[node name="Charge1" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=900047691]
+layout_mode = 2
+text = "●"
+
+[node name="Charge2" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=1202780520]
+layout_mode = 2
+text = "●"
+
+[node name="Charge3" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow/ECCSRow" unique_id=84368494]
+layout_mode = 2
+text = "●"
+
+[node name="StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1997967914]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=2026017371]
+layout_mode = 2
+
+[node name="StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StressRow" unique_id=3181419]
+custom_minimum_size = Vector2(260, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_ns18e")

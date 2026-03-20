@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://csk1jphbeol58"]
+
+[ext_resource type="Script" uid="uid://ccolohe107751" path="res://scripts/CoolantPanel.gd" id="1_x8kao"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ds8ib"]
+size = Vector2(80, 80)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a0afp"]
+size = Vector2(80, 80)
+
+[node name="CoolantPanel" type="Node2D" unique_id=1142271356]
+script = ExtResource("1_x8kao")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=182851744 groups=["interaction_panel"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=643767511]
+position = Vector2(276, -49)
+shape = SubResource("RectangleShape2D_ds8ib")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=64391979]
+modulate = Color(0.39114216, 0.5222276, 0.93936443, 1)
+self_modulate = Color(0.54610425, 0.5071207, 0.8256689, 1)
+position = Vector2(276, -49)
+texture = SubResource("PlaceholderTexture2D_a0afp")
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=802396717]
+layer = 10
+
+[node name="Control" type="Control" parent="PanelUI" unique_id=554125197]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="PanelUI/Control" unique_id=575070357]
+layout_mode = 0
+offset_left = 211.0
+offset_top = 11.0
+offset_right = 342.0
+offset_bottom = 34.0
+text = "COOLANT PANEL"
