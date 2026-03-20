@@ -104,6 +104,30 @@ const RADIATION_REACTOR: float = 8.0    # per detik, dikali reactor_temp ratio
 const RADIATION_CONTROL: float = 3.0    # per detik, hanya kalau shield < 40%
 
 # ============================================================
+# CRAFTING SYSTEM
+# ============================================================
+# Inventory item yang sudah di-craft
+var inv_extractor_part: int = 0
+var inv_mcs_module: int = 0
+var inv_coolant_kit: int = 0
+var inv_cpu_module: int = 0
+
+# Crafting queue — hanya 1 item bisa di-craft sekaligus
+var crafting_item: String = ""       # nama item yang sedang di-craft
+var crafting_timer: float = 0.0
+var crafting_duration: float = 0.0
+
+# Durasi craft tiap item (detik) — bisa diatur saat balancing
+const CRAFT_TIME_EXTRACTOR: float = 15.0
+const CRAFT_TIME_MCS: float = 25.0
+const CRAFT_TIME_COOLANT_KIT: float = 10.0
+const CRAFT_TIME_CPU: float = 20.0
+
+signal crafting_started(item: String, duration: float)
+signal crafting_completed(item: String)
+signal crafting_cancelled(item: String)
+
+# ============================================================
 # TIME
 # ============================================================
 var is_night: bool = false
@@ -146,6 +170,7 @@ func _process(delta: float) -> void:
 	_update_mcs(delta)
 	_update_cpu(delta)
 	_update_coolant(delta)
+	_update_crafting(delta)
 	_update_control_room_shield(delta)
 	_update_armor(delta)
 	_check_win_lose()
@@ -464,6 +489,102 @@ func refill_eccs_from_coolant() -> void:
 	coolant_storage -= 30.0
 	eccs_charges = min(eccs_charges + 1, 3)
 	print("ECCS refilled! Charges: ", eccs_charges)
+
+# ============================================================
+# CRAFTING ACTIONS
+# ============================================================
+func start_craft(item: String) -> void:
+	if crafting_item != "":
+		print("Sudah ada crafting berjalan: ", crafting_item)
+		return
+	
+	var duration: float = 0.0
+	match item:
+		"extractor_part":
+			duration = CRAFT_TIME_EXTRACTOR
+		"mcs_module":
+			duration = CRAFT_TIME_MCS
+		"coolant_kit":
+			duration = CRAFT_TIME_COOLANT_KIT
+		"cpu_module":
+			duration = CRAFT_TIME_CPU
+		_:
+			print("Unknown item: ", item)
+			return
+	
+	crafting_item = item
+	crafting_timer = duration
+	crafting_duration = duration
+	emit_signal("crafting_started", item, duration)
+	print("Crafting started: ", item, " (", duration, "s)")
+
+func cancel_craft() -> void:
+	if crafting_item == "":
+		return
+	var cancelled = crafting_item
+	crafting_item = ""
+	crafting_timer = 0.0
+	crafting_duration = 0.0
+	emit_signal("crafting_cancelled", cancelled)
+
+func _update_crafting(delta: float) -> void:
+	if crafting_item == "":
+		return
+	
+	crafting_timer -= delta
+	
+	if crafting_timer <= 0.0:
+		_complete_craft()
+
+func _complete_craft() -> void:
+	match crafting_item:
+		"extractor_part":
+			inv_extractor_part += 1
+		"mcs_module":
+			inv_mcs_module += 1
+		"coolant_kit":
+			inv_coolant_kit += 1
+		"cpu_module":
+			inv_cpu_module += 1
+	
+	print("Crafting complete: ", crafting_item)
+	emit_signal("crafting_completed", crafting_item)
+	crafting_item = ""
+	crafting_timer = 0.0
+	crafting_duration = 0.0
+
+# ============================================================
+# USE ITEM ACTIONS
+# ============================================================
+func use_extractor_part() -> void:
+	if inv_extractor_part <= 0:
+		return
+	inv_extractor_part -= 1
+	extractor_broken = false
+	extraction_stress = 0.0
+	print("Extractor repaired!")
+
+func use_mcs_module() -> void:
+	if inv_mcs_module <= 0:
+		return
+	inv_mcs_module -= 1
+	mcs_broken = false
+	print("MCS module replaced!")
+
+func use_coolant_kit() -> void:
+	if inv_coolant_kit <= 0:
+		return
+	inv_coolant_kit -= 1
+	repair_coolant_pump()
+	print("Coolant pump repaired!")
+
+func use_cpu_module() -> void:
+	if inv_cpu_module <= 0:
+		return
+	inv_cpu_module -= 1
+	cpu_temp = 20.0
+	input_delay = 0.0
+	print("CPU module replaced!")
 
 # ============================================================
 # EMERGENCY SYSTEMS

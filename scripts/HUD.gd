@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var shield_bar = $MarginContainer/VBoxContainer/ShieldRow/ProgressBar
 @onready var shield_status = $MarginContainer/VBoxContainer/ShieldRow/ShieldStatusLabel
 @onready var radiation_warning = $MarginContainer/VBoxContainer/RadiationWarning
+@onready var craft_notify = $MarginContainer/VBoxContainer/CraftNotify
 
 # Label nilai — kita tambah ini biar bisa tulis "245°C" dll
 @onready var temp_label = $MarginContainer/VBoxContainer/ReactorBar/ValueLabel
@@ -41,6 +42,9 @@ func _ready() -> void:
 	GameManager.control_room_breached.connect(_on_control_room_breached)
 	shield_bar.max_value = 100.0
 	radiation_warning.text = ""
+
+	GameManager.crafting_completed.connect(_on_crafting_completed)
+	GameManager.crafting_started.connect(_on_crafting_started)
 
 func _process(_delta: float) -> void:
 	_update_bars()
@@ -123,6 +127,17 @@ func _update_timer() -> void:
 		time_to_next = (GameManager.day_duration * 2) - cycle_pos
 		timer_label.text = "☀ %.0fs" % time_to_next
 		timer_label.modulate = Color("#EF9F27")
+
+func _on_crafting_started(item: String, duration: float) -> void:
+	craft_notify.text = "🔬 Crafting %s... (%.0fs)" % [item, duration]
+	craft_notify.modulate = Color("#EF9F27")
+
+func _on_crafting_completed(item: String) -> void:
+	craft_notify.text = "✓ %s ready!" % item
+	craft_notify.modulate = Color("#3B9E7A")
+	# Auto clear setelah 3 detik
+	await get_tree().create_timer(3.0).timeout
+	craft_notify.text = ""
 
 func _on_grace_period_started() -> void:
 	# Flash peringatan

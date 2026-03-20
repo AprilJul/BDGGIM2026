@@ -172,6 +172,9 @@ modulate = Color(0.9098039, 0.34901962, 0.23529412, 1)
 layout_mode = 2
 horizontal_alignment = 1
 
+[node name="CraftNotify" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1398007182]
+layout_mode = 2
+
 [node name="NightOverlay" type="ColorRect" parent="." unique_id=249047684]
 anchors_preset = 15
 anchor_right = 1.0
