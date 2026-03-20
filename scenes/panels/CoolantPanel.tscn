@@ -24,18 +24,118 @@ position = Vector2(276, -49)
 texture = SubResource("PlaceholderTexture2D_a0afp")
 
 [node name="PanelUI" type="CanvasLayer" parent="." unique_id=802396717]
+unique_name_in_owner = true
 layer = 10
 
-[node name="Control" type="Control" parent="PanelUI" unique_id=554125197]
+[node name="PanelContainer" type="Control" parent="PanelUI" unique_id=554125197]
+unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Label" type="Label" parent="PanelUI/Control" unique_id=575070357]
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=83040346]
 layout_mode = 0
-offset_left = 211.0
-offset_top = 11.0
-offset_right = 342.0
-offset_bottom = 34.0
-text = "COOLANT PANEL"
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=1815157022]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=575070357]
+layout_mode = 2
+text = "💧 COOLANT CONTROL"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=828843364]
+layout_mode = 2
+
+[node name="StorageRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1315486360]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StorageRow" unique_id=79514701]
+layout_mode = 2
+text = "STORAGE"
+
+[node name="StorageBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StorageRow" unique_id=436625456]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+
+[node name="StorageLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StorageRow" unique_id=1560180710]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=602874037]
+layout_mode = 2
+
+[node name="ControlRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1914554059]
+layout_mode = 2
+
+[node name="BtnToggle" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ControlRow" unique_id=1309598991]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+
+[node name="StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ControlRow" unique_id=1756798797]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "OFFLINE"
+
+[node name="RPMRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1411600433]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RPMRow" unique_id=1817367563]
+layout_mode = 2
+text = "RPM"
+
+[node name="BtnLow" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RPMRow" unique_id=25306752]
+unique_name_in_owner = true
+layout_mode = 2
+text = "LOW"
+
+[node name="BtnMed" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RPMRow" unique_id=1572591784]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MED"
+
+[node name="BtnHigh" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/RPMRow" unique_id=730933868]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "HIGH"
+
+[node name="PumpRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1134726653]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/PumpRow" unique_id=1629443953]
+layout_mode = 2
+text = "PUMP"
+
+[node name="PumpStatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/PumpRow" unique_id=706506130]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NOMINAL"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1436708414]
+layout_mode = 2
+
+[node name="ECCSRefillRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1781502420]
+layout_mode = 2
+
+[node name="BtnRefillECCS" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRefillRow" unique_id=1262119886]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+text = "REFILL ECCS (+1 charge)"
+
+[node name="RefillCostLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ECCSRefillRow" unique_id=1748137396]
+unique_name_in_owner = true
+modulate = Color(0.288518, 0.28851798, 0.28851798, 1)
+layout_mode = 2
+text = "costs 30% coolant"
+
+[node name="WarningLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=280060032]
+unique_name_in_owner = true
+layout_mode = 2

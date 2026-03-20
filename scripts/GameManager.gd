@@ -47,7 +47,6 @@ var vent_cooldown: float = 0.0
 const VENT_COOLDOWN_TIME: float = 30.0   # detik cooldown
 const VENT_DROP_AMOUNT: float = 400.0    # PSI yang di-drop sekali vent
 const VENT_OFF_THRESHOLD: float = 200.0  # PSI — vent otomatis off di bawah ini
-var coolant_capacity: float = 100.0
 var cpu_temp: float = 20.0
 var input_delay: float = 0.0          # detik — Tweak 1
 
@@ -67,6 +66,30 @@ const EMERGENCY_VENT_DROP: float = 1200.0  # PSI drop instan
 var mcs_used_count: int = 0
 var mcs_active: bool = false
 var mcs_broken: bool = false          # butuh repair manual di Reactor Room
+
+# ============================================================
+# COOLANT SYSTEM
+# ============================================================
+var coolant_active: bool = false
+var coolant_storage: float = 500.0      # unit storage, bukan persen
+const COOLANT_STORAGE_MAX: float = 500.0
+
+# RPM: 0 = off, 1 = low, 2 = medium, 3 = high
+var coolant_rpm: int = 0
+
+# Placeholder values — bisa diatur saat balancing
+const COOLANT_EFFECT_LOW: float = 5.0      # °C/s
+const COOLANT_EFFECT_MED: float = 12.0     # °C/s
+const COOLANT_EFFECT_HIGH: float = 22.0    # °C/s
+
+const COOLANT_DRAIN_LOW: float = 2.0       # storage/s
+const COOLANT_DRAIN_MED: float = 5.0       # storage/s
+const COOLANT_DRAIN_HIGH: float = 10.0     # storage/s
+
+# Pump health
+var coolant_pump_hp: float = 100.0
+const PUMP_DAMAGE_CHANCE_HIGH: float = 0.002  # per detik saat high RPM
+var coolant_pump_broken: bool = false
 
 # ============================================================
 # RADIATION & ARMOR SYSTEM
@@ -105,6 +128,7 @@ signal mcs_state_changed(is_active: bool)
 signal night_warning
 signal grace_period_started
 signal control_room_breached(shield_level: float)
+signal coolant_pump_damaged
 
 # ============================================================
 # GAME LOOP
@@ -121,6 +145,7 @@ func _process(delta: float) -> void:
 	_update_emergency_vent(delta)    
 	_update_mcs(delta)
 	_update_cpu(delta)
+	_update_coolant(delta)
 	_update_control_room_shield(delta)
 	_update_armor(delta)
 	_check_win_lose()
@@ -239,10 +264,10 @@ func _update_control_room_shield(delta: float) -> void:
 	# Shield terkikis saat reaktor panas
 	if reactor_state >= 3:
 		# State critical/meltdown — shield terkikis lebih cepat
-		control_room_shield -= temp_ratio * 4.0 * delta
+		control_room_shield -= temp_ratio * 2.8 * delta
 	elif reactor_state == 2:
 		# State warning — terkikis pelan
-		control_room_shield -= temp_ratio * 1.5 * delta
+		control_room_shield -= temp_ratio * 1.0 * delta
 	else:
 		# Reaktor normal — shield recover pelan
 		control_room_shield = min(control_room_shield + 1.0 * delta, 100.0)
@@ -301,10 +326,13 @@ func _handle_no_armor(delta: float) -> void:
 	# Hitung mundur grace period
 	grace_timer -= delta
 	
-	if grace_timer <= 0.0:
-		# Grace period habis — HP berkurang
-		player_hp -= 5.0 * delta
-		player_hp = clamp(player_hp, 0.0, 100.0)
+	if grace_timer > 0.0:
+		grace_timer -= delta
+		grace_timer = max(grace_timer, 0.0)   # ← clamp ke 0
+		return   # ← selama masih ada grace, HP aman
+	
+	player_hp -= 15.0 * delta
+	player_hp = clamp(player_hp, 0.0, 100.0)
 
 func repair_armor() -> void:
 	armor_hp = 100.0
@@ -366,6 +394,76 @@ func _update_vent(delta: float) -> void:
 
 func set_room(room_name: String) -> void:
 	current_room = room_name
+
+# ============================================================
+# COOLANT ACTIONS
+# ============================================================
+func set_coolant_active(state: bool) -> void:
+	if coolant_pump_broken:
+		print("Pompa rusak!")
+		return
+	coolant_active = state
+	if not state:
+		coolant_rpm = 0
+
+func set_coolant_rpm(rpm: int) -> void:
+	if coolant_pump_broken:
+		return
+	coolant_rpm = clamp(rpm, 1, 3)
+
+func _update_coolant(delta: float) -> void:
+	if not coolant_active or coolant_pump_broken:
+		return
+	if coolant_storage <= 0.0:
+		coolant_active = false
+		coolant_rpm = 0
+		return
+
+	# Efek pendinginan ke reaktor
+	var cooling_effect: float = 0.0
+	var drain_rate: float = 0.0
+
+	match coolant_rpm:
+		1:  # Low
+			cooling_effect = COOLANT_EFFECT_LOW
+			drain_rate = COOLANT_DRAIN_LOW
+		2:  # Medium
+			cooling_effect = COOLANT_EFFECT_MED
+			drain_rate = COOLANT_DRAIN_MED
+		3:  # High
+			cooling_effect = COOLANT_EFFECT_HIGH
+			drain_rate = COOLANT_DRAIN_HIGH
+			# High RPM — random chance merusak pompa per detik
+			if randf() < PUMP_DAMAGE_CHANCE_HIGH * delta * 60.0:
+				_damage_coolant_pump()
+
+	reactor_temp -= cooling_effect * delta
+	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
+	coolant_storage -= drain_rate * delta
+	coolant_storage = clamp(coolant_storage, 0.0, COOLANT_STORAGE_MAX)
+
+func _damage_coolant_pump() -> void:
+	coolant_active = false
+	coolant_rpm = 0
+	coolant_pump_broken = true
+	emit_signal("coolant_pump_damaged")
+	print("COOLANT PUMP DAMAGED!")
+
+func repair_coolant_pump() -> void:
+	coolant_pump_broken = false
+	coolant_pump_hp = 100.0
+	print("Coolant pump repaired!")
+
+func refill_eccs_from_coolant() -> void:
+	if coolant_storage < 30.0:
+		print("Coolant tidak cukup!")
+		return
+	if eccs_charges >= 3:
+		print("ECCS sudah penuh!")
+		return
+	coolant_storage -= 30.0
+	eccs_charges = min(eccs_charges + 1, 3)
+	print("ECCS refilled! Charges: ", eccs_charges)
 
 # ============================================================
 # EMERGENCY SYSTEMS

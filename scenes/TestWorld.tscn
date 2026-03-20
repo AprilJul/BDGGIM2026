@@ -16,7 +16,7 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
 [node name="CoolantPanel" parent="." unique_id=1142271356 instance=ExtResource("2_o2kn8")]
-position = Vector2(-6, -11)
+position = Vector2(-300, -50)
 
 [node name="HUD" parent="." unique_id=399444015 instance=ExtResource("3_devkw")]
 
