@@ -69,6 +69,7 @@ func _ready() -> void:
 	GameManager.monitor_toggled.connect(_on_monitor_toggled)
 	GameManager.crafting_completed.connect(_on_crafting_completed)
 	GameManager.crafting_started.connect(_on_crafting_started)
+	GameManager.room_changed.connect(_on_room_changed)
 
 func _process(delta: float) -> void:
 	if GameManager.mcs_blackout_active:
@@ -120,6 +121,12 @@ func _update_player_hud() -> void:
 			if GameManager.input_delay > 1.5 else Color("#EF9F27")
 	else:
 		cpu_warning_label.text = ""
+
+func _on_room_changed(new_room: String) -> void:
+	_update_monitor_visibility()
+	
+	# Feedback ruangan di HUD sementara (bisa dihapus nanti)
+	print("HUD: player now in ", new_room)
 
 # ============================================================
 # REACTOR MONITOR UPDATE
@@ -304,8 +311,12 @@ func _on_mcs_damage(systems: Array) -> void:
 		damage_text += "• %s\n" % sys
 	blackout_label.text = damage_text
 	blackout_label.modulate = Color("#E8593C")
-	await get_tree().create_timer(5.0).timeout
-	blackout_label.text = ""
+	# Ganti await dengan timer yang tidak block
+	var timer = get_tree().create_timer(5.0)
+	timer.timeout.connect(func():
+		blackout_label.text = ""
+		blackout_overlay.color.a = 0.0
+	)
 
 func _on_mcs_state_changed(_is_active: bool) -> void:
 	pass

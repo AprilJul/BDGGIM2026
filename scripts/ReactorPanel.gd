@@ -215,12 +215,18 @@ func _update_startup_ui() -> void:
 	var is_starting = GameManager.startup_state == GameManager.StartupState.STARTING
 	var phase = GameManager.startup_phase
 	var state = GameManager.startup_state
+	var is_shutdown = GameManager.reactor_shutdown
+
+	# Tombol START — hanya visible kalau belum pernah running
+	# Tombol RESTART — hanya visible kalau post-MCS shutdown
+	btn_start_reactor.visible = not is_shutdown and not is_running
+	%BtnRestart.visible = is_shutdown and not is_running and not is_starting
 
 	# Tombol startup di-disable saat reactor sudah running
 	var reactor_running = GameManager.startup_state == GameManager.StartupState.RUNNING
-	btn_lights.disabled = reactor_running
-	btn_monitor.disabled = reactor_running or not GameManager.lights_on
-	btn_extractor_online.disabled = reactor_running
+	btn_lights.disabled = reactor_running or is_starting
+	btn_monitor.disabled = reactor_running or is_starting or not GameManager.lights_on
+	btn_extractor_online.disabled = reactor_running or is_starting
 	btn_start_reactor.disabled = reactor_running or \
 		not GameManager.lights_on or \
 		not GameManager.monitor_on or \
@@ -272,6 +278,7 @@ func _update_startup_ui() -> void:
 		not is_starting and \
 		not is_running
 	btn_start_reactor.disabled = not can_start
+	%BtnRestart.disabled = not can_start
 
 	# Status label — HANYA countdown yang di-update tiap frame
 	# Phase lain dihandle signal _on_startup_phase_changed

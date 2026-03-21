@@ -125,6 +125,12 @@ signal hazmat_toggled(equipped: bool)
 var extractor_durability: float = 100.0
 var coolant_pump_durability: float = 100.0
 
+var cpu_module_installed: bool = true   # false kalau module dicabut/rusak
+var cpu_broken: bool = false
+
+signal cpu_overheat_warning(temp: float, delay: float)
+signal cpu_module_replaced
+
 # ============================================================
 # LASER SYSTEM — 3 laser independen
 # ============================================================
@@ -182,8 +188,6 @@ signal mcs_triggered
 signal mcs_blackout_started
 signal mcs_blackout_ended
 signal mcs_stabilization_complete
-
-signal cpu_overheat_warning(temp: float, delay: float)
 
 # ============================================================
 # COOLANT SYSTEM
@@ -336,6 +340,9 @@ func _update_reactor(delta: float) -> void:
 	if reactor_shutdown:
 		reactor_temp = move_toward(reactor_temp, 20.0, 3.0 * delta)
 		reactor_pressure = move_toward(reactor_pressure, 100.0, 50.0 * delta)
+		return
+
+	if GameManager.mcs_stabilizing or GameManager.mcs_blackout_active:
 		return
 
 	var total_laser = get_total_laser_intensity()
@@ -506,6 +513,18 @@ func _update_cpu(delta: float) -> void:
 	if cpu_temp > 80.0 and input_delay > 0.5:
 		emit_signal("cpu_overheat_warning", cpu_temp, input_delay)
 
+func replace_cpu_module() -> void:
+	if inv_cpu_module <= 0:
+		print("Tidak ada CPU module!")
+		return
+	inv_cpu_module -= 1
+	cpu_temp = 20.0
+	input_delay = 0.0
+	cpu_broken = false
+	cpu_module_installed = true
+	emit_signal("cpu_module_replaced")
+	print("CPU module replaced!")
+
 func _update_armor(delta: float) -> void:
 	if not hazmat_equipped:
 		if current_room == "reactor_room":
@@ -631,28 +650,37 @@ func run_startup_check() -> void:
 func start_reactor() -> void:
 	if startup_state == StartupState.RUNNING:
 		return
+	if startup_state == StartupState.STARTING:
+		return
 	if not lights_on or not monitor_on:
 		print("Nyalain lampu dan monitor dulu!")
 		return
 	
-	# Post-MCS restart — monitor dan lights mungkin perlu dinyalain ulang
+	# Reset state untuk fresh startup
+	startup_check_done = false
+	startup_coolant_ok = false
+	startup_cpu_ok = false
+	startup_extractor_ok = false
+	startup_total_elapsed = 0.0
+	startup_phase = StartupPhase.IDLE
+	
+	# Kalau post-MCS restart — reactor sudah cold shutdown
 	if reactor_shutdown:
 		reactor_shutdown = false
 		mcs_active = false
-		# Reset suhu ke cold shutdown level
-		reactor_temp = 50.0
-		reactor_pressure = 200.0
+		mcs_stabilizing = false
+		# Suhu sudah rendah dari MCS, tidak perlu reset
 	
-	# Run check
+	# Run check dulu
 	run_startup_check()
 	
 	# Mulai sequence
-	startup_total_elapsed = 0.0 
 	startup_state = StartupState.STARTING
 	startup_phase = StartupPhase.SYSTEM_ONLINE
 	startup_phase_timer = PHASE_DURATIONS[StartupPhase.SYSTEM_ONLINE]
 	emit_signal("startup_state_changed", startup_state)
 	emit_signal("startup_phase_changed", startup_phase, false)
+	print("Startup sequence initiated")
 
 func _update_startup(delta: float) -> void:
 	if startup_state != StartupState.STARTING:
@@ -803,11 +831,14 @@ func _update_vent(delta: float) -> void:
 	reactor_pressure -= total_effect * delta
 	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
 
-# Sementara untuk test — set manual di inspector atau via print
-# Nanti akan diupdate otomatis saat world layout selesai
+signal room_changed(new_room: String)
+
 func set_room(room: String) -> void:
+	if current_room == room:
+		return   # tidak perlu update kalau sama
 	current_room = room
-	print("Player entered: ", room)
+	emit_signal("room_changed", room)
+	print("Current room: ", room)
 
 func toggle_hazmat() -> void:
 	hazmat_equipped = not hazmat_equipped
@@ -1038,20 +1069,30 @@ func use_emergency_vent() -> void:
 	print("Emergency Vent activated — venting for %.0fs" % EMERGENCY_VENT_DURATION)
 
 func _check_mcs_trigger() -> void:
-	# Auto trigger saat meltdown imminent (state 4)
-	if reactor_state == 4 and not mcs_active and not mcs_blackout_active:
+	# Jangan trigger kalau MCS sedang berjalan atau baru selesai
+	if mcs_active or mcs_blackout_active or mcs_stabilizing or reactor_shutdown:
+		return
+	# Jangan trigger saat startup sequence
+	if startup_state != StartupState.RUNNING:
+		return
+	if reactor_state == 4:
 		_trigger_mcs()
 
 func _trigger_mcs() -> void:
 	mcs_active = true
 	mcs_used_count += 1
 	
-	# Matikan semua sistem
+	# Matikan SEMUA sistem
+	for i in range(LASER_COUNT):
+		laser_intensities[i] = 0.0
 	extraction_level = 0.0
 	extractor_broken = true
 	coolant_active = false
+	for i in range(VENT_COUNT):
+		vent_states[i] = false
+	eccs_active = false
+	emergency_vent_active = false
 	
-	# Mulai blackout
 	mcs_blackout_active = true
 	mcs_blackout_timer = MCS_BLACKOUT_DURATION
 	is_in_panel_mode = false
@@ -1067,11 +1108,14 @@ func _update_mcs(delta: float) -> void:
 		mcs_blackout_timer -= delta
 		mcs_blackout_timer = clamp(mcs_blackout_timer, 0.0, MCS_BLACKOUT_DURATION)
 		
+		# Saat blackout, suhu mulai turun paksa
+		reactor_temp = move_toward(reactor_temp, 100.0, 30.0 * delta)
+		reactor_pressure = move_toward(reactor_pressure, 500.0, 300.0 * delta)
+		
 		if mcs_blackout_timer <= 0.0:
 			mcs_blackout_active = false
 			mcs_stabilizing = true
 			emit_signal("mcs_blackout_ended")
-			print("Blackout ended — stabilizing...")
 		return
 	
 	# Stabilisasi phase
@@ -1087,20 +1131,42 @@ func _update_mcs(delta: float) -> void:
 			mcs_active = false
 			reactor_shutdown = true
 			_apply_mcs_damage()
-			_on_mcs_complete_internal()    # ← tambah ini
+			_on_mcs_complete_internal()
 			emit_signal("mcs_state_changed", false)
 			emit_signal("mcs_stabilization_complete")
+			print("MCS complete — cold shutdown")
 
 func _on_mcs_complete_internal() -> void:
-	# Setelah stabilisasi selesai — reset monitor dan lights
-	# Player harus nyalain ulang manual
 	monitor_on = false
 	lights_on = false
 	startup_state = StartupState.OFFLINE
+	startup_phase = StartupPhase.IDLE
 	startup_check_done = false
+	startup_total_elapsed = 0.0
+	
+	# Reset stress
+	extraction_stress = 0.0
+	for i in range(LASER_COUNT):
+		laser_stresses[i] = 0.0
+	
+	# Matikan semua sistem
+	coolant_active = false
+	coolant_rpm = 0
+	for i in range(VENT_COUNT):
+		vent_states[i] = false
+	for i in range(LASER_COUNT):
+		laser_intensities[i] = 0.0
+	extraction_level = 0.0
+	
+	# Reset MCS flags — PENTING agar tidak re-trigger
+	mcs_active = false
+	mcs_blackout_active = false
+	mcs_stabilizing = false
+	
 	emit_signal("lights_toggled", false)
 	emit_signal("monitor_toggled", false)
 	emit_signal("startup_state_changed", startup_state)
+	print("Control room offline — manual reboot required")
 
 func _apply_mcs_damage() -> void:
 	var damaged_systems = []
