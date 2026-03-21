@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dreo3kin3nm30"]
+
+[ext_resource type="Script" uid="uid://bpskwub7u106f" path="res://scripts/RoomTrigger.gd" id="1_k40lp"]
+
+[node name="RoomTrigger" type="Area2D" unique_id=282290012]
+script = ExtResource("1_k40lp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=625156019]

@@ -1,26 +1,73 @@
-[gd_scene format=3 uid="uid://v03tvq0xa4df"]
+[gd_scene load_steps=14 format=3 uid="uid://v03tvq0xa4df"]
 
 [ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="1_ptb5a"]
-[ext_resource type="PackedScene" uid="uid://csk1jphbeol58" path="res://scenes/panels/CoolantPanel.tscn" id="2_o2kn8"]
+[ext_resource type="PackedScene" uid="uid://csk1jphbeol58" path="res://scenes/panels/CoolingVentPanel.tscn" id="2_o2kn8"]
 [ext_resource type="PackedScene" uid="uid://b4kqmg7nkvsux" path="res://scenes/ui/HUD.tscn" id="3_devkw"]
 [ext_resource type="PackedScene" uid="uid://b8atvjfo4ack" path="res://scenes/panels/ReactorPanel.tscn" id="4_0j05m"]
 [ext_resource type="PackedScene" uid="uid://bd84tl8f210xe" path="res://scenes/panels/EmergencyPanel.tscn" id="5_yv73f"]
+[ext_resource type="PackedScene" uid="uid://d3xxsc7v7qed4" path="res://scenes/panels/LabPanel.tscn" id="6_o15s1"]
+[ext_resource type="PackedScene" uid="uid://dosgn2tq0veo8" path="res://scenes/panels/ArmoryPanel.tscn" id="7_wej8e"]
+[ext_resource type="PackedScene" uid="uid://d1rtim5vciqri" path="res://scenes/panels/LaserPanel.tscn" id="8_mxtr1"]
+[ext_resource type="PackedScene" uid="uid://lfk6ubhil6g6" path="res://scenes/panels/CPUPanel.tscn" id="9_a2f0d"]
+[ext_resource type="PackedScene" uid="uid://dreo3kin3nm30" path="res://scenes/panels/RoomTrigger.tscn" id="10_2puco"]
 
-[node name="TestWorld" type="Node2D" unique_id=1142662351]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_21yxg"]
+size = Vector2(400, 300)
 
-[node name="Player" parent="." unique_id=516679446 groups=["player"] instance=ExtResource("1_ptb5a")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_82ue1"]
+size = Vector2(400, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1kh8g"]
+size = Vector2(400, 300)
+
+[node name="TestWorld" type="Node2D"]
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("1_ptb5a")]
 position = Vector2(2, 21)
 
-[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1640430237 groups=["player_camera"]]
+[node name="Camera2D" type="Camera2D" parent="Player" groups=["player_camera"]]
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
-[node name="CoolantPanel" parent="." unique_id=1142271356 instance=ExtResource("2_o2kn8")]
-position = Vector2(-6, -11)
+[node name="CoolingVentPanel" parent="." instance=ExtResource("2_o2kn8")]
+position = Vector2(-300, -200)
 
-[node name="HUD" parent="." unique_id=399444015 instance=ExtResource("3_devkw")]
+[node name="HUD" parent="." instance=ExtResource("3_devkw")]
 
-[node name="ReactorPanel" parent="." unique_id=448180539 instance=ExtResource("4_0j05m")]
-position = Vector2(3, 1)
+[node name="ReactorPanel" parent="." instance=ExtResource("4_0j05m")]
+position = Vector2(-66, 58)
 
-[node name="EmergencyPanel" parent="." unique_id=294257623 instance=ExtResource("5_yv73f")]
+[node name="EmergencyPanel" parent="." instance=ExtResource("5_yv73f")]
+position = Vector2(-138, 47)
+
+[node name="LabPanel" parent="." instance=ExtResource("6_o15s1")]
+position = Vector2(202, -181)
+
+[node name="ArmoryPanel" parent="." instance=ExtResource("7_wej8e")]
+position = Vector2(-450, 423)
+
+[node name="LaserPanel" parent="." instance=ExtResource("8_mxtr1")]
+position = Vector2(-382, -337)
+
+[node name="CPUPanel" parent="." instance=ExtResource("9_a2f0d")]
+position = Vector2(664, -71)
+
+[node name="ControlRoomTrigger" parent="." instance=ExtResource("10_2puco")]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ControlRoomTrigger"]
+position = Vector2(79, 379)
+shape = SubResource("RectangleShape2D_21yxg")
+
+[node name="ReactorRoomTrigger" parent="." instance=ExtResource("10_2puco")]
+room_name = "reactor_room"
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ReactorRoomTrigger"]
+position = Vector2(420, -351)
+shape = SubResource("RectangleShape2D_82ue1")
+
+[node name="CPURoomTrigger" parent="." instance=ExtResource("10_2puco")]
+room_name = "cpu_room"
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CPURoomTrigger"]
+position = Vector2(826, 29)
+shape = SubResource("RectangleShape2D_1kh8g")

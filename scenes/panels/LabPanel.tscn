@@ -1,0 +1,166 @@
+[gd_scene format=3 uid="uid://d3xxsc7v7qed4"]
+
+[ext_resource type="Script" uid="uid://d3135nx20kx42" path="res://scripts/LabPanel.gd" id="1_56v2j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gqtm8"]
+size = Vector2(357, 362)
+
+[node name="LabPanel" type="Node2D" unique_id=1319787272]
+script = ExtResource("1_56v2j")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1791670266]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=245605288]
+position = Vector2(168.5, 171)
+shape = SubResource("RectangleShape2D_gqtm8")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2008828541]
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=503875566]
+unique_name_in_owner = true
+
+[node name="PanelContainer" type="Control" parent="PanelUI" unique_id=901472678]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 380)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=1592737901]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=1205551508]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=508646042]
+layout_mode = 2
+text = "🔬 LAB"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2125400405]
+layout_mode = 2
+
+[node name="CraftingProgress" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=494355391]
+layout_mode = 2
+
+[node name="CraftingLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CraftingProgress" unique_id=458510384]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CRAFTING: —"
+
+[node name="CraftingBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CraftingProgress" unique_id=1304668110]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 18)
+layout_mode = 2
+max_value = 1.0
+
+[node name="BtnCancel" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CraftingProgress" unique_id=1483553980]
+unique_name_in_owner = true
+modulate = Color(0.94180983, 0, 0.19163439, 1)
+layout_mode = 2
+text = "CANCEL"
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1591791647]
+layout_mode = 2
+
+[node name="ItemGrid" type="GridContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=207681848]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="ItemExtractor" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=2039319735]
+layout_mode = 2
+
+[node name="ExtractorLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemExtractor" unique_id=733028278]
+layout_mode = 2
+text = "EXTRACTOR PART"
+
+[node name="ExtractorStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemExtractor" unique_id=731656800]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftExtractor" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemExtractor" unique_id=1314715561]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 15s"
+
+[node name="ItemMCS" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=1008696671]
+layout_mode = 2
+
+[node name="MCSLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemMCS" unique_id=1134628330]
+layout_mode = 2
+text = "MCS MODULE"
+
+[node name="MCSStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemMCS" unique_id=1958030907]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftMCS" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemMCS" unique_id=717236925]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 25s"
+
+[node name="ItemCoolant" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=1524235800]
+layout_mode = 2
+
+[node name="CoolantLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCoolant" unique_id=205696994]
+layout_mode = 2
+text = "COOLANT KIT"
+
+[node name="CoolantStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCoolant" unique_id=1045408915]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftCoolant" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCoolant" unique_id=496766194]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 10s"
+
+[node name="ItemCPU" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=1283939260]
+layout_mode = 2
+
+[node name="CPULabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCPU" unique_id=2060651268]
+layout_mode = 2
+text = "CPU MODULE"
+
+[node name="CPUStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCPU" unique_id=1391758760]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftCPU" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemCPU" unique_id=877062831]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 20s"
+
+[node name="ItemArmor" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid" unique_id=433168582]
+layout_mode = 2
+
+[node name="ArmorLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1970511503]
+layout_mode = 2
+text = "ARMOR PATCH"
+
+[node name="ArmorStock" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1695488592]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stock: 0"
+
+[node name="BtnCraftArmor" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/ItemGrid/ItemArmor" unique_id=1149043160]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+text = "CRAFT 12s"
+
+[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=35067121]
+layout_mode = 2

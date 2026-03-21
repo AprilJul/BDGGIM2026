@@ -1,9 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://2paq77xqijv4"]
+[gd_scene load_steps=21 format=3 uid="uid://2paq77xqijv4"]
 
-[ext_resource type="Script" path="res://dialogue/balloon.gd" id="1_36de5"]
+[ext_resource type="Script" uid="uid://d1bpuqi27kiek" path="res://dialogue/balloon.gd" id="1_36de5"]
+[ext_resource type="Texture2D" uid="uid://b66e8y2q34sjg" path="res://art/Character/dialogue_character/admin_normal.PNG" id="2_3fodd"]
 [ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_a8ve6"]
-[ext_resource type="Texture2D" path="res://art/Character/character_dialogue_placeholder.png" id="3_3fodd"]
+[ext_resource type="Texture2D" uid="uid://ygotdsbq1rpo" path="res://art/Character/dialogue_character/admin_confused.PNG" id="2_w8vuf"]
+[ext_resource type="Texture2D" uid="uid://cyonex6jdnmuj" path="res://art/Character/dialogue_character/dialogue_box.PNG" id="3_0hx7h"]
 [ext_resource type="Script" uid="uid://bb52rsfwhkxbn" path="res://addons/dialogue_manager/dialogue_responses_menu.gd" id="3_72ixx"]
+[ext_resource type="Texture2D" uid="uid://xwga31aapvxb" path="res://art/Character/dialogue_character/admin_hype.PNG" id="3_267us"]
+[ext_resource type="Texture2D" uid="uid://cyduvup24grfj" path="res://art/Character/dialogue_character/admin_exhausted.PNG" id="3_af48w"]
+[ext_resource type="Texture2D" uid="uid://jkjk15ddatny" path="res://art/Character/dialogue_character/admin_warm.PNG" id="6_4kiea"]
+[ext_resource type="Texture2D" uid="uid://oe8uf87n1aat" path="res://art/Character/dialogue_character/dialogue_arrow.PNG" id="9_4kiea"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
 bg_color = Color(0, 0, 0, 1)
@@ -64,18 +70,65 @@ MarginContainer/constants/margin_right = 30
 MarginContainer/constants/margin_top = 15
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_qkmqt")
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_0hx7h"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_w8vuf")
+}],
+"loop": true,
+"name": &"confused",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_3fodd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_af48w")
+}],
+"loop": true,
+"name": &"exhausted",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_267us")
+}],
+"loop": true,
+"name": &"hype",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_4kiea")
+}],
+"loop": true,
+"name": &"warm",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_267us"]
+texture = ExtResource("3_0hx7h")
+
 [sub_resource type="Animation" id="Animation_nlsx6"]
-length = 0.001
-tracks/0/type = "bezier"
+length = 0.16667001
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Progress:position:y")
+tracks/0/path = NodePath("Progress:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0, 0.06666667, 0.16666667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-96, -51), Vector2(-71.385, -51), Vector2(-96, -51)]
 }
 
 [sub_resource type="Animation" id="Animation_qkmqt"]
@@ -114,6 +167,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_qq3yp")
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Balloon"]
+position = Vector2(196, 438.00003)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_0hx7h")
+animation = &"confused"
+
 [node name="MarginContainer" type="MarginContainer" parent="Balloon"]
 layout_mode = 1
 anchors_preset = 12
@@ -121,6 +180,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -219.0
+offset_bottom = -0.0017089844
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -128,17 +188,16 @@ grow_vertical = 0
 clip_children = 2
 layout_mode = 2
 mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_267us")
 
 [node name="MarginContainer" type="MarginContainer" parent="Balloon/MarginContainer/PanelContainer"]
 layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Balloon/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="character_img_place_separator" type="TextureRect" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -161,27 +220,30 @@ size_flags_vertical = 3
 text = "Dialogue..."
 
 [node name="Control" type="Control" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(20, 10)
+custom_minimum_size = Vector2(78, 39)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="Progress" type="Polygon2D" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control"]
-unique_name_in_owner = true
-polygon = PackedVector2Array(0, 0, 10, 10, 20, 0)
+[node name="Progress" type="TextureRect" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -4.75
+anchor_top = -5.775
+anchor_right = -1.5000001
+anchor_bottom = -1.422
+offset_left = 274.5
+offset_top = 174.225
+offset_right = 93.0
+offset_bottom = 40.458
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_4kiea")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control"]
 libraries = {
 &"": SubResource("AnimationLibrary_1337t")
 }
 autoplay = "progress"
-
-[node name="TextureRect" type="TextureRect" parent="Balloon"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 317.845
-offset_right = 231.0
-offset_bottom = 625.84375
-texture = ExtResource("3_3fodd")
 
 [node name="ResponsesMenu" type="VBoxContainer" parent="Balloon" node_paths=PackedStringArray("response_template")]
 unique_name_in_owner = true

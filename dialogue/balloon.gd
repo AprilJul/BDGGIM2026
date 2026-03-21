@@ -68,7 +68,7 @@ var mutation_cooldown: Timer = Timer.new()
 @onready var responses_menu: DialogueResponsesMenu = %ResponsesMenu
 
 ## Indicator to show that player can progress dialogue.
-@onready var progress: Polygon2D = %Progress
+@onready var progress: TextureRect = $Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control/Progress
 
 
 func _ready() -> void:
@@ -138,7 +138,7 @@ func apply_dialogue_line() -> void:
 
 	responses_menu.hide()
 	responses_menu.responses = dialogue_line.responses
-
+	
 	# Show our balloon
 	balloon.show()
 	will_hide_balloon = false
@@ -165,7 +165,22 @@ func apply_dialogue_line() -> void:
 		is_waiting_for_input = true
 		balloon.focus_mode = Control.FOCUS_ALL
 		balloon.grab_focus()
+		
+	# =========================
+	# EXPRESSION CONTROL
+	# =========================
+	var anim = $Balloon/AnimatedSprite2D
+	var found_expression = false
 
+	for tag in dialogue_line.tags:
+		if anim.sprite_frames.has_animation(tag):
+			anim.play(tag)
+			found_expression = true
+			break
+	
+	if not found_expression:
+		anim.play("default")
+	# -----------------------------
 
 ## Go to the next line
 func next(next_id: String) -> void:

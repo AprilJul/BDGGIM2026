@@ -1,7 +1,7 @@
 ~ start
-Admin: Hi There!!
-Admin: Welcome to the game!
-Admin: Do you want me to introduce it to you?
+Admin: Hi There!! [#hype]
+Admin: Welcome to the game! [#warm]
+Admin: Do you want me to introduce it to you? [#confused]
 - Yes
 	Admin: Alright, for the movement it's simple.
 	Admin: Use WASD keys to move around !!
@@ -16,4 +16,9 @@ Admin: Do you want me to introduce it to you?
 ~ after_movement
 Admin: Great job! You've got the hang of it.
 Admin: Now you're ready to explore.
+
+
+~ exhausted 
+[#exhausted] 
+Admin: You've touch exhausted aura [#exhausted] 
 => END

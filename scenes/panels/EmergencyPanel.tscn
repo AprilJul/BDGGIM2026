@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://bd84tl8f210xe"]
+[gd_scene format=3 uid="uid://bd84tl8f210xe"]
 
 [ext_resource type="Script" uid="uid://cyfkvu2g2f2nr" path="res://scripts/EmergencyPanel.gd" id="1_ul0dy"]
 
@@ -93,24 +93,3 @@ text = "EMERGENCY VENT"
 [node name="EVentCooldownLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/EVentRow" unique_id=1288210960]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="HSeparator3" type="HSeparator" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2132114436]
-layout_mode = 2
-
-[node name="MCSRow" type="VBoxContainer" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=140000293]
-layout_mode = 2
-
-[node name="BtnMCS" type="Button" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=1701974048]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 40)
-layout_mode = 2
-text = "MCS — INITIATE SHUTDOWN"
-
-[node name="MCSStatusLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=17202407]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="MCSWarningLabel" type="Label" parent="Area2D/PanelUI/PanelContainer/MarginContainer/VBoxContainer/MCSRow" unique_id=286452278]
-unique_name_in_owner = true
-layout_mode = 2
-text = "WARNING: 2nd use has 50% failure rate"
