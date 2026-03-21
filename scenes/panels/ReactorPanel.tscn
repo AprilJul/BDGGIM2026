@@ -5,9 +5,6 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p83e4"]
 size = Vector2(436, 368)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p83e4"]
-bg_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ns18e"]
 bg_color = Color(0.9098039, 0.34901962, 0.23529412, 1)
 
@@ -51,6 +48,90 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 theme_override_constants/separation = 12
 
+[node name="StartupSection" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=24990559]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StartupTitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1310184221]
+layout_mode = 2
+text = "⚡ REACTOR STARTUP"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=551416352]
+layout_mode = 2
+
+[node name="LightsRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=516638342]
+layout_mode = 2
+
+[node name="BtnLights" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/LightsRow" unique_id=1402936365]
+unique_name_in_owner = true
+layout_mode = 2
+text = "LIGHTS OFF"
+
+[node name="LightsStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/LightsRow" unique_id=890202580]
+unique_name_in_owner = true
+layout_mode = 2
+text = "○ OFFLINE"
+
+[node name="MonitorRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1358387173]
+layout_mode = 2
+
+[node name="BtnMonitor" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/MonitorRow" unique_id=1088188324]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MONITOR OFF"
+
+[node name="MonitorStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/MonitorRow" unique_id=1716195636]
+unique_name_in_owner = true
+layout_mode = 2
+text = "○ OFFLINE"
+
+[node name="ExtractorRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1099803505]
+layout_mode = 2
+
+[node name="BtnExtractorOnline" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/ExtractorRow" unique_id=157762397]
+unique_name_in_owner = true
+layout_mode = 2
+text = "EXTRACTOR OFFLINE"
+
+[node name="ExtractorOnlineStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/ExtractorRow" unique_id=255108759]
+unique_name_in_owner = true
+layout_mode = 2
+text = "○ OFFLINE"
+
+[node name="CheckRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1355133436]
+layout_mode = 2
+
+[node name="CheckCoolant" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/CheckRow" unique_id=1314365228]
+unique_name_in_owner = true
+layout_mode = 2
+text = "COOLANT: —"
+
+[node name="CheckCPU" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/CheckRow" unique_id=323568288]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CPU: —"
+
+[node name="CheckExtractor" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection/CheckRow" unique_id=1519878672]
+unique_name_in_owner = true
+layout_mode = 2
+text = "▶ START REACTOR"
+
+[node name="BtnStartReactor" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1815344577]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StartupStatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=1213566891]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StartupProgressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StartupSection" unique_id=232337137]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(280, 10)
+layout_mode = 2
+max_value = 1.0
+show_percentage = false
+
 [node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=546387968]
 layout_mode = 2
 text = "☢ REACTOR CONTROL"
@@ -58,45 +139,6 @@ horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1863669896]
 layout_mode = 2
-
-[node name="LaserRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2095030058]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 10
-
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=1427366986]
-layout_mode = 2
-text = "LASER"
-
-[node name="LaserBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=564400592]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 18)
-layout_mode = 2
-
-[node name="BtnLaserDown" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=241585782]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-text = "-"
-
-[node name="BtnLaserUp" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserRow" unique_id=781682276]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-text = "+"
-
-[node name="LaserStressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=553961640]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserStressRow" unique_id=1321923373]
-layout_mode = 2
-text = "L. STRESS"
-
-[node name="LaserStressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/LaserStressRow" unique_id=1526899609]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 14)
-layout_mode = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_p83e4")
 
 [node name="ExtractRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1179596730]
 layout_mode = 2
@@ -141,19 +183,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_ns18e")
 
 [node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1687302338]
 layout_mode = 2
-
-[node name="BottomRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2133963931]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 10
-
-[node name="BtnVent" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/BottomRow" unique_id=603329158]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 40)
-layout_mode = 2
-toggle_mode = true
-text = "VENT
-"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=493115068]
 layout_mode = 2

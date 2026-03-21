@@ -1,11 +1,79 @@
 extends Node
 
 # ============================================================
+# STARTUP SYSTEM
+# ============================================================
+enum StartupState {
+	OFFLINE,        # reactor mati total
+	PRE_STARTUP,    # player sedang persiapan
+	STARTING,       # reactor sedang startup (animasi 5 detik)
+	RUNNING,        # reactor berjalan normal
+	SHUTDOWN        # post-MCS shutdown
+}
+
+enum StartupPhase {
+	IDLE,
+	SYSTEM_ONLINE,
+	INITIATING,
+	CHECK_COOLANT,
+	CHECK_LASER,
+	CHECK_EXTRACTOR,
+	CONNECTING,
+	WARNING_EVACUATE,
+	ENGAGING,
+	COUNTDOWN,
+	GLITCH,
+	COMPLETE
+}
+
+const PHASE_DURATIONS = {
+	StartupPhase.SYSTEM_ONLINE:      2.0,
+	StartupPhase.INITIATING:         2.0,
+	StartupPhase.CHECK_COOLANT:      4.0,
+	StartupPhase.CHECK_LASER:        4.0,
+	StartupPhase.CHECK_EXTRACTOR:    2.0,
+	StartupPhase.CONNECTING:         3.0,
+	StartupPhase.WARNING_EVACUATE:   3.0,
+	StartupPhase.ENGAGING:           2.0,
+	StartupPhase.COUNTDOWN:          5.0,
+	StartupPhase.GLITCH:             1.0,
+	StartupPhase.COMPLETE:           0.0
+}
+
+var startup_total_elapsed: float = 0.0
+const STARTUP_TOTAL_DURATION: float = 28.0  # total semua phase
+var startup_state: StartupState = StartupState.OFFLINE
+var startup_phase: StartupPhase = StartupPhase.IDLE
+var startup_phase_timer: float = 0.0
+var lights_on: bool = false
+var monitor_on: bool = false
+var extractor_online: bool = false  # berbeda dari extractor_broken
+var startup_check_done: bool = false
+var startup_check_step: int = 0      # 0, 1, 2, 3 (0=belum, 1-3=step check)
+var startup_check_step_timer: float = 0.0
+const STARTUP_CHECK_STEP_DELAY: float = 1.0   # delay antar check
+
+# Startup check results
+var startup_coolant_ok: bool = false
+var startup_cpu_ok: bool = false
+var startup_extractor_ok: bool = false
+
+# Startup animation timer
+var startup_timer: float = 0.0
+const STARTUP_DURATION: float = 5.0
+
+signal startup_state_changed(new_state: StartupState)
+signal startup_phase_changed(phase: StartupPhase, has_warning: bool)
+signal startup_check_step_updated(is_laser: bool, step: int)
+signal startup_check_result(coolant_ok: bool, cpu_ok: bool, extractor_ok: bool)
+signal lights_toggled(is_on: bool)
+signal monitor_toggled(is_on: bool)
+
+# ============================================================
 # REACTOR VARIABLES — unit realistis
 # ============================================================
-var reactor_temp: float = 180.0       # Celcius, range 0–350°C
-var reactor_pressure: float = 800.0   # PSI, range 0–2200 PSI
-var laser_intensity: float = 0.0      # 0–100% (kontrol internal)
+var reactor_temp: float = 20.0        # dingin saat mati
+var reactor_pressure: float = 100.0   # pressure rendah
 
 # Batas bahaya
 const TEMP_MAX: float = 350.0
@@ -23,12 +91,10 @@ const PRESSURE_WARNING: float = 1760.0  # 80% dari 2200
 # ============================================================
 # ELECTRICITY — unit MW/h
 # ============================================================
-var electricity_output: float = 0.0   # MW/h output saat ini
-var electricity_quota: float = 0.0    # MW/h terkumpul (target 1000)
-var extraction_level: float = 0.0     # 0–100% kontrol
-var extraction_stress: float = 0.0    # 0–100%
-var laser_stress: float = 0.0        # 0–100%, laser overheat
-var laser_broken: bool = false
+var electricity_output: float = 0.0
+var electricity_quota: float = 0.0
+var extraction_level: float = 0.0
+var extraction_stress: float = 0.0
 
 const ELECTRICITY_TARGET: float = 1000.0
 
@@ -56,30 +122,68 @@ signal hazmat_toggled(equipped: bool)
 # ============================================================
 # SYSTEMS
 # ============================================================
-var vent_active: bool = false
-var vent_cooldown: float = 0.0
-const VENT_COOLDOWN_TIME: float = 30.0   # detik cooldown
-const VENT_DROP_AMOUNT: float = 400.0    # PSI yang di-drop sekali vent
-const VENT_OFF_THRESHOLD: float = 200.0  # PSI — vent otomatis off di bawah ini
+var extractor_durability: float = 100.0
+var coolant_pump_durability: float = 100.0
+
+# ============================================================
+# LASER SYSTEM — 3 laser independen
+# ============================================================
+var laser_intensities: Array = [0.0, 0.0, 0.0]   # intensitas tiap laser 0-100%
+var laser_stresses: Array = [0.0, 0.0, 0.0]       # stress tiap laser 0-100%
+var laser_broken_states: Array = [false, false, false]  # status rusak tiap laser
+var laser_durabilities: Array = [100.0, 100.0, 100.0]  # durability tiap laser
+
+const LASER_COUNT: int = 3
+
+# ============================================================
+# VENTILATION SYSTEM — 4 vent independen
+# ============================================================
+var vent_states: Array = [false, false, false, false]  # vent 1-4
+const VENT_COUNT: int = 4
+
+# Efektivitas vent berbanding terbalik dengan pressure
+# Di bawah 1000 PSI → bisa nurunin pressure
+# Di atas 1800 PSI → hanya memperlambat kenaikan
+const VENT_EFFECTIVE_THRESHOLD: float = 1000.0
+const VENT_INEFFECTIVE_THRESHOLD: float = 1800.0
+const VENT_BASE_REDUCTION: float = 8.0    # PSI/s per vent aktif
+const VENT_PRESSURE_CONTRIBUTION: float = 15.0  # PSI/s dari laser ke pressure
+
 var cpu_temp: float = 20.0
 var input_delay: float = 0.0          # detik — Tweak 1
 
 # ECCS
 var eccs_charges: int = 3
-var eccs_cooling: bool = false        # sedang aktif mendinginkan
+var eccs_active: bool = false         # sedang mendinginkan
 var eccs_cooldown: float = 0.0
-const ECCS_TEMP_DROP: float = 80.0   # °C yang di-drop
+const ECCS_COOLING_RATE: float = 20.0  # °C/s saat aktif
+const ECCS_COOLING_DURATION: float = 6.0  # detik aktif mendinginkan
+var eccs_cooling_timer: float = 0.0
 const ECCS_COOLDOWN_TIME: float = 20.0
 
 # Emergency Vent
+var emergency_vent_active: bool = false
 var emergency_vent_cooldown: float = 0.0
 const EMERGENCY_VENT_COOLDOWN: float = 120.0
-const EMERGENCY_VENT_DROP: float = 1200.0  # PSI drop instan
+const EMERGENCY_VENT_RATE: float = 300.0   # PSI/s saat aktif
+const EMERGENCY_VENT_DURATION: float = 6.0  # detik aktif
+var emergency_vent_timer: float = 0.0
 
-# MCS
-var mcs_used_count: int = 0
+# MCS — fully automatic
 var mcs_active: bool = false
-var mcs_broken: bool = false          # butuh repair manual di Reactor Room
+var mcs_broken: bool = false
+var mcs_used_count: int = 0
+var mcs_blackout_timer: float = 0.0
+const MCS_BLACKOUT_DURATION: float = 10.0
+var mcs_blackout_active: bool = false
+var mcs_stabilizing: bool = false    # fase stabilisasi setelah blackout
+
+signal mcs_triggered
+signal mcs_blackout_started
+signal mcs_blackout_ended
+signal mcs_stabilization_complete
+
+signal cpu_overheat_warning(temp: float, delay: float)
 
 # ============================================================
 # COOLANT SYSTEM
@@ -154,11 +258,17 @@ var _night_warning_sent: bool = false
 # ============================================================
 # STATE
 # ============================================================
-var reactor_state: int = 1            # -1, 0, 1, 2, 3, 4
+var reactor_state: int = 0            # -1, 0, 1, 2, 3, 4
 var game_over: bool = false
 var extractor_broken: bool = false
 var is_in_panel_mode: bool = false
-var reactor_shutdown: bool = false 
+var reactor_shutdown: bool = false
+var stat_time_survived: float = 0.0
+var stat_max_temp: float = 0.0
+var stat_max_pressure: float = 0.0
+var stat_eccs_used: int = 0
+var stat_mcs_used: int = 0
+var stat_night_survived: int = 0 
 
 # Sinyal untuk memberi tahu UI
 signal reactor_state_changed(new_state: int)
@@ -178,12 +288,26 @@ func _process(delta: float) -> void:
 		return
 
 	time_elapsed += delta
+	stat_time_survived = time_elapsed
+	if reactor_temp > stat_max_temp:
+		stat_max_temp = reactor_temp
+	if reactor_pressure > stat_max_pressure:
+		stat_max_pressure = reactor_pressure
+
+	_update_startup(delta)    # selalu jalan
+
+	# Semua sistem reaktor hanya jalan saat RUNNING
+	if startup_state != StartupState.RUNNING:
+		return
+
+	time_elapsed += delta
 	_update_day_night_cycle()
 	_update_reactor(delta)
 	_update_vent(delta)
 	_update_eccs(delta)    
 	_update_emergency_vent(delta)    
 	_update_mcs(delta)
+	_check_mcs_trigger()
 	_update_cpu(delta)
 	_update_coolant(delta)
 	_update_crafting(delta)
@@ -209,58 +333,47 @@ func _update_day_night_cycle() -> void:
 		emit_signal("night_toggled", is_night)
 
 func _update_reactor(delta: float) -> void:
-		# Kalau shutdown, reaktor dingin sendiri perlahan, tidak ada proses
 	if reactor_shutdown:
 		reactor_temp = move_toward(reactor_temp, 20.0, 3.0 * delta)
 		reactor_pressure = move_toward(reactor_pressure, 100.0, 50.0 * delta)
-		return   # skip semua kalkulasi normal
+		return
 
-	# Malam: ambient jadi pemanas, bukan pendingin
+	var total_laser = get_total_laser_intensity()
 	var ambient_modifier: float = -1.5 if not is_night else 10.0
 
-	# Laser menaikkan suhu (skala ke unit Celcius)
-	reactor_temp += laser_intensity * 0.3 * delta
-
-	# Ambient effect
+	# Laser → suhu naik
+	reactor_temp += total_laser * 0.3 * delta
 	reactor_temp += ambient_modifier * delta
 
-	# Vent menurunkan pressure
-	if vent_active:
-		var vent_efficiency = 1.0 if reactor_pressure <= PRESSURE_WARNING else 0.4
-		reactor_pressure -= 180.0 * vent_efficiency * delta
+	# Laser → pressure naik
+	reactor_pressure += (total_laser / 100.0) * VENT_PRESSURE_CONTRIBUTION * delta
 
-	# Suhu tinggi menaikkan pressure (skala PSI)
+	# Extraction → pressure naik
 	var temp_ratio = (reactor_temp - 150.0) / TEMP_MAX
 	var extract_pressure = (extraction_level / 100.0) * 25.0
 	reactor_pressure += (temp_ratio * 40.0 + extract_pressure) * delta
-	
-	# Laser stress naik saat laser_intensity tinggi
-	if not laser_broken:
-		laser_stress += (laser_intensity / 100.0) * 0.8 * delta
-		# Laser stress turun sendiri saat intensity rendah
-		if laser_intensity < 20.0:
-			laser_stress -= 1.5 * delta
-		laser_stress = clamp(laser_stress, 0.0, 100.0)
-		if laser_stress >= 100.0:
-			laser_broken = true
-			laser_intensity = 0.0
-	else:
-		# Laser pelan-pelan dingin sendiri saat rusak
-		laser_stress -= 0.5 * delta
-		laser_stress = clamp(laser_stress, 0.0, 100.0)
-		if laser_stress <= 0.0:
-			laser_broken = false
 
-	# Extraction
+	# Update tiap laser stress independen
+	_update_laser_stresses(delta)
+
+	# Extraction stress
 	if not extractor_broken:
-		extraction_stress += extraction_level * 0.01 * delta
-		electricity_output = extraction_level * 10.0   # max 1000 MW/h
-		electricity_quota += electricity_output * delta * 0.01
+		var ext_durability_mult = 2.0 - (extractor_durability / 100.0)
+		if extraction_level > 20.0:
+			extraction_stress += extraction_level * 0.01 * ext_durability_mult * delta
+		elif extraction_level <= 10.0:
+			extraction_stress -= 2.0 * delta
+		else:
+			extraction_stress -= 0.8 * delta
+		extraction_stress = clamp(extraction_stress, 0.0, 100.0)
 		if extraction_stress >= 100.0:
 			extractor_broken = true
 			electricity_output = 0.0
 
-	# Clamp
+	if not extractor_broken:
+		electricity_output = extraction_level * 10.0
+		electricity_quota += electricity_output * delta * 0.01
+
 	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
 	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
 	electricity_quota = clamp(electricity_quota, 0.0, ELECTRICITY_TARGET)
@@ -295,9 +408,42 @@ func restart_reactor() -> void:
 	print("Reactor manually restarted")
 	emit_signal("reactor_state_changed", reactor_state)
 
-func repair_laser() -> void:
-	laser_broken = false
-	laser_stress = 0.0
+func _update_laser_stresses(delta: float) -> void:
+	for i in range(LASER_COUNT):
+		if laser_broken_states[i]:
+			# Rusak — stress turun sendiri perlahan
+			laser_stresses[i] -= 0.5 * delta
+			laser_stresses[i] = clamp(laser_stresses[i], 0.0, 100.0)
+			if laser_stresses[i] <= 0.0:
+				laser_broken_states[i] = false
+			continue
+		
+		var intensity = laser_intensities[i]
+		var durability_mult = 2.0 - (laser_durabilities[i] / 100.0)
+		
+		if intensity > 20.0:
+			laser_stresses[i] += (intensity / 100.0) * 0.8 * durability_mult * delta
+		elif intensity <= 10.0:
+			laser_stresses[i] -= 2.5 * delta
+		else:
+			laser_stresses[i] -= 1.0 * delta
+		
+		laser_stresses[i] = clamp(laser_stresses[i], 0.0, 100.0)
+		
+		if laser_stresses[i] >= 100.0:
+			laser_broken_states[i] = true
+			laser_intensities[i] = 0.0
+			emit_signal("laser_broken", i)
+
+signal laser_broken(index: int)
+
+func repair_laser(index: int) -> void:
+	if index < 0 or index >= LASER_COUNT:
+		return
+	laser_broken_states[index] = false
+	laser_stresses[index] = 0.0
+	laser_durabilities[index] = 100.0
+	print("Laser %d repaired!" % (index + 1))
 
 func _update_control_room_shield(delta: float) -> void:
 	var old_shield = control_room_shield
@@ -319,11 +465,46 @@ func _update_control_room_shield(delta: float) -> void:
 		emit_signal("control_room_breached", control_room_shield)
 
 func _update_cpu(delta: float) -> void:
-	# CPU memanas seiring reaktor panas
-	cpu_temp += (reactor_temp - 40.0) * 0.01 * delta
-	cpu_temp = clamp(cpu_temp, 10.0, 100.0)
-	# Input delay berbanding lurus suhu CPU di atas 60
-	input_delay = max(0.0, (cpu_temp - 60.0) * 0.05)
+	if startup_state != StartupState.RUNNING:
+		return
+	
+	# CPU memanas karena control room aktif dipakai
+	# Makin lama game berjalan + makin dekat kuota, makin panas
+	var time_pressure = time_elapsed / (day_duration * 2)  # 0-1 seiring waktu
+	var quota_pressure = electricity_quota / ELECTRICITY_TARGET  # 0-1 seiring kuota
+	
+	# CPU mulai memanas signifikan setelah quota > 60%
+	var heat_multiplier = 0.0
+	if quota_pressure > 0.6:
+		# Makin dekat 100%, makin cepat panas
+		heat_multiplier = (quota_pressure - 0.6) / 0.4  # 0-1
+	
+	# Base heat dari pemakaian normal (sangat lambat)
+	var base_heat = 0.3 * delta
+	
+	# Heat tambahan dari quota pressure
+	var quota_heat = heat_multiplier * 2.5 * delta
+	
+	cpu_temp += base_heat + quota_heat
+	cpu_temp = clamp(cpu_temp, 20.0, 100.0)
+	
+	# CPU mendingin sedikit kalau player tidak di control room
+	if current_room != "control_room":
+		cpu_temp -= 0.5 * delta
+		cpu_temp = clamp(cpu_temp, 20.0, 100.0)
+	
+	# Input delay HANYA mulai terasa saat cpu_temp > 65
+	# Di bawah 65 = tidak ada delay sama sekali
+	if cpu_temp < 65.0:
+		input_delay = 0.0
+	else:
+		# Delay naik dari 0 sampai max 2.5 detik
+		var delay_ratio = (cpu_temp - 65.0) / 35.0  # 0-1
+		input_delay = delay_ratio * 2.5
+	
+	# Update cpu_temp di HUD — emit signal kalau perlu
+	if cpu_temp > 80.0 and input_delay > 0.5:
+		emit_signal("cpu_overheat_warning", cpu_temp, input_delay)
 
 func _update_armor(delta: float) -> void:
 	if not hazmat_equipped:
@@ -405,41 +586,228 @@ func _end_game(reason: String) -> void:
 	emit_signal("game_ended", reason)
 
 # ============================================================
+# STARTUP ACTIONS
+# ============================================================
+func toggle_lights() -> void:
+	if startup_state == StartupState.OFFLINE or \
+	   startup_state == StartupState.PRE_STARTUP:
+		lights_on = not lights_on
+		emit_signal("lights_toggled", lights_on)
+		print("Lights: ", lights_on)
+
+func toggle_monitor() -> void:
+	if not lights_on:
+		print("Nyalain lampu dulu!")
+		return
+	monitor_on = not monitor_on
+	emit_signal("monitor_toggled", monitor_on)
+	print("Monitor: ", monitor_on)
+
+func toggle_extractor_online() -> void:
+	if startup_state == StartupState.RUNNING:
+		# Kalau reactor sudah running dan extractor di-toggle
+		# → extractor fail to startup
+		print("WARNING: Extractor di-toggle saat reactor running!")
+		extractor_broken = true
+		extractor_online = false
+		return
+	extractor_online = not extractor_online
+	print("Extractor online: ", extractor_online)
+
+func run_startup_check() -> void:
+	# Auto check semua sistem
+	startup_coolant_ok = coolant_storage > 50.0
+	startup_cpu_ok = cpu_temp < 60.0
+	startup_extractor_ok = extractor_online and not extractor_broken
+	startup_check_done = true
+	emit_signal("startup_check_result",
+		startup_coolant_ok,
+		startup_cpu_ok,
+		startup_extractor_ok)
+	print("Startup check — Coolant: ", startup_coolant_ok,
+		" CPU: ", startup_cpu_ok,
+		" Extractor: ", startup_extractor_ok)
+
+func start_reactor() -> void:
+	if startup_state == StartupState.RUNNING:
+		return
+	if not lights_on or not monitor_on:
+		print("Nyalain lampu dan monitor dulu!")
+		return
+	
+	# Post-MCS restart — monitor dan lights mungkin perlu dinyalain ulang
+	if reactor_shutdown:
+		reactor_shutdown = false
+		mcs_active = false
+		# Reset suhu ke cold shutdown level
+		reactor_temp = 50.0
+		reactor_pressure = 200.0
+	
+	# Run check
+	run_startup_check()
+	
+	# Mulai sequence
+	startup_total_elapsed = 0.0 
+	startup_state = StartupState.STARTING
+	startup_phase = StartupPhase.SYSTEM_ONLINE
+	startup_phase_timer = PHASE_DURATIONS[StartupPhase.SYSTEM_ONLINE]
+	emit_signal("startup_state_changed", startup_state)
+	emit_signal("startup_phase_changed", startup_phase, false)
+
+func _update_startup(delta: float) -> void:
+	if startup_state != StartupState.STARTING:
+		return
+	
+	startup_phase_timer -= delta
+	startup_total_elapsed += delta
+	startup_total_elapsed = min(startup_total_elapsed, STARTUP_TOTAL_DURATION)
+	
+	# Update check step untuk coolant dan laser
+	if startup_phase == StartupPhase.CHECK_COOLANT or \
+	   startup_phase == StartupPhase.CHECK_LASER:
+		startup_check_step_timer -= delta
+		if startup_check_step_timer <= 0.0 and startup_check_step < 3:
+			startup_check_step += 1
+			startup_check_step_timer = STARTUP_CHECK_STEP_DELAY
+			emit_signal("startup_check_step_updated",
+				startup_phase == StartupPhase.CHECK_LASER,
+				startup_check_step)
+	
+	if startup_phase_timer <= 0.0:
+		_advance_startup_phase()
+
+func _advance_startup_phase() -> void:
+	match startup_phase:
+		StartupPhase.SYSTEM_ONLINE:
+			_go_to_phase(StartupPhase.INITIATING)
+		
+		StartupPhase.INITIATING:
+			_go_to_phase(StartupPhase.CHECK_COOLANT)
+		
+		StartupPhase.CHECK_COOLANT:
+			# Warning kalau coolant tidak siap
+			var warn = not startup_coolant_ok
+			_go_to_phase(StartupPhase.CHECK_LASER, warn)
+		
+		StartupPhase.CHECK_LASER:
+			_go_to_phase(StartupPhase.CHECK_EXTRACTOR)
+		
+		StartupPhase.CHECK_EXTRACTOR:
+			# Warning kalau extractor tidak online
+			var warn = not startup_extractor_ok
+			_go_to_phase(StartupPhase.CONNECTING, warn)
+		
+		StartupPhase.CONNECTING:
+			_go_to_phase(StartupPhase.WARNING_EVACUATE)
+		
+		StartupPhase.WARNING_EVACUATE:
+			_go_to_phase(StartupPhase.ENGAGING)
+		
+		StartupPhase.ENGAGING:
+			_go_to_phase(StartupPhase.COUNTDOWN)
+		
+		StartupPhase.COUNTDOWN:
+			_go_to_phase(StartupPhase.GLITCH)
+		
+		StartupPhase.GLITCH:
+			_go_to_phase(StartupPhase.COMPLETE)
+		
+		StartupPhase.COMPLETE:
+			_complete_startup()
+
+func _go_to_phase(phase: StartupPhase, has_warning: bool = false) -> void:
+	startup_phase = phase
+	startup_phase_timer = PHASE_DURATIONS.get(phase, 1.0)
+	
+	# Reset check step saat masuk phase check
+	if phase == StartupPhase.CHECK_COOLANT or phase == StartupPhase.CHECK_LASER:
+		startup_check_step = 0
+		startup_check_step_timer = STARTUP_CHECK_STEP_DELAY
+	
+	emit_signal("startup_phase_changed", phase, has_warning)
+
+func _complete_startup() -> void:
+	startup_state = StartupState.RUNNING
+	startup_phase = StartupPhase.IDLE
+	emit_signal("startup_state_changed", startup_state)
+	
+	# Consequences kalau ada yang tidak siap
+	if not startup_coolant_ok:
+		reactor_temp = 280.0
+		print("STARTUP WARN — coolant offline, temp spike!")
+	
+	if not startup_extractor_ok:
+		extractor_broken = true
+		print("STARTUP WARN — extractor fail!")
+	
+	# Reactor mulai dari suhu rendah, naik perlahan
+	reactor_temp = max(reactor_temp, 80.0)
+	reactor_pressure = 400.0
+	print("Reactor ONLINE!")
+
+func get_total_laser_intensity() -> float:
+	var total = 0.0
+	for i in range(LASER_COUNT):
+		if not laser_broken_states[i]:
+			total += laser_intensities[i]
+	return total / LASER_COUNT   # rata-rata, bukan total mentah
+
+# ============================================================
 # PLAYER ACTIONS (dipanggil dari tombol UI)
 # ============================================================
-func set_laser(value: float) -> void:
-	laser_intensity = clamp(value, 0.0, 100.0)
+func set_laser(index: int, value: float) -> void:
+	if index < 0 or index >= LASER_COUNT:
+		return
+	if laser_broken_states[index]:
+		return
+	laser_intensities[index] = clamp(value, 0.0, 100.0)
 
 func set_extraction(value: float) -> void:
 	if not extractor_broken:
 		extraction_level = clamp(value, 0.0, 100.0)
 
-func activate_vent() -> void:
-	# Hanya bisa diaktifkan kalau tidak cooldown
-	if vent_cooldown > 0.0:
+func get_active_vent_count() -> int:
+	var count = 0
+	for v in vent_states:
+		if v:
+			count += 1
+	return count
+
+func toggle_vent(index: int) -> void:
+	if index < 0 or index >= VENT_COUNT:
 		return
-	vent_active = true
+	vent_states[index] = not vent_states[index]
+	print("Vent %d: " % (index + 1), vent_states[index])
 
 func _update_vent(delta: float) -> void:
-	if vent_cooldown > 0.0:
-		vent_cooldown -= delta
-		vent_cooldown = clamp(vent_cooldown, 0.0, VENT_COOLDOWN_TIME)
-
-	if not vent_active:
+	var active_count = get_active_vent_count()
+	if active_count == 0:
 		return
+	
+	# Hitung efektivitas berdasarkan pressure saat ini
+	var effectiveness: float = 0.0
+	if reactor_pressure <= VENT_EFFECTIVE_THRESHOLD:
+		# Pressure rendah — vent sangat efektif, bisa nurunin pressure
+		effectiveness = 1.0
+	elif reactor_pressure >= VENT_INEFFECTIVE_THRESHOLD:
+		# Pressure sangat tinggi — vent hampir tidak berguna
+		effectiveness = 0.05
+	else:
+		# Interpolasi antara efektif dan tidak efektif
+		var ratio = (reactor_pressure - VENT_EFFECTIVE_THRESHOLD) / \
+			(VENT_INEFFECTIVE_THRESHOLD - VENT_EFFECTIVE_THRESHOLD)
+		effectiveness = lerp(1.0, 0.05, ratio)
+	
+	# Total efek vent — makin banyak aktif makin kuat
+	var total_effect = VENT_BASE_REDUCTION * active_count * effectiveness
+	reactor_pressure -= total_effect * delta
+	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
 
-	# Drop pressure
-	var vent_efficiency = 1.0 if reactor_pressure > PRESSURE_WARNING else 0.4
-	reactor_pressure -= VENT_DROP_AMOUNT * vent_efficiency * delta
-
-	# Auto off saat pressure sudah cukup rendah
-	if reactor_pressure <= VENT_OFF_THRESHOLD:
-		reactor_pressure = VENT_OFF_THRESHOLD
-		vent_active = false
-		vent_cooldown = VENT_COOLDOWN_TIME
-
-func set_room(room_name: String) -> void:
-	current_room = room_name
+# Sementara untuk test — set manual di inspector atau via print
+# Nanti akan diupdate otomatis saat world layout selesai
+func set_room(room: String) -> void:
+	current_room = room
+	print("Player entered: ", room)
 
 func toggle_hazmat() -> void:
 	hazmat_equipped = not hazmat_equipped
@@ -624,7 +992,8 @@ func use_extractor_part() -> void:
 		return
 	inv_extractor_part -= 1
 	extractor_broken = false
-	extraction_stress = 0.0
+	extraction_stress = 0.0           # stress reset
+	extractor_durability = 100.0      # durability fully restored
 	print("Extractor repaired!")
 
 func use_mcs_module() -> void:
@@ -653,55 +1022,115 @@ func use_cpu_module() -> void:
 # EMERGENCY SYSTEMS
 # ============================================================
 func use_eccs() -> void:
-	print("use_eccs() called — charges: ", eccs_charges, " cooldown: ", eccs_cooldown)
-	if eccs_charges <= 0 or eccs_cooldown > 0.0:
-		print("ECCS blocked!")
+	if eccs_charges <= 0 or eccs_cooldown > 0.0 or eccs_active:
 		return
 	eccs_charges -= 1
-	eccs_cooldown = ECCS_COOLDOWN_TIME
-	reactor_temp -= ECCS_TEMP_DROP
-	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
-	print("ECCS fired! Temp now: ", reactor_temp)
+	eccs_active = true
+	eccs_cooling_timer = ECCS_COOLING_DURATION
+	stat_eccs_used += 1
+	print("ECCS activated — cooling for %.0fs" % ECCS_COOLING_DURATION)
 
 func use_emergency_vent() -> void:
-	print("use_emergency_vent() called — cooldown: ", emergency_vent_cooldown)
-	if emergency_vent_cooldown > 0.0:
-		print("E-Vent blocked!")
+	if emergency_vent_cooldown > 0.0 or emergency_vent_active:
 		return
-	emergency_vent_cooldown = EMERGENCY_VENT_COOLDOWN
-	reactor_pressure -= EMERGENCY_VENT_DROP
-	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
-	print("E-Vent fired! Pressure now: ", reactor_pressure)
+	emergency_vent_active = true
+	emergency_vent_timer = EMERGENCY_VENT_DURATION
+	print("Emergency Vent activated — venting for %.0fs" % EMERGENCY_VENT_DURATION)
 
-func use_mcs() -> void:
-	print("use_mcs() called — used_count: ", mcs_used_count)
-	if mcs_broken:
-		print("MCS broken!")
-		return
-	mcs_used_count += 1
-	if mcs_used_count == 1:
-		_mcs_success()
-		return
-	if randf() < 0.5:
-		_mcs_success()
-	else:
-		_mcs_fail()
+func _check_mcs_trigger() -> void:
+	# Auto trigger saat meltdown imminent (state 4)
+	if reactor_state == 4 and not mcs_active and not mcs_blackout_active:
+		_trigger_mcs()
 
-func _mcs_success() -> void:
-	print("MCS SUCCESS!")
+func _trigger_mcs() -> void:
 	mcs_active = true
-	laser_intensity = 0.0
+	mcs_used_count += 1
+	
+	# Matikan semua sistem
 	extraction_level = 0.0
-	vent_active = false
-	reactor_shutdown = false   # belum shutdown, masih dalam proses
-	emit_signal("mcs_state_changed", true)
-
-func _mcs_fail() -> void:
-	print("MCS FAILED!")
-	mcs_broken = true
-	mcs_active = false
-	laser_broken = true
 	extractor_broken = true
+	coolant_active = false
+	
+	# Mulai blackout
+	mcs_blackout_active = true
+	mcs_blackout_timer = MCS_BLACKOUT_DURATION
+	is_in_panel_mode = false
+	
+	emit_signal("mcs_triggered")
+	emit_signal("mcs_blackout_started")
+	emit_signal("mcs_state_changed", true)
+	print("MCS TRIGGERED — blackout started")
+
+func _update_mcs(delta: float) -> void:
+	# Blackout phase
+	if mcs_blackout_active:
+		mcs_blackout_timer -= delta
+		mcs_blackout_timer = clamp(mcs_blackout_timer, 0.0, MCS_BLACKOUT_DURATION)
+		
+		if mcs_blackout_timer <= 0.0:
+			mcs_blackout_active = false
+			mcs_stabilizing = true
+			emit_signal("mcs_blackout_ended")
+			print("Blackout ended — stabilizing...")
+		return
+	
+	# Stabilisasi phase
+	if mcs_stabilizing:
+		reactor_temp = move_toward(reactor_temp, 50.0, 15.0 * delta)
+		reactor_pressure = move_toward(reactor_pressure, 200.0, 150.0 * delta)
+		
+		var temp_stable = abs(reactor_temp - 50.0) < 5.0
+		var pressure_stable = abs(reactor_pressure - 200.0) < 20.0
+		
+		if temp_stable and pressure_stable:
+			mcs_stabilizing = false
+			mcs_active = false
+			reactor_shutdown = true
+			_apply_mcs_damage()
+			_on_mcs_complete_internal()    # ← tambah ini
+			emit_signal("mcs_state_changed", false)
+			emit_signal("mcs_stabilization_complete")
+
+func _on_mcs_complete_internal() -> void:
+	# Setelah stabilisasi selesai — reset monitor dan lights
+	# Player harus nyalain ulang manual
+	monitor_on = false
+	lights_on = false
+	startup_state = StartupState.OFFLINE
+	startup_check_done = false
+	emit_signal("lights_toggled", false)
+	emit_signal("monitor_toggled", false)
+	emit_signal("startup_state_changed", startup_state)
+
+func _apply_mcs_damage() -> void:
+	var damaged_systems = []
+	
+	# Tiap laser ada chance kena damage
+	for i in range(LASER_COUNT):
+		if randf() < 0.5:
+			laser_broken_states[i] = true
+			laser_durabilities[i] = randf_range(20.0, 60.0)
+			laser_stresses[i] = 0.0
+			damaged_systems.append("Laser %d" % (i + 1))
+	
+	if randf() < 0.6:
+		extractor_broken = true
+		extractor_durability = randf_range(20.0, 60.0)
+		damaged_systems.append("Extractor")
+	if randf() < 0.5:
+		coolant_pump_broken = true
+		coolant_pump_durability = randf_range(30.0, 70.0)
+		damaged_systems.append("Coolant Pump")
+	if randf() < 0.4:
+		mcs_broken = true
+		damaged_systems.append("MCS Module")
+	
+	control_room_shield = randf_range(10.0, 40.0)
+	damaged_systems.append("Control Room Shield")
+	
+	emit_signal("mcs_damage_applied", damaged_systems)
+
+signal mcs_damage_applied(systems: Array)
 
 func refill_eccs() -> void:
 	# Dipanggil saat player di Coolant Room
@@ -709,27 +1138,42 @@ func refill_eccs() -> void:
 	print("ECCS recharged!")
 
 func _update_eccs(delta: float) -> void:
+	# Update cooldown
 	if eccs_cooldown > 0.0:
 		eccs_cooldown -= delta
 		eccs_cooldown = clamp(eccs_cooldown, 0.0, ECCS_COOLDOWN_TIME)
+	
+	if not eccs_active:
+		return
+	
+	# Aktif mendinginkan — turun bertahap
+	eccs_cooling_timer -= delta
+	
+	# Pause kenaikan suhu + turunkan bertahap
+	reactor_temp -= ECCS_COOLING_RATE * delta
+	reactor_temp = clamp(reactor_temp, 0.0, TEMP_MAX)
+	
+	if eccs_cooling_timer <= 0.0:
+		eccs_active = false
+		eccs_cooldown = ECCS_COOLDOWN_TIME
+		print("ECCS cooling complete")
 
 func _update_emergency_vent(delta: float) -> void:
+	# Update cooldown
 	if emergency_vent_cooldown > 0.0:
 		emergency_vent_cooldown -= delta
 		emergency_vent_cooldown = clamp(emergency_vent_cooldown, 0.0, EMERGENCY_VENT_COOLDOWN)
-
-func _update_mcs(delta: float) -> void:
-	if not mcs_active:
+	
+	if not emergency_vent_active:
 		return
-	reactor_temp = move_toward(reactor_temp, 50.0, 20.0 * delta)      # ← target 50°C, bukan 150
-	reactor_pressure = move_toward(reactor_pressure, 200.0, 200.0 * delta)  # ← target 200 PSI
-	var temp_stable = abs(reactor_temp - 50.0) < 5.0
-	var pressure_stable = abs(reactor_pressure - 200.0) < 20.0
-	if temp_stable and pressure_stable:
-		mcs_active = false
-		reactor_shutdown = true    # ← reaktor sekarang cold shutdown
-		laser_intensity = 0.0
-		extraction_level = 0.0
-		emit_signal("mcs_state_changed", false)
-		emit_signal("reactor_state_changed", reactor_state)
-		print("MCS complete — reactor in cold shutdown")
+	
+	# Aktif venting — turun bertahap
+	emergency_vent_timer -= delta
+	
+	reactor_pressure -= EMERGENCY_VENT_RATE * delta
+	reactor_pressure = clamp(reactor_pressure, 0.0, PRESSURE_MAX)
+	
+	if emergency_vent_timer <= 0.0:
+		emergency_vent_active = false
+		emergency_vent_cooldown = EMERGENCY_VENT_COOLDOWN
+		print("Emergency Vent complete")

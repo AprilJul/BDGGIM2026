@@ -1,0 +1,206 @@
+[gd_scene format=3 uid="uid://d1rtim5vciqri"]
+
+[ext_resource type="Script" uid="uid://c1scoyuwgt20c" path="res://scripts/LaserPanel.gd" id="1_gmtsp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yxywv"]
+size = Vector2(295, 369)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31o5m"]
+bg_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+
+[node name="LaserPanel" type="Node2D" unique_id=1384825240]
+script = ExtResource("1_gmtsp")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1052048777]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1003031561]
+position = Vector2(137.5, 174.5)
+shape = SubResource("RectangleShape2D_yxywv")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=349184333]
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=1120922710]
+unique_name_in_owner = true
+
+[node name="PanelContainer" type="Control" parent="PanelUI" unique_id=235007049]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 480)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=539466561]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=9984616]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=445191691]
+layout_mode = 2
+text = "⚡ LASER CONTROL"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1175695431]
+layout_mode = 2
+
+[node name="Laser1Section" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=312102085]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L1Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section" unique_id=786757773]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1Header" unique_id=1141056309]
+layout_mode = 2
+text = "LASER 1"
+
+[node name="L1StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1Header" unique_id=1058951525]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L1IntRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section" unique_id=852371067]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1IntRow" unique_id=1459873632]
+layout_mode = 2
+text = "INT"
+
+[node name="L1IntBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1IntRow" unique_id=1546201272]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 18)
+layout_mode = 2
+
+[node name="BtnL1Down" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1IntRow" unique_id=522697340]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "-"
+
+[node name="BtnL1Up" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1IntRow" unique_id=1630810736]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "+"
+
+[node name="L1StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section" unique_id=1811939600]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1StressRow" unique_id=551851411]
+layout_mode = 2
+text = "STRESS"
+
+[node name="L1StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser1Section/L1StressRow" unique_id=1360444980]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 12)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_31o5m")
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=407815201]
+layout_mode = 2
+
+[node name="Laser2Section" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1738202223]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L2Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section" unique_id=1039370905]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2Header" unique_id=708022179]
+layout_mode = 2
+
+[node name="L2StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2Header" unique_id=103256098]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L2IntRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section" unique_id=209162498]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2IntRow" unique_id=2118717408]
+layout_mode = 2
+text = "INT"
+
+[node name="L2IntBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2IntRow" unique_id=1190563697]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 18)
+layout_mode = 2
+
+[node name="BtnL2Down" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2IntRow" unique_id=578155131]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "-"
+
+[node name="BtnL2Up" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2IntRow" unique_id=190664588]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "+"
+
+[node name="L2StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section" unique_id=291469284]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2StressRow" unique_id=36008125]
+layout_mode = 2
+text = "STRESS"
+
+[node name="L2StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser2Section/L2StressRow" unique_id=1527536974]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 12)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_31o5m")
+
+[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1111541903]
+layout_mode = 2
+
+[node name="Laser3Section" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=956494690]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L3Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section" unique_id=1281696116]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3Header" unique_id=1424487184]
+layout_mode = 2
+
+[node name="L3StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3Header" unique_id=2077206774]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="L3IntRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section" unique_id=231806957]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3IntRow" unique_id=1651270045]
+layout_mode = 2
+text = "INT"
+
+[node name="L3IntBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3IntRow" unique_id=2044401173]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 18)
+layout_mode = 2
+
+[node name="BtnL3Down" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3IntRow" unique_id=100732026]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "-"
+
+[node name="BtnL3Up" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3IntRow" unique_id=703777312]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "+"
+
+[node name="L3StressRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section" unique_id=2139886047]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3StressRow" unique_id=629195366]
+layout_mode = 2
+text = "STRESS"
+
+[node name="L3StressBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/Laser3Section/L3StressRow" unique_id=1371681888]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 12)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_31o5m")

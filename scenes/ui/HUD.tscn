@@ -2,6 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bmm72equlpkvy" path="res://scripts/HUD.gd" id="1_kw0id"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
+bg_color = Color(0.23137255, 0.61960787, 0.47843137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rnyu1"]
+bg_color = Color(0.53333336, 0.5294118, 0.5019608, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_atyv1"]
 bg_color = Color(0.9098039, 0.34901962, 0.23529412, 1)
 
@@ -11,169 +17,240 @@ bg_color = Color(0.23137255, 0.54509807, 0.83137256, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ig75s"]
 bg_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ed8p"]
-bg_color = Color(0.23137255, 0.61960787, 0.47843137, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rnyu1"]
-bg_color = Color(0.53333336, 0.5294118, 0.5019608, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw0id"]
 bg_color = Color(0.23137255, 0.54509807, 0.83137256, 1)
 
 [node name="HUD" type="CanvasLayer" unique_id=399444015]
 script = ExtResource("1_kw0id")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=353991345]
-anchors_preset = 10
+[node name="PlayerHUD" type="MarginContainer" parent="." unique_id=353991345]
+unique_name_in_owner = true
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
-offset_bottom = 147.0
+anchor_bottom = 1.0
+offset_top = -74.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 8
+grow_vertical = 0
+theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_bottom = 12
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=807857226]
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerHUD" unique_id=807857226]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=829903340]
+[node name="HPBar" type="VBoxContainer" parent="PlayerHUD/HBoxContainer" unique_id=891334047]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="NightLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=1558303045]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "☀ SIANG"
-horizontal_alignment = 2
-
-[node name="TimerLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=821755007]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=2100560746]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="ReactorBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=773265107]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ReactorBar" unique_id=436952748]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "TEMP"
-horizontal_alignment = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/ReactorBar" unique_id=1220093078]
-custom_minimum_size = Vector2(200, 18)
-layout_mode = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_atyv1")
-value = 50.0
-
-[node name="ValueLabel" type="Label" parent="MarginContainer/VBoxContainer/ReactorBar" unique_id=28062248]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-
-[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer/ReactorBar" unique_id=1563510861]
-layout_mode = 2
-
-[node name="PressureBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1857806697]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PressureBar" unique_id=1496964949]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "PRES"
-horizontal_alignment = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/PressureBar" unique_id=1806651641]
-custom_minimum_size = Vector2(200, 18)
-layout_mode = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_6ll6g")
-value = 50.0
-
-[node name="ValueLabel" type="Label" parent="MarginContainer/VBoxContainer/PressureBar" unique_id=1982727241]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-
-[node name="ElectricityBar" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1594100724]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 8
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ElectricityBar" unique_id=64334153]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "ELTC"
-horizontal_alignment = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/ElectricityBar" unique_id=2091528200]
-custom_minimum_size = Vector2(200, 18)
-layout_mode = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_ig75s")
-value = 50.0
-
-[node name="ValueLabel" type="Label" parent="MarginContainer/VBoxContainer/ElectricityBar" unique_id=973817616]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-
-[node name="PlayerBars" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1836506393]
-layout_mode = 2
-
-[node name="HPBar" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PlayerBars" unique_id=891334047]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PlayerBars/HPBar" unique_id=832023998]
+[node name="Label" type="Label" parent="PlayerHUD/HBoxContainer/HPBar" unique_id=832023998]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "HP"
 horizontal_alignment = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/PlayerBars/HPBar" unique_id=503494199]
+[node name="ProgressBar" type="ProgressBar" parent="PlayerHUD/HBoxContainer/HPBar" unique_id=503494199]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 18)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_4ed8p")
 value = 50.0
 
-[node name="ArmorBar" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PlayerBars" unique_id=900360725]
+[node name="ArmorBar" type="VBoxContainer" parent="PlayerHUD/HBoxContainer" unique_id=900360725]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PlayerBars/ArmorBar" unique_id=1209879240]
+[node name="Label" type="Label" parent="PlayerHUD/HBoxContainer/ArmorBar" unique_id=1209879240]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "ARMOR"
 horizontal_alignment = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/PlayerBars/ArmorBar" unique_id=166866639]
+[node name="ProgressBar" type="ProgressBar" parent="PlayerHUD/HBoxContainer/ArmorBar" unique_id=166866639]
 custom_minimum_size = Vector2(200, 18)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_rnyu1")
 value = 50.0
 
-[node name="ShieldRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1478265140]
+[node name="RadiationWarning" type="Label" parent="PlayerHUD/HBoxContainer" unique_id=1350417812]
+unique_name_in_owner = true
+modulate = Color(0.9098039, 0.34901962, 0.23529412, 1)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="CPUWarningLabel" type="Label" parent="PlayerHUD/HBoxContainer" unique_id=1527555460]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=1560829973]
+[node name="ReactorMonitor" type="MarginContainer" parent="." unique_id=2086732991]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 325.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ReactorMonitor" unique_id=2100560746]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MonitorTitle" type="Label" parent="ReactorMonitor/VBoxContainer" unique_id=1316724248]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="ReactorMonitor/VBoxContainer" unique_id=2019073840]
+layout_mode = 2
+
+[node name="TempRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=773265107]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/TempRow" unique_id=436952748]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "TEMP"
+horizontal_alignment = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="ReactorMonitor/VBoxContainer/TempRow" unique_id=1220093078]
+custom_minimum_size = Vector2(200, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_atyv1")
+value = 50.0
+show_percentage = false
+
+[node name="ValueLabel" type="Label" parent="ReactorMonitor/VBoxContainer/TempRow" unique_id=28062248]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "245°C"
+
+[node name="StatusLabel" type="Label" parent="ReactorMonitor/VBoxContainer/TempRow" unique_id=1563510861]
+unique_name_in_owner = true
+layout_mode = 2
+text = "● NORMAL"
+
+[node name="PressureRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=1857806697]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/PressureRow" unique_id=1496964949]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "PRES"
+horizontal_alignment = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="ReactorMonitor/VBoxContainer/PressureRow" unique_id=1806651641]
+custom_minimum_size = Vector2(200, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_6ll6g")
+value = 50.0
+show_percentage = false
+
+[node name="ValueLabel" type="Label" parent="ReactorMonitor/VBoxContainer/PressureRow" unique_id=1982727241]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "1200 PSI"
+
+[node name="ElectricityRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=1594100724]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/ElectricityRow" unique_id=64334153]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "ELEC"
+horizontal_alignment = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="ReactorMonitor/VBoxContainer/ElectricityRow" unique_id=2091528200]
+custom_minimum_size = Vector2(200, 18)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_ig75s")
+value = 50.0
+show_percentage = false
+
+[node name="ValueLabel" type="Label" parent="ReactorMonitor/VBoxContainer/ElectricityRow" unique_id=973817616]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "450 / 1000 MW/h"
+
+[node name="HSeparator2" type="HSeparator" parent="ReactorMonitor/VBoxContainer" unique_id=377574000]
+layout_mode = 2
+
+[node name="FluctuationRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=1554704845]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/FluctuationRow" unique_id=1193949786]
+layout_mode = 2
+text = "FLUX"
+
+[node name="FluxLabel" type="Label" parent="ReactorMonitor/VBoxContainer/FluctuationRow" unique_id=2010789474]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+2.5°C/s"
+
+[node name="ShieldRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=1478265140]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/ShieldRow" unique_id=1560829973]
 layout_mode = 2
 text = "SHIELD"
 
-[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=45533814]
+[node name="ProgressBar" type="ProgressBar" parent="ReactorMonitor/VBoxContainer/ShieldRow" unique_id=45533814]
 custom_minimum_size = Vector2(200, 18)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_kw0id")
 value = 100.0
 
-[node name="ShieldStatusLabel" type="Label" parent="MarginContainer/VBoxContainer/ShieldRow" unique_id=1871606782]
+[node name="ShieldStatusLabel" type="Label" parent="ReactorMonitor/VBoxContainer/ShieldRow" unique_id=1871606782]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RadiationWarning" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1350417812]
-modulate = Color(0.9098039, 0.34901962, 0.23529412, 1)
+[node name="CtrlRadRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=208605458]
+unique_name_in_owner = true
 layout_mode = 2
-horizontal_alignment = 1
 
-[node name="CraftNotify" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1398007182]
+[node name="Label" type="Label" parent="ReactorMonitor/VBoxContainer/CtrlRadRow" unique_id=804046095]
 layout_mode = 2
+text = "CTRL RAD"
+
+[node name="CtrlRadLabel" type="Label" parent="ReactorMonitor/VBoxContainer/CtrlRadRow" unique_id=1480430570]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0.0 mSv"
+
+[node name="HSeparator3" type="HSeparator" parent="ReactorMonitor/VBoxContainer" unique_id=1530538391]
+layout_mode = 2
+
+[node name="CraftNotify" type="Label" parent="ReactorMonitor/VBoxContainer" unique_id=1398007182]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="NightTimerRow" type="HBoxContainer" parent="ReactorMonitor/VBoxContainer" unique_id=883678745]
+layout_mode = 2
+
+[node name="NightLabel" type="Label" parent="ReactorMonitor/VBoxContainer/NightTimerRow" unique_id=1558303045]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "☀ SIANG"
+horizontal_alignment = 2
+
+[node name="TimerLabel" type="Label" parent="ReactorMonitor/VBoxContainer/NightTimerRow" unique_id=821755007]
+unique_name_in_owner = true
+layout_mode = 2
+text = "🌑 120s"
 
 [node name="NightOverlay" type="ColorRect" parent="." unique_id=249047684]
 anchors_preset = 15
@@ -183,3 +260,19 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.039215688, 0.08627451, 0.15686275, 0)
+
+[node name="BlackoutOverlay" type="ColorRect" parent="." unique_id=1941725467]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="BlackoutLabel" type="Label" parent="BlackoutOverlay" unique_id=319402837]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
