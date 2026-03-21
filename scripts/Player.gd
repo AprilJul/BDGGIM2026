@@ -26,17 +26,22 @@ var current_location = "lobby_control" # Default location
 # Panel yang sedang dalam jangkauan (kalau ada)
 var nearby_panel: Node = null
 
-
 # ============================================================
 # GERAK UTAMA
 # ============================================================
 func _physics_process(delta: float) -> void:
-	# Combined freeze check:
-	# Checks GameManager (Panel Mode) and the dialogue 'can_move' state [cite: 5, 7]
-	if GameManager.is_in_panel_mode or not can_move:
+	# Lock input saat SYSTEM//ADMIN
+	if GameManager.sysadmin_active:
 		velocity = Vector2.ZERO
-		player_state = "idle"         # [cite: 5]
-		play_animation(Vector2.ZERO)  # [cite: 5]
+		# Tapi player masih bisa gerak! Hanya panel yang terkunci
+		# Uncomment baris di bawah kalau mau benar-benar lock:
+		# return
+		_handle_movement(delta)  # player masih bisa lari evakuasi
+		move_and_slide()
+		return
+	
+	if GameManager.is_in_panel_mode:
+		velocity = Vector2.ZERO
 		return
 
 	_handle_movement(delta)

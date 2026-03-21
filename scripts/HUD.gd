@@ -70,6 +70,7 @@ func _ready() -> void:
 	GameManager.crafting_completed.connect(_on_crafting_completed)
 	GameManager.crafting_started.connect(_on_crafting_started)
 	GameManager.room_changed.connect(_on_room_changed)
+	GameManager.sysadmin_triggered.connect(_on_sysadmin_triggered)
 
 func _process(delta: float) -> void:
 	if GameManager.mcs_blackout_active:
@@ -90,6 +91,13 @@ func _process(delta: float) -> void:
 # ============================================================
 # PLAYER HUD UPDATE
 # ============================================================
+func _on_sysadmin_triggered() -> void:
+	# Lock semua panel interaction
+	GameManager.is_in_panel_mode = false
+	# Tampilkan pesan di HUD
+	status_label.text = "SYSTEM//ADMIN ACTIVE"
+	status_label.modulate = Color("#E8593C")
+
 func _update_player_hud() -> void:
 	hp_bar.value = GameManager.player_hp
 	armor_bar.value = GameManager.armor_hp

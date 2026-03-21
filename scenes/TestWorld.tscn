@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://v03tvq0xa4df"]
+[gd_scene format=3 uid="uid://v03tvq0xa4df"]
 
 [ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="1_ptb5a"]
 [ext_resource type="PackedScene" uid="uid://csk1jphbeol58" path="res://scenes/panels/CoolingVentPanel.tscn" id="2_o2kn8"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://d1rtim5vciqri" path="res://scenes/panels/LaserPanel.tscn" id="8_mxtr1"]
 [ext_resource type="PackedScene" uid="uid://lfk6ubhil6g6" path="res://scenes/panels/CPUPanel.tscn" id="9_a2f0d"]
 [ext_resource type="PackedScene" uid="uid://dreo3kin3nm30" path="res://scenes/panels/RoomTrigger.tscn" id="10_2puco"]
+[ext_resource type="PackedScene" uid="uid://c8owj76iud074" path="res://scenes/ui/SysAdminOverlay.tscn" id="11_21yxg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_21yxg"]
 size = Vector2(400, 300)
@@ -20,54 +21,56 @@ size = Vector2(400, 300)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1kh8g"]
 size = Vector2(400, 300)
 
-[node name="TestWorld" type="Node2D"]
+[node name="TestWorld" type="Node2D" unique_id=1419540146]
 
-[node name="Player" parent="." groups=["player"] instance=ExtResource("1_ptb5a")]
+[node name="Player" parent="." unique_id=1781795645 groups=["player"] instance=ExtResource("1_ptb5a")]
 position = Vector2(2, 21)
 
-[node name="Camera2D" type="Camera2D" parent="Player" groups=["player_camera"]]
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=7062013 groups=["player_camera"]]
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
-[node name="CoolingVentPanel" parent="." instance=ExtResource("2_o2kn8")]
+[node name="CoolingVentPanel" parent="." unique_id=775778727 instance=ExtResource("2_o2kn8")]
 position = Vector2(-300, -200)
 
-[node name="HUD" parent="." instance=ExtResource("3_devkw")]
+[node name="HUD" parent="." unique_id=1991658214 instance=ExtResource("3_devkw")]
 
-[node name="ReactorPanel" parent="." instance=ExtResource("4_0j05m")]
+[node name="ReactorPanel" parent="." unique_id=2136622518 instance=ExtResource("4_0j05m")]
 position = Vector2(-66, 58)
 
-[node name="EmergencyPanel" parent="." instance=ExtResource("5_yv73f")]
+[node name="EmergencyPanel" parent="." unique_id=2119113137 instance=ExtResource("5_yv73f")]
 position = Vector2(-138, 47)
 
-[node name="LabPanel" parent="." instance=ExtResource("6_o15s1")]
+[node name="LabPanel" parent="." unique_id=840893904 instance=ExtResource("6_o15s1")]
 position = Vector2(202, -181)
 
-[node name="ArmoryPanel" parent="." instance=ExtResource("7_wej8e")]
+[node name="ArmoryPanel" parent="." unique_id=1961882717 instance=ExtResource("7_wej8e")]
 position = Vector2(-450, 423)
 
-[node name="LaserPanel" parent="." instance=ExtResource("8_mxtr1")]
+[node name="LaserPanel" parent="." unique_id=1447821556 instance=ExtResource("8_mxtr1")]
 position = Vector2(-382, -337)
 
-[node name="CPUPanel" parent="." instance=ExtResource("9_a2f0d")]
+[node name="CPUPanel" parent="." unique_id=1931850160 instance=ExtResource("9_a2f0d")]
 position = Vector2(664, -71)
 
-[node name="ControlRoomTrigger" parent="." instance=ExtResource("10_2puco")]
+[node name="ControlRoomTrigger" parent="." unique_id=174715377 instance=ExtResource("10_2puco")]
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ControlRoomTrigger"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ControlRoomTrigger" unique_id=211014616]
 position = Vector2(79, 379)
 shape = SubResource("RectangleShape2D_21yxg")
 
-[node name="ReactorRoomTrigger" parent="." instance=ExtResource("10_2puco")]
+[node name="ReactorRoomTrigger" parent="." unique_id=1804972064 instance=ExtResource("10_2puco")]
 room_name = "reactor_room"
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ReactorRoomTrigger"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ReactorRoomTrigger" unique_id=271682864]
 position = Vector2(420, -351)
 shape = SubResource("RectangleShape2D_82ue1")
 
-[node name="CPURoomTrigger" parent="." instance=ExtResource("10_2puco")]
+[node name="CPURoomTrigger" parent="." unique_id=1130123298 instance=ExtResource("10_2puco")]
 room_name = "cpu_room"
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="CPURoomTrigger"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CPURoomTrigger" unique_id=1132549445]
 position = Vector2(826, 29)
 shape = SubResource("RectangleShape2D_1kh8g")
+
+[node name="SysAdminOverlay" parent="." unique_id=1443218136 instance=ExtResource("11_21yxg")]
