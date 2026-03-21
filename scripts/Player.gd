@@ -14,6 +14,7 @@ var player_state = "idle"             # [cite: 5]
 var can_move = true                  # [cite: 5]
 var waiting_for_tutorial_move = false # [cite: 5]
 var last_direction = Vector2.DOWN
+var current_location = "lobby_control" # Default location
 
 # ============================================================
 # REFERENSI NODE
@@ -21,11 +22,9 @@ var last_direction = Vector2.DOWN
 @onready var sprite = $AnimatedSprite2D
 @onready var interaction_detector = $InteractionDetector
 @onready var world = get_parent()    # [cite: 5]
-@onready var balloon = $"../ExampleBalloon" # sesuaikan path
 
 # Panel yang sedang dalam jangkauan (kalau ada)
 var nearby_panel: Node = null
-var current_expression: String = "default"
 
 
 # ============================================================
@@ -84,21 +83,30 @@ func play_animation(dir: Vector2):
 		return
 		
 	var anim_sprite = $AnimatedSprite2D
-	
-	# Determine which direction to use (current move dir, or last dir if idle)
 	var check_dir = dir if player_state == "walking" else last_direction
 	
-	if player_state == "walking":
-		if abs(check_dir.x) > abs(check_dir.y):
-			anim_sprite.play("walk_right" if check_dir.x > 0 else "walk_left")
-		else:
-			anim_sprite.play("walk_front" if check_dir.y > 0 else "walk_back")
+	# Determine direction suffix
+	var dir_suffix = ""
+	if abs(check_dir.x) > abs(check_dir.y):
+		dir_suffix = "right" if check_dir.x > 0 else "left"
 	else:
-		# Idle logic using the specific names from your .tscn file
-		if abs(check_dir.x) > abs(check_dir.y):
-			anim_sprite.play("idle_right" if check_dir.x > 0 else "idle_left")
-		else:
-			anim_sprite.play("idle_front" if check_dir.y > 0 else "idle_back")
+		dir_suffix = "front" if check_dir.y > 0 else "back"
+
+	# Construct animation name based on state and location
+	var anim_name = ""
+	if player_state == "walking":
+		# Format: walk1_location_direction (e.g., walk1_cpu_left) [cite: 15]
+		anim_name = "walk1_" + current_location + "_" + dir_suffix
+	else:
+		# Format: idle_location_direction (e.g., idle_lobby_control_front) 
+		anim_name = "idle_" + current_location + "_" + dir_suffix
+
+	# Fallback check: If the specific animation doesn't exist, use lobby_control
+	if not anim_sprite.sprite_frames.has_animation(anim_name):
+		var fallback_state = "walk1_" if player_state == "walking" else "idle_"
+		anim_name = fallback_state + "lobby_control_" + dir_suffix
+	
+	anim_sprite.play(anim_name)
 
 # ============================================================
 # DETEKSI PANEL (Original Player.gd logic)
@@ -122,3 +130,13 @@ func _on_left_panel(area: Area2D) -> void:
 func _on_area_2d_area_entered(area: Area2D) -> void:
 	if world.has_method("start_my_dialogue"):
 		world.start_my_dialogue("exhausted")
+
+
+func _on_area_2d_area_hallway_entered(area: Area2D) -> void:
+	current_location = "hallway"
+
+func _on_area_2d_area_cpu_entered(area: Area2D) -> void:
+	current_location = "cpu"
+
+func _on_area_2d_area_reactor_entered(area: Area2D) -> void:
+	current_location = "reactor"

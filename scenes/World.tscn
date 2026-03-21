@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://blnxy5bx1asd"]
+[gd_scene load_steps=6 format=3 uid="uid://blnxy5bx1asd"]
 
 [ext_resource type="Script" uid="uid://cw4t57dw6qklw" path="res://scenes/script/world.gd" id="1_32lhk"]
 [ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="2_7g83o"]
@@ -6,11 +6,14 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7g83o"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d1c63"]
+size = Vector2(129, 120)
+
 [node name="World" type="Node2D"]
 script = ExtResource("1_32lhk")
 dialogue_resource = ExtResource("2_d1c63")
 
-[node name="Player" parent="." groups=["dialogue"] instance=ExtResource("2_7g83o")]
+[node name="Player" parent="." instance=ExtResource("2_7g83o")]
 
 [node name="exhausted" type="Area2D" parent="."]
 
@@ -19,4 +22,12 @@ position = Vector2(273.99994, 102.999985)
 scale = Vector2(4.905, 4.905)
 shape = SubResource("RectangleShape2D_7g83o")
 
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(382, 312)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_d1c63")
+debug_color = Color(0.8156863, 0.003921569, 0.9764706, 0.11372549)
+
 [connection signal="area_entered" from="exhausted" to="Player" method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="Area2D" to="Player" method="_on_area_2d_area_hallway_entered"]
