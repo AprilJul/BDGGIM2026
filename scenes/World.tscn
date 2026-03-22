@@ -15,6 +15,11 @@
 [ext_resource type="Texture2D" uid="uid://bcc17yjflmqtm" path="res://scenes/CPU.png" id="13_yncth"]
 [ext_resource type="Texture2D" uid="uid://c7u0bpv230rjy" path="res://scenes/tangga2.png" id="14_jgbtq"]
 [ext_resource type="Texture2D" uid="uid://d20lw5epebkyo" path="res://scenes/fog2.png" id="15_4q8dg"]
+[ext_resource type="Texture2D" uid="uid://b2pdvloern2p1" path="res://scenes/hallway1.png" id="16_dwmkc"]
+[ext_resource type="Texture2D" uid="uid://fc0b57u8e6jk" path="res://scenes/hallway2.png" id="17_30fn3"]
+[ext_resource type="Texture2D" uid="uid://cjk5yt7a5vprv" path="res://scenes/hallway3.png" id="18_dgldv"]
+[ext_resource type="Texture2D" uid="uid://drchrf34lhoyy" path="res://scenes/hallway4.png" id="19_rm3lh"]
+[ext_resource type="Texture2D" uid="uid://1im13r6y430o" path="res://scenes/hallway5.png" id="20_yncth"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7g83o"]
 
@@ -71,7 +76,7 @@ position = Vector2(-353.33337, -1143.3333)
 scale = Vector2(3.3333333, 3.3333333)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CpuRoom1/StaticBody2D2" unique_id=1671627526]
-polygon = PackedVector2Array(60, 334, 44, 342, 44, 348, 44, 348, 44, 354, 48, 354, 49, 361, 57, 369, 57, 367, 66, 368, 68, 370, 69, 369, 72, 368, 78, 368, 80, 369, 89, 366, 92, 367, 97, 365, 103, 359, 163, 359, 172, 376, 169, 394, 158, 404, 48, 404, 28, 383, 20, 339, 45, 299, 86, 297, 105, 308, 156, 304, 177, 318, 177, 352, 174, 342, 161, 341, 152, 336, 150, 336, 150, 342, 102, 342, 84, 334, 85, 355, 82, 357, 77, 361, 71, 362, 67, 362, 64, 360, 61, 357, 61, 333)
+polygon = PackedVector2Array(60, 334, 44, 342, 44, 348, 44, 348, 44, 354, 48, 354, 49, 361, 57, 369, 57, 367, 66, 368, 68, 370, 69, 369, 72, 368, 78, 368, 80, 369, 89, 366, 92, 367, 97, 365, 103, 359, 164, 359, 174, 354, 172, 376, 169, 394, 158, 404, 48, 404, 28, 383, 20, 339, 45, 299, 86, 297, 105, 308, 156, 304, 177, 318, 182, 328, 182, 337, 180, 343, 174, 342, 161, 341, 152, 336, 150, 336, 150, 342, 102, 342, 84, 334, 85, 355, 82, 357, 77, 361, 71, 362, 67, 362, 64, 360, 61, 357, 61, 333)
 
 [node name="CpuRoom2" type="Sprite2D" parent="." unique_id=712848473]
 position = Vector2(112.700005, 212.95)
@@ -106,6 +111,37 @@ scale = Vector2(3.3333333, 3.3333333)
 position = Vector2(-57.999996, 0)
 scale = Vector2(2.2621245, 0.99999964)
 polygon = PackedVector2Array(47.548496, 187, 47.548496, 263, 65.67305, 263, 102.116394, 263.00006, 102.116394, 239.00006, 102.116394, 188.00005, 100.348145, 187.00005, 61.004597, 187.00005, 61.004597, 191.00005, 61.004597, 208.00005, 61.44666, 209.00005, 80.54753, 209.99333, 80.8974, 220.00005, 83.10771, 219.00005, 84.4339, 217.00005, 84.4339, 230.00006, 87.08627, 236.00006, 88.41246, 237.00006, 99.46402, 237.00006, 99.46402, 212.00005, 92.7377, 210.62726, 95.616516, 210.77698, 99.90608, 211.00005, 99.90608, 224.00006, 99.90608, 238.00006, 84.4339, 238.00006, 62.33078, 239.00006, 64.983154, 239.00006, 65.86728, 234.00006, 65.86728, 231.00006, 65.42522, 228.00006, 64.983154, 225.00006, 63.214905, 221.00005, 61.455757, 220.35097, 60.810364, 209, 60.810364, 194, 60.120472, 187.00005, 55.947678, 187)
+
+[node name="Hallway1" type="Sprite2D" parent="CpuRoom2" unique_id=142631487]
+position = Vector2(360.99994, 436.83334)
+texture = ExtResource("16_dwmkc")
+
+[node name="Hallway2" type="Sprite2D" parent="CpuRoom2" unique_id=20479492]
+position = Vector2(360.6667, 490.16663)
+scale = Vector2(0.99783564, 1)
+texture = ExtResource("17_30fn3")
+
+[node name="Hallway3" type="Sprite2D" parent="CpuRoom2" unique_id=1177163025]
+position = Vector2(446, 666.833)
+texture = ExtResource("18_dgldv")
+
+[node name="Hallway4" type="Sprite2D" parent="CpuRoom2" unique_id=1390637318]
+position = Vector2(601, 786.8333)
+texture = ExtResource("19_rm3lh")
+
+[node name="Hallway5" type="Sprite2D" parent="CpuRoom2" unique_id=865555216]
+position = Vector2(551, 855)
+texture = ExtResource("20_yncth")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="CpuRoom2" unique_id=1279097204]
+position = Vector2(-375.66672, -729.8333)
+scale = Vector2(3.3333333, 3.3333333)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CpuRoom2/StaticBody2D2" unique_id=800706535]
+polygon = PackedVector2Array(183.00002, 353, 258, 354, 260, 449, 325, 449, 325, 434, 270, 434, 270, 318, 178.00002, 316, 179.00002, 349)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="CpuRoom2/StaticBody2D2" unique_id=546195730]
+polygon = PackedVector2Array(172.00002, 380, 174.00002, 363, 235.00002, 363, 236.00002, 466, 325, 466, 325, 489, 212.00002, 490, 210.00002, 382)
 
 [connection signal="area_entered" from="exhausted" to="Player" method="_on_area_2d_area_entered"]
 [connection signal="area_entered" from="Area2D" to="Player" method="_on_area_2d_area_hallway_entered"]
