@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://2paq77xqijv4"]
+[gd_scene load_steps=22 format=3 uid="uid://2paq77xqijv4"]
 
 [ext_resource type="Script" uid="uid://d1bpuqi27kiek" path="res://dialogue/balloon.gd" id="1_36de5"]
 [ext_resource type="Texture2D" uid="uid://b66e8y2q34sjg" path="res://art/Character/dialogue_character/admin_normal.PNG" id="2_3fodd"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cyduvup24grfj" path="res://art/Character/dialogue_character/admin_exhausted.PNG" id="3_af48w"]
 [ext_resource type="Texture2D" uid="uid://jkjk15ddatny" path="res://art/Character/dialogue_character/admin_warm.PNG" id="6_4kiea"]
 [ext_resource type="Texture2D" uid="uid://oe8uf87n1aat" path="res://art/Character/dialogue_character/dialogue_arrow.PNG" id="9_4kiea"]
+[ext_resource type="AudioStream" uid="uid://colmv3elujmrs" path="res://art/sound/sfx/talking_sound.WAV" id="11_fd6u7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
 bg_color = Color(0, 0, 0, 1)
@@ -128,24 +129,13 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.06666667, 0.16666667),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(-96, -51), Vector2(-71.385, -51), Vector2(-96, -51)]
+"values": [Vector2(12.999998, 30), Vector2(-9, 30), Vector2(12.999998, 30)]
 }
 
 [sub_resource type="Animation" id="Animation_qkmqt"]
 resource_name = "progress"
 loop_mode = 1
 step = 0.1
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Progress:position:y")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.2, -0.0157438, -4, -0.2, 0.0112069, 0.25, 0, -4, -0.25, 0, 0.25, 0, 0, -0.2, 0.00299701, 0.25, 0),
-"times": PackedFloat32Array(0, 0.1, 0.5, 0.6, 1)
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1337t"]
 _data = {
@@ -222,22 +212,18 @@ text = "Dialogue..."
 [node name="Control" type="Control" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(78, 39)
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 0
+size_flags_vertical = 4
 
 [node name="Progress" type="TextureRect" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -4.75
-anchor_top = -5.775
-anchor_right = -1.5000001
-anchor_bottom = -1.422
-offset_left = 274.5
-offset_top = 174.225
-offset_right = 93.0
-offset_bottom = 40.458
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_left = 12.999998
+offset_top = 30.0
+offset_right = 88.0
+offset_bottom = 70.0
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("9_4kiea")
+expand_mode = 3
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/Control"]
 libraries = {
@@ -271,6 +257,10 @@ text = "Response example"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+stream = ExtResource("11_fd6u7")
+volume_db = -10.0
+bus = &"Dialogue"
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
+[connection signal="spoke" from="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/DialogueLabel" to="." method="_on_dialogue_label_spoke"]
 [connection signal="response_selected" from="Balloon/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]
