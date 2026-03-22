@@ -15,10 +15,16 @@ Admin: Do you want me to introduce it to you? [#confused]
 
 ~ after_movement
 Admin: Great job! You've got the hang of it.
-Admin: Now you're ready to explore.
-
-
-~ exhausted 
-[#exhausted] 
-Admin: You've touch exhausted aura [#exhausted] 
+Admin: Do you want to know the mechanism of the game?
+- I would love to know
+	Admin: The objective is....
+	Admin: You must meet the electricity quota targets before the reactor becomes increasingly unstable.
+	Admin: The systems maintaining the reactor will also become increasingly fragile and degrade over time while the reactor is running.
+	Admin: We have laser, extractor, coolant, and vent.
+	Admin: Laser is a tool for adding temperature and pressure
+	Admin: An extractor is a device used to extract power from a running reactor. 
+	Admin: The higher the extraction level, the faster the quota is met and the higher the pressure required.
+	Admin: Coolant to cool the reactor and vent to reduce the reactor pressure
+	Admin: If in an urgent situation and the reactor starts to go out of control, there is an emergency system that will help stabilize/shut down the reactor.
+- Nah, i got this!
 => END

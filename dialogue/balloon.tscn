@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://2paq77xqijv4"]
+[gd_scene load_steps=22 format=3 uid="uid://2paq77xqijv4"]
 
 [ext_resource type="Script" uid="uid://d1bpuqi27kiek" path="res://dialogue/balloon.gd" id="1_36de5"]
 [ext_resource type="Texture2D" uid="uid://b66e8y2q34sjg" path="res://art/Character/dialogue_character/admin_normal.PNG" id="2_3fodd"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cyduvup24grfj" path="res://art/Character/dialogue_character/admin_exhausted.PNG" id="3_af48w"]
 [ext_resource type="Texture2D" uid="uid://jkjk15ddatny" path="res://art/Character/dialogue_character/admin_warm.PNG" id="6_4kiea"]
 [ext_resource type="Texture2D" uid="uid://oe8uf87n1aat" path="res://art/Character/dialogue_character/dialogue_arrow.PNG" id="9_4kiea"]
+[ext_resource type="AudioStream" uid="uid://colmv3elujmrs" path="res://art/sound/sfx/talking_sound.WAV" id="11_fd6u7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
 bg_color = Color(0, 0, 0, 1)
@@ -271,6 +272,8 @@ text = "Response example"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+stream = ExtResource("11_fd6u7")
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
+[connection signal="spoke" from="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer/DialogueLabel" to="." method="_on_dialogue_label_spoke"]
 [connection signal="response_selected" from="Balloon/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]
