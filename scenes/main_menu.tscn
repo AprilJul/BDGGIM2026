@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://2bhtgoyjdmuq"]
+[gd_scene load_steps=7 format=3 uid="uid://2bhtgoyjdmuq"]
 
 [ext_resource type="Script" uid="uid://d1caowil61oqu" path="res://scripts/main_menu.gd" id="1_ekxnf"]
 [ext_resource type="AudioStream" uid="uid://c4d3tqeutlv2q" path="res://art/sound/song/02 - NUKE - Desolation.mp3" id="2_bqqt6"]
 [ext_resource type="AudioStream" uid="uid://b55b8yo5sgdab" path="res://art/sound/sfx/button_pressed.wav" id="2_ekxnf"]
+[ext_resource type="Texture2D" uid="uid://cbcari3qowsb2" path="res://art/main_menu/IMG_0509.PNG" id="2_wu84c"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wu84c"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ln24"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -20,31 +25,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2_wu84c")
+expand_mode = 1
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Background"]
 
 [node name="MainButton" type="VBoxContainer" parent="Background/CanvasLayer"]
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchor_bottom = 1.0
+offset_left = 112.96997
+offset_top = -176.0
+offset_right = 500.96753
+offset_bottom = -104.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
 [node name="StartButton" type="Button" parent="Background/CanvasLayer/MainButton"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_wu84c")
 text = "Start"
 
 [node name="SettingButton" type="Button" parent="Background/CanvasLayer/MainButton"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
 text = "Settings"
 
 [node name="ColorRect" type="ColorRect" parent="Background/CanvasLayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
