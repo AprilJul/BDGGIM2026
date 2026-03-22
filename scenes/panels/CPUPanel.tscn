@@ -42,68 +42,204 @@ text = "🖥 CPU ROOM"
 [node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1507016463]
 layout_mode = 2
 
-[node name="TempRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2146211509]
+[node name="CPU1Row" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=629588257]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/TempRow" unique_id=1941189292]
+[node name="CPU1Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row" unique_id=2068831386]
 layout_mode = 2
-text = "CPU TEMP"
 
-[node name="CPUTempBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/TempRow" unique_id=280320958]
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/CPU1Header" unique_id=1158002104]
+layout_mode = 2
+text = "CPU 1"
+
+[node name="CPU1StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/CPU1Header" unique_id=1786137330]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TempRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row" unique_id=2146211509]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/TempRow" unique_id=1941189292]
+layout_mode = 2
+text = "TEMP"
+
+[node name="CPU1TempBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/TempRow" unique_id=280320958]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 18)
 layout_mode = 2
 show_percentage = false
 
-[node name="CPUTempLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/TempRow" unique_id=1999973193]
+[node name="CPU1TempLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/TempRow" unique_id=1999973193]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DelayRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1844285491]
+[node name="CPU1ReplaceRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row" unique_id=1948645850]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/DelayRow" unique_id=176491127]
+[node name="BtnReplaceCPU1" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/CPU1ReplaceRow" unique_id=251565741]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-text = "INPUT DELAY"
+text = "REPLACE CPU MODULE"
 
-[node name="DelayLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/DelayRow" unique_id=609605821]
+[node name="CPU1ReplaceStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU1Row/CPU1ReplaceRow" unique_id=2039776554]
 unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1789822236]
 layout_mode = 2
 
-[node name="StatusRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=775854812]
+[node name="CPU2Row" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=343275307]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StatusRow" unique_id=1759694009]
+[node name="CPU2Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row" unique_id=1197168723]
 layout_mode = 2
-text = "STATUS"
 
-[node name="CPUStatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/StatusRow" unique_id=1528996670]
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/CPU2Header" unique_id=1665260584]
+layout_mode = 2
+text = "CPU 2"
+
+[node name="CPU2StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/CPU2Header" unique_id=1596565132]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="InfoLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=790648173]
-layout_mode = 2
-text = "CPU heats up from Control Room usage."
-
-[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=345652983]
+[node name="TempRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row" unique_id=1491453965]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1948645850]
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/TempRow" unique_id=699508022]
+layout_mode = 2
+text = "TEMP"
+
+[node name="CPU2TempBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/TempRow" unique_id=1700332090]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="CPU2TempLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/TempRow" unique_id=1338724993]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BtnReplaceCPU" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=251565741]
+[node name="CPU2ReplaceRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row" unique_id=1971043111]
+layout_mode = 2
+
+[node name="BtnReplaceCPU2" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/CPU2ReplaceRow" unique_id=1294122697]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 text = "REPLACE CPU MODULE"
 
-[node name="ModuleStockLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=2072584192]
+[node name="CPU2ReplaceStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU2Row/CPU2ReplaceRow" unique_id=862484277]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="CooldownLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=948881179]
+[node name="HSeparator3" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=345652983]
+layout_mode = 2
+
+[node name="CPU3Row" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1707806814]
+layout_mode = 2
+
+[node name="CPU3Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row" unique_id=275580950]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/CPU3Header" unique_id=732224838]
+layout_mode = 2
+text = "CPU 3"
+
+[node name="CPU3StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/CPU3Header" unique_id=477157797]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="TempRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row" unique_id=663290699]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/TempRow" unique_id=1500891926]
+layout_mode = 2
+text = "TEMP"
+
+[node name="CPU3TempBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/TempRow" unique_id=2072407858]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="CPU3TempLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/TempRow" unique_id=1545018928]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CPU3ReplaceRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row" unique_id=125099706]
+layout_mode = 2
+
+[node name="BtnReplaceCPU3" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/CPU3ReplaceRow" unique_id=975932572]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "REPLACE CPU MODULE"
+
+[node name="CPU3ReplaceStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU3Row/CPU3ReplaceRow" unique_id=1234706009]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=819306058]
+layout_mode = 2
+
+[node name="CPU4Row" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=726149554]
+layout_mode = 2
+
+[node name="CPU4Header" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row" unique_id=1316458596]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/CPU4Header" unique_id=950827253]
+layout_mode = 2
+text = "CPU 4"
+
+[node name="CPU4StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/CPU4Header" unique_id=2098919190]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TempRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row" unique_id=342899210]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/TempRow" unique_id=561759905]
+layout_mode = 2
+text = "TEMP"
+
+[node name="CPU4TempBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/TempRow" unique_id=1147587969]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="CPU4TempLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/TempRow" unique_id=769494256]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CPU4ReplaceRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row" unique_id=1290125772]
+layout_mode = 2
+
+[node name="BtnReplaceCPU4" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/CPU4ReplaceRow" unique_id=975460125]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "REPLACE CPU MODULE"
+
+[node name="CPU4ReplaceStatus" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/CPU4Row/CPU4ReplaceRow" unique_id=558376329]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator5" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=247137100]
+layout_mode = 2
+
+[node name="SummaryRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1844285491]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DelayLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/SummaryRow" unique_id=609605821]
+unique_name_in_owner = true
+layout_mode = 2
+text = "INPUT DELAY: —"
+
+[node name="ModuleStockLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/SummaryRow" unique_id=2072584192]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Modules: 0"

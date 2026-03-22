@@ -24,6 +24,8 @@ func _ready() -> void:
 	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
 
 	%StorageBar.max_value = GameManager.COOLANT_STORAGE_MAX
+	GameManager.eccs_charge_started.connect(_on_eccs_charge_started)
+	GameManager.eccs_charge_completed.connect(_on_eccs_charge_completed)
 
 # ============================================================
 # OPEN / CLOSE
@@ -130,19 +132,25 @@ func _update_coolant_ui() -> void:
 		%PumpStatusLabel.text = "NOMINAL"
 		%PumpStatusLabel.modulate = Color("#3B9E7A")
 
-	# ECCS refill
-	var can_refill = GameManager.coolant_storage >= 30.0 \
-		and GameManager.eccs_charges < 3
-	%BtnRefillECCS.disabled = not can_refill
-	if GameManager.eccs_charges >= 3:
-		%RefillCostLabel.text = "ECCS full (3/3)"
-		%RefillCostLabel.modulate = Color("#888780")
-	elif GameManager.coolant_storage < 30.0:
-		%RefillCostLabel.text = "Need 30 storage"
-		%RefillCostLabel.modulate = Color("#E8593C")
+	# ECCS refill button + charging progress
+	if GameManager.eccs_charging:
+		%BtnRefillECCS.disabled = true
+		var progress = 1.0 - (GameManager.eccs_charge_timer / GameManager.ECCS_CHARGE_DURATION)
+		%RefillCostLabel.text = "Charging... %.0f%%" % (progress * 100)
+		%RefillCostLabel.modulate = Color("#EF9F27")
 	else:
-		%RefillCostLabel.text = "costs 30  |  ECCS: %d/3" % GameManager.eccs_charges
-		%RefillCostLabel.modulate = Color("#3B9E7A")
+		var can_refill = GameManager.coolant_storage >= 30.0 \
+			and GameManager.eccs_charges < 3
+		%BtnRefillECCS.disabled = not can_refill
+		if GameManager.eccs_charges >= 3:
+			%RefillCostLabel.text = "ECCS full (3/3)"
+			%RefillCostLabel.modulate = Color("#888780")
+		elif GameManager.coolant_storage < 30.0:
+			%RefillCostLabel.text = "Need 30 storage"
+			%RefillCostLabel.modulate = Color("#E8593C")
+		else:
+			%RefillCostLabel.text = "costs 30  |  ECCS: %d/3  (10s)" % GameManager.eccs_charges
+			%RefillCostLabel.modulate = Color("#3B9E7A")
 
 func _update_vent_ui() -> void:
 	# Efektivitas vent berdasarkan pressure
@@ -208,7 +216,15 @@ func _on_rpm_high() -> void:
 
 func _on_refill_eccs() -> void:
 	await get_tree().create_timer(GameManager.input_delay).timeout
-	GameManager.refill_eccs_from_coolant()
+	GameManager.charge_eccs_from_coolant()
+
+func _on_eccs_charge_started() -> void:
+	%WarningLabel.text = "⚡ Charging ECCS..."
+	%WarningLabel.modulate = Color("#EF9F27")
+
+func _on_eccs_charge_completed() -> void:
+	%WarningLabel.text = "✓ ECCS charge complete!"
+	%WarningLabel.modulate = Color("#3B9E7A")
 
 func _on_vent_toggle(index: int) -> void:
 	await get_tree().create_timer(GameManager.input_delay).timeout

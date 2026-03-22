@@ -32,7 +32,15 @@ var nearby_panel: Node = null
 # GERAK UTAMA
 # ============================================================
 func _physics_process(delta: float) -> void:
-	# Combined freeze check:
+	if GameManager.game_over:
+		velocity = Vector2.ZERO
+		return
+	
+	if GameManager.sysadmin_active:
+		velocity = Vector2.ZERO
+		_handle_movement(delta)
+		move_and_slide()
+		return
 	# Checks GameManager (Panel Mode) and the dialogue 'can_move' state [cite: 5, 7]
 	if GameManager.is_in_panel_mode or not can_move:
 		velocity = Vector2.ZERO
@@ -72,8 +80,27 @@ func _handle_movement(delta: float) -> void:
 	play_animation(direction)
 
 func _handle_interaction() -> void:
-	# Interaction logic from original Player.gd [cite: 8]
 	if Input.is_action_just_pressed("ui_accept") and nearby_panel != null:
+		# ReactorPanel SELALU bisa dibuka — berisi tombol start
+		# Yang dikunci hanya panel operasional
+		var panel_name = nearby_panel.name.to_lower()
+		var reactor_only_panels = [
+			"laserpanel",           # laser control
+			"coolingventpanel",     # coolant + vent
+			"emergencypanel"        # ECCS, E-Vent
+			# ReactorPanel TIDAK ada di sini
+		]
+		
+		var is_reactor_panel = false
+		for p in reactor_only_panels:
+			if panel_name.contains(p.to_lower()):
+				is_reactor_panel = true
+				break
+		
+		if is_reactor_panel and not GameManager.is_reactor_running():
+			print("Reactor harus online dulu!")
+			return
+		
 		nearby_panel.open_panel()
 
 # ============================================================
@@ -124,6 +151,7 @@ func play_animation(dir: Vector2):
 func _ready() -> void:
 	interaction_detector.area_entered.connect(_on_near_panel)
 	interaction_detector.area_exited.connect(_on_left_panel)
+	GameManager.mcs_warning_shake.connect(_on_mcs_warning)
 
 func _on_near_panel(area: Area2D) -> void:
 	print("Area entered: ", area.name, " | groups: ", area.get_groups())
@@ -150,3 +178,29 @@ func _on_area_2d_area_cpu_entered(area: Area2D) -> void:
 
 func _on_area_2d_area_reactor_entered(area: Area2D) -> void:
 	current_location = "reactor"
+
+func start_screenshake(duration: float, intensity: float) -> void:
+	var camera = get_tree().get_first_node_in_group("player_camera")
+	if camera == null:
+		return
+	var tween = create_tween()
+	var elapsed = 0.0
+	while elapsed < duration:
+		var offset = Vector2(
+			randf_range(-intensity, intensity),
+			randf_range(-intensity, intensity)
+		)
+		tween.tween_property(camera, "offset", offset, 0.05)
+		elapsed += 0.05
+	tween.tween_property(camera, "offset", Vector2.ZERO, 0.1)
+
+func _on_mcs_warning() -> void:
+	# Screenshake violent selama 3 detik
+	var camera = get_tree().get_first_node_in_group("player_camera")
+	if camera == null:
+		return
+	var tween = create_tween()
+	tween.set_loops(60)   # 60 loop × 0.05s = 3 detik
+	tween.tween_property(camera, "offset",
+		Vector2(randf_range(-8, 8), randf_range(-8, 8)), 0.05)
+	tween.tween_property(camera, "offset", Vector2.ZERO, 0.0)
