@@ -1,0 +1,57 @@
+[gd_scene load_steps=0 format=3 uid="uid://blkfhx34sr2ym"]
+
+[ext_resource type="Script" uid="uid://dycsr3h2gv1dl" path="res://scripts/GameOver.gd" id="1_kp3qx"]
+
+[node name="Control" type="Control" unique_id=1908264875]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kp3qx")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=374677778]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=951443745]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=533755098]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1392103957]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Title Label"
+
+[node name="DescriptionLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1115600014]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Description Label"
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1209119317]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=676408135]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Restart"
+
+[node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1927808776]
+layout_mode = 2
+text = "Main Menu"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

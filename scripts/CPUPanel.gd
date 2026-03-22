@@ -3,13 +3,36 @@ extends Node2D
 @onready var area = $Area2D
 var is_open: bool = false
 
+# Replace timers per CPU (15 detik)
+var replace_timers: Array = [-1.0, -1.0, -1.0, -1.0]
+const REPLACE_DURATION: float = 15.0
+
+# Arrays referensi node
+var temp_bars: Array = []
+var temp_labels: Array = []
+var status_labels: Array = []
+var replace_buttons: Array = []
+var replace_statuses: Array = []
+
 func _ready() -> void:
 	%PanelUI.visible = false
 	area.add_to_group("interaction_panel")
-	%BtnReplaceCPU.pressed.connect(_on_replace_cpu)
+
+	# Kumpulkan referensi node
+	temp_bars = [%CPU1TempBar, %CPU2TempBar, %CPU3TempBar, %CPU4TempBar]
+	temp_labels = [%CPU1TempLabel, %CPU2TempLabel, %CPU3TempLabel, %CPU4TempLabel]
+	status_labels = [%CPU1StatusLabel, %CPU2StatusLabel, %CPU3StatusLabel, %CPU4StatusLabel]
+	replace_buttons = [%BtnReplaceCPU1, %BtnReplaceCPU2, %BtnReplaceCPU3, %BtnReplaceCPU4]
+	replace_statuses = [%CPU1ReplaceStatus, %CPU2ReplaceStatus, %CPU3ReplaceStatus, %CPU4ReplaceStatus]
+
+	for i in range(4):
+		var idx = i
+		replace_buttons[i].pressed.connect(func(): _on_replace(idx))
+		temp_bars[i].max_value = 100.0
+
+	GameManager.cpu_failed.connect(_on_cpu_failed)
 	GameManager.cpu_module_replaced.connect(_on_cpu_replaced)
 	GameManager.mcs_state_changed.connect(_on_mcs_state_changed)
-	%CPUTempBar.max_value = 100.0
 
 # ============================================================
 # OPEN / CLOSE
@@ -54,9 +77,10 @@ func _zoom_out() -> void:
 # ============================================================
 # UPDATE
 # ============================================================
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not is_open:
 		return
+	_update_replace_timers(delta)
 	_update_ui()
 
 	var mouse_y = get_viewport().get_mouse_position().y
@@ -64,79 +88,105 @@ func _process(_delta: float) -> void:
 	if mouse_y >= screen_h - 50:
 		close_panel()
 
+func _update_replace_timers(delta: float) -> void:
+	for i in range(4):
+		if replace_timers[i] > 0.0:
+			replace_timers[i] -= delta
+			if replace_timers[i] <= 0.0:
+				replace_timers[i] = -1.0
+				GameManager.complete_cpu_replace(i)
+
 func _update_ui() -> void:
-	var cpu_temp = GameManager.cpu_temp
-	var input_delay = GameManager.input_delay
+	for i in range(4):
+		var temp = GameManager.cpu_temps[i]
+		var broken = GameManager.cpu_broken_states[i]
+		var replacing = replace_timers[i] > 0.0
 
-	# CPU temp bar
-	%CPUTempBar.value = cpu_temp
-	%CPUTempLabel.text = "%.0f°C" % cpu_temp
-	if cpu_temp > 80.0:
-		%CPUTempBar.modulate = Color("#E8593C")
-		%CPUTempLabel.modulate = Color("#E8593C")
-	elif cpu_temp > 65.0:
-		%CPUTempBar.modulate = Color("#EF9F27")
-		%CPUTempLabel.modulate = Color("#EF9F27")
-	else:
-		%CPUTempBar.modulate = Color.WHITE
-		%CPUTempLabel.modulate = Color.WHITE
+		# Temp bar
+		temp_bars[i].value = temp
+		temp_labels[i].text = "%.0f°C" % temp
 
-	# Input delay label
-	if input_delay > 0.0:
-		%DelayLabel.text = "%.1fs ⚡" % input_delay
-		%DelayLabel.modulate = Color("#E8593C") \
-			if input_delay > 1.5 else Color("#EF9F27")
-	else:
-		%DelayLabel.text = "None"
-		%DelayLabel.modulate = Color("#3B9E7A")
+		if broken:
+			temp_bars[i].modulate = Color("#444441")
+			temp_labels[i].modulate = Color("#888780")
+		elif temp > 80.0:
+			temp_bars[i].modulate = Color("#E8593C")
+			temp_labels[i].modulate = Color("#E8593C")
+		elif temp > 65.0:
+			temp_bars[i].modulate = Color("#EF9F27")
+			temp_labels[i].modulate = Color("#EF9F27")
+		else:
+			temp_bars[i].modulate = Color.WHITE
+			temp_labels[i].modulate = Color.WHITE
 
-	# CPU status
-	if GameManager.cpu_broken:
-		%CPUStatusLabel.text = "⚠ MODULE FAILED"
-		%CPUStatusLabel.modulate = Color("#E8593C")
-	elif cpu_temp > 80.0:
-		%CPUStatusLabel.text = "⚠ OVERHEATING"
-		%CPUStatusLabel.modulate = Color("#E8593C")
-	elif cpu_temp > 65.0:
-		%CPUStatusLabel.text = "▶ THROTTLING"
-		%CPUStatusLabel.modulate = Color("#EF9F27")
-	else:
-		%CPUStatusLabel.text = "● NOMINAL"
-		%CPUStatusLabel.modulate = Color("#3B9E7A")
+		# Status
+		if broken and not replacing:
+			status_labels[i].text = "⚠ FAILED"
+			status_labels[i].modulate = Color("#E8593C")
+		elif replacing:
+			var progress = (1.0 - replace_timers[i] / REPLACE_DURATION) * 100
+			status_labels[i].text = "🔧 REPLACING %.0f%%" % progress
+			status_labels[i].modulate = Color("#EF9F27")
+		elif GameManager.cpu_failure_timers[i] > 0.0:
+			status_labels[i].text = "⚠ OVERHEATING"
+			status_labels[i].modulate = Color("#E8593C")
+		elif temp > 65.0:
+			status_labels[i].text = "▶ THROTTLING"
+			status_labels[i].modulate = Color("#EF9F27")
+		else:
+			status_labels[i].text = "● NOMINAL"
+			status_labels[i].modulate = Color("#3B9E7A")
 
-	# Module stock + button
+		# Replace button
+		var can_replace = broken and \
+			not replacing and \
+			GameManager.inv_cpu_module > 0
+		replace_buttons[i].disabled = not can_replace
+		replace_buttons[i].text = "REPLACE" if not replacing else "REPLACING..."
+
+		if replacing:
+			replace_statuses[i].text = "%.0fs remaining" % replace_timers[i]
+			replace_statuses[i].modulate = Color("#EF9F27")
+		elif broken:
+			replace_statuses[i].text = "Need CPU module"
+			replace_statuses[i].modulate = Color("#888780")
+		else:
+			replace_statuses[i].text = ""
+
+	# Summary
+	%DelayLabel.text = "INPUT DELAY: %.1fs" % GameManager.input_delay
+	%DelayLabel.modulate = Color("#E8593C") if GameManager.input_delay > 1.0 \
+		else Color("#EF9F27") if GameManager.input_delay > 0.3 \
+		else Color("#3B9E7A")
 	%ModuleStockLabel.text = "CPU Modules: %d" % GameManager.inv_cpu_module
 	%ModuleStockLabel.modulate = Color("#3B9E7A") \
 		if GameManager.inv_cpu_module > 0 else Color("#888780")
 
-	var can_replace = GameManager.inv_cpu_module > 0 and cpu_temp > 40.0
-	%BtnReplaceCPU.disabled = not can_replace
-
+# ============================================================
+# HANDLERS
+# ============================================================
+func _on_replace(index: int) -> void:
 	if GameManager.inv_cpu_module <= 0:
-		%CooldownLabel.text = "No modules — craft at Lab"
-		%CooldownLabel.modulate = Color("#888780")
-	elif cpu_temp <= 40.0:
-		%CooldownLabel.text = "CPU too cold to replace"
-		%CooldownLabel.modulate = Color("#888780")
-	else:
-		%CooldownLabel.text = "Replace to reset temp & delay"
-		%CooldownLabel.modulate = Color("#3B9E7A")
+		return
+	if not GameManager.cpu_broken_states[index]:
+		return
+	if replace_timers[index] > 0.0:
+		return
+	GameManager.replace_cpu_module(index)
+	replace_timers[index] = REPLACE_DURATION
+	print("Started replacing CPU %d" % (index + 1))
 
-# ============================================================
-# BUTTON HANDLERS
-# ============================================================
-func _on_replace_cpu() -> void:
-	# CPU replacement tidak kena input delay
-	# (karena kamu lagi di CPU room, bukan control room)
-	GameManager.replace_cpu_module()
-
-func _on_cpu_replaced() -> void:
-	%CPUStatusLabel.text = "● MODULE REPLACED"
-	%CPUStatusLabel.modulate = Color("#3B9E7A")
-	# Flash
+func _on_cpu_failed(index: int) -> void:
+	# Flash status saat CPU fail
 	var tween = create_tween()
-	tween.tween_property(%CPUStatusLabel, "modulate:a", 0.2, 0.2)
-	tween.tween_property(%CPUStatusLabel, "modulate:a", 1.0, 0.2)
+	tween.set_loops(4)
+	tween.tween_property(status_labels[index], "modulate:a", 0.1, 0.15)
+	tween.tween_property(status_labels[index], "modulate:a", 1.0, 0.15)
+
+func _on_cpu_replaced(index: int) -> void:
+	replace_statuses[index].text = "✓ REPLACED"
+	replace_statuses[index].modulate = Color("#3B9E7A")
 
 func _on_mcs_state_changed(is_active: bool) -> void:
-	%BtnReplaceCPU.disabled = is_active
+	for btn in replace_buttons:
+		btn.disabled = is_active

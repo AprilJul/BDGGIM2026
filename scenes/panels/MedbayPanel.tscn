@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://np1hmv17opve"]
+
+[ext_resource type="Script" uid="uid://bobeqhvsjklf1" path="res://scripts/MedbayPanel.gd" id="1_4l1dm"]
+
+[node name="MedbayPanel" type="Node2D" unique_id=1562013937]
+script = ExtResource("1_4l1dm")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=318077828]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=515183807]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=541911068]
+
+[node name="PanelUI" type="CanvasLayer" parent="." unique_id=1762585264]
+unique_name_in_owner = true
+
+[node name="PanelContainer" type="Control" parent="PanelUI" unique_id=1327000133]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 220)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelUI/PanelContainer" unique_id=1661209970]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelUI/PanelContainer/MarginContainer" unique_id=245326158]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=439169509]
+layout_mode = 2
+text = "🏥 MEDICAL BAY"
+
+[node name="HSeparator" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=983989721]
+layout_mode = 2
+
+[node name="HPRow" type="HBoxContainer" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=504140288]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HPRow" unique_id=1346423466]
+layout_mode = 2
+text = "HP"
+
+[node name="HPBar" type="ProgressBar" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HPRow" unique_id=226470768]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 18)
+layout_mode = 2
+
+[node name="HPValueLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer/HPRow" unique_id=2095892310]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1900040617]
+layout_mode = 2
+
+[node name="BtnHeal" type="Button" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=2098640991]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+text = "RESTORE HP"
+
+[node name="CooldownLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1699991866]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="PanelUI/PanelContainer/MarginContainer/VBoxContainer" unique_id=1447935804]
+unique_name_in_owner = true
+layout_mode = 2

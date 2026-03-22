@@ -42,8 +42,8 @@ func _ready() -> void:
 	# Setup bar ranges
 	hp_bar.max_value = 100.0
 	armor_bar.max_value = 100.0
-	temp_bar.max_value = GameManager.TEMP_MAX
-	pressure_bar.max_value = GameManager.PRESSURE_MAX
+	temp_bar.max_value = GameManager.TEMP_MAX   
+	pressure_bar.max_value = GameManager.PRESSURE_MAX 
 	electricity_bar.max_value = GameManager.ELECTRICITY_TARGET
 	shield_bar.max_value = 100.0
 
@@ -70,13 +70,25 @@ func _ready() -> void:
 	GameManager.crafting_completed.connect(_on_crafting_completed)
 	GameManager.crafting_started.connect(_on_crafting_started)
 	GameManager.room_changed.connect(_on_room_changed)
+	GameManager.sysadmin_triggered.connect(_on_sysadmin_triggered)
 
 func _process(delta: float) -> void:
 	if GameManager.mcs_blackout_active:
 		reactor_monitor.visible = false
 		return
-
+		
 	_update_player_hud()
+
+	# ReactorMonitor has priority — always show it in control room
+	# regardless of whether a panel is open
+	var in_trigger_area = GameManager.current_room == "control_room" \
+		and GameManager.monitor_on \
+		and GameManager.startup_state == GameManager.StartupState.RUNNING
+
+	reactor_monitor.visible = in_trigger_area  # panel state does NOT affect this
+
+	if in_trigger_area:
+		_update_reactor_monitor(delta)
 
 	# Monitor hanya visible di control room + monitor nyala
 	var show_monitor = GameManager.current_room == "control_room" \
@@ -90,6 +102,13 @@ func _process(delta: float) -> void:
 # ============================================================
 # PLAYER HUD UPDATE
 # ============================================================
+func _on_sysadmin_triggered() -> void:
+	# Lock semua panel interaction
+	GameManager.is_in_panel_mode = false
+	# Tampilkan pesan di HUD
+	status_label.text = "SYSTEM//ADMIN ACTIVE"
+	status_label.modulate = Color("#E8593C")
+
 func _update_player_hud() -> void:
 	hp_bar.value = GameManager.player_hp
 	armor_bar.value = GameManager.armor_hp
@@ -111,14 +130,23 @@ func _update_player_hud() -> void:
 	else:
 		radiation_warning.text = ""
 
-	# CPU warning
+	# CPU warning — pakai avg temp dari GameManager.cpu_temp
+	var active_cpus = 0
+	for broken in GameManager.cpu_broken_states:
+		if not broken:
+			active_cpus += 1
+	
 	if GameManager.input_delay > 0.0:
-		cpu_warning_label.text = "⚡ CPU %.0f°C — delay %.1fs" % [
+		cpu_warning_label.text = "⚡ CPU %.0f°C  [%d/4]  delay %.1fs" % [
 			GameManager.cpu_temp,
+			active_cpus,
 			GameManager.input_delay
 		]
 		cpu_warning_label.modulate = Color("#E8593C") \
 			if GameManager.input_delay > 1.5 else Color("#EF9F27")
+	elif active_cpus < 4:
+		cpu_warning_label.text = "⚠ CPU DEGRADED [%d/4 online]" % active_cpus
+		cpu_warning_label.modulate = Color("#EF9F27")
 	else:
 		cpu_warning_label.text = ""
 
@@ -260,7 +288,7 @@ func _on_night_toggled(is_night: bool) -> void:
 func _on_night_warning() -> void:
 	if status_label:
 		status_label.text = "⚠ NIGHT IN 10s — PREPARE LASER"
-		status_label.modulate = Color("#E8593C")
+		status_label.modulate = Color("#3B8BD4")
 		var tween = create_tween()
 		tween.set_loops(3)
 		tween.tween_property(status_label, "modulate:a", 0.2, 0.3)
@@ -280,6 +308,9 @@ func _on_game_ended(reason: String) -> void:
 		"death":
 			status_label.text = "✕ OPERATOR DOWN"
 			status_label.modulate = Color("#888780")
+		"sysadmin": 
+			status_label.text = "🏚 FACILITY COLLAPSED"
+			status_label.modulate = Color("#E8593C")
 
 func _on_mcs_triggered() -> void:
 	blackout_label.text = "⚠ MCS ACTIVATED\nEMERGENCY SHUTDOWN INITIATED"

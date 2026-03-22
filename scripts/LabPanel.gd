@@ -135,7 +135,9 @@ func _highlight_needed_items() -> void:
 		if GameManager.coolant_pump_broken and GameManager.inv_coolant_kit == 0 \
 		else Color.WHITE
 	%BtnCraftArmor.modulate = Color("#E8593C") \
-		if GameManager.armor_hp < 50.0 and GameManager.inv_armor_patch == 0 \
+		if GameManager.hazmat_equipped \
+		and GameManager.armor_hp < 50.0 \
+		and GameManager.inv_armor_patch == 0 \
 		else Color.WHITE
 
 # ============================================================

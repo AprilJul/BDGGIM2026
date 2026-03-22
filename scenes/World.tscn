@@ -1,33 +1,184 @@
-[gd_scene load_steps=6 format=3 uid="uid://blnxy5bx1asd"]
+[gd_scene load_steps=21 format=3 uid="uid://blnxy5bx1asd"]
 
 [ext_resource type="Script" uid="uid://cw4t57dw6qklw" path="res://scenes/script/world.gd" id="1_32lhk"]
 [ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="2_7g83o"]
 [ext_resource type="Resource" uid="uid://okumj0jid6k1" path="res://dialogue/dialogue_text/test.dialogue" id="2_d1c63"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7g83o"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_d1c63"]
-size = Vector2(129, 120)
+[ext_resource type="Texture2D" uid="uid://dsbmgluwh5m5x" path="res://art/map/control_room.png" id="3_hlk0d"]
+[ext_resource type="Texture2D" uid="uid://c5elcu6ar06lf" path="res://art/map/monitor_control_room.png" id="4_0uv0p"]
+[ext_resource type="Texture2D" uid="uid://br4qhwemrglwr" path="res://art/map/panel_control_room.png" id="6_b3faq"]
+[ext_resource type="Texture2D" uid="uid://cxouuxnv3wgob" path="res://art/map/control_room_tembok.png" id="7_b3faq"]
+[ext_resource type="Texture2D" uid="uid://bpgj2aveygdjl" path="res://art/map/tiles_to_reactor.png" id="7_h1bdy"]
+[ext_resource type="Texture2D" uid="uid://3sf5qoccg08k" path="res://art/map/long_tile_reactor.png" id="8_7c4bj"]
+[ext_resource type="Texture2D" uid="uid://rb7gqjo7v8o5" path="res://art/map/spawn_point.png" id="8_ygioq"]
+[ext_resource type="Texture2D" uid="uid://c5sbnt141ekln" path="res://art/map/tembok_to_reactor.png" id="10_nrtoj"]
+[ext_resource type="Texture2D" uid="uid://dlpx4f15q5qou" path="res://art/map/reactor_room.png" id="12_i4b1j"]
+[ext_resource type="Texture2D" uid="uid://dforc5g7btxbk" path="res://art/map/reactor_room_floor.png" id="13_c0d7e"]
+[ext_resource type="Texture2D" uid="uid://dmuqsefwkofva" path="res://art/map/reactor_left_down.png" id="13_dwmkc"]
+[ext_resource type="Texture2D" uid="uid://xd0ubclnccma" path="res://art/map/reactor_right_down.png" id="14_30fn3"]
+[ext_resource type="Texture2D" uid="uid://cvainilvxmfwh" path="res://art/map/reactor_door.png" id="14_o1tcx"]
+[ext_resource type="Texture2D" uid="uid://lrmlfa0ia5cn" path="res://art/map/reactor_core.png" id="16_dgldv"]
+[ext_resource type="Texture2D" uid="uid://bnqdliqhx4wcw" path="res://art/map/reactor_left.png" id="17_rm3lh"]
+[ext_resource type="Texture2D" uid="uid://cixadlc6awqdm" path="res://art/map/reactor_right.png" id="18_yncth"]
+[ext_resource type="Texture2D" uid="uid://pgsohvo88xyi" path="res://art/map/reactor_room_laser.png" id="19_jgbtq"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_32lhk")
 dialogue_resource = ExtResource("2_d1c63")
 
+[node name="ControlRoom" type="Sprite2D" parent="."]
+position = Vector2(508, 260.965)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_hlk0d")
+
+[node name="MonitorControlRoom" type="Sprite2D" parent="ControlRoom"]
+position = Vector2(0, -73.333374)
+texture = ExtResource("4_0uv0p")
+
+[node name="PanelControlRoom" type="Sprite2D" parent="ControlRoom"]
+position = Vector2(-1.3330078, 50)
+texture = ExtResource("6_b3faq")
+
+[node name="panel_left" type="Area2D" parent="ControlRoom"]
+position = Vector2(-109.99999, 20)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ControlRoom/panel_left"]
+polygon = PackedVector2Array(-43.333252, -13.333374, -43.333252, 20, 40, 20, 40, -13.333374)
+
+[node name="main_control_panel" type="Area2D" parent="ControlRoom"]
+position = Vector2(-109.99999, 20)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ControlRoom/main_control_panel"]
+position = Vector2(103.33333, -23.333332)
+polygon = PackedVector2Array(-43.333252, -13.333374, -43.333374, 26.666687, 60, 26.666687, 60, -13.333313)
+
+[node name="main_control_panel2" type="Area2D" parent="ControlRoom"]
+position = Vector2(-109.99999, 20)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ControlRoom/main_control_panel2"]
+position = Vector2(223.33333, 0)
+polygon = PackedVector2Array(-43.333252, -13.333374, -43.333374, 26.666687, 43.333374, 26.666626, 43.333374, -13.333374)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ControlRoom/main_control_panel2"]
+position = Vector2(183.33333, 56.666664)
+polygon = PackedVector2Array(-43.333252, -13.333374, -43.333374, 26.666687, 43.333374, 26.666626, 43.333374, -13.333374)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="ControlRoom/main_control_panel2"]
+position = Vector2(40, 56.666664)
+polygon = PackedVector2Array(-43.333252, -13.333374, -43.333374, 26.666687, 43.333374, 26.666626, 43.333374, -13.333374)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ControlRoom"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+polygon = PackedVector2Array(-153.33325, -60, -150, -73.333374, -150, -26.666687, -60, -46.666687, 36.666748, -46.666687, 93.333374, -43.333374, 143.33337, -30, 146.66675, -40, 146.66675, -60, 146.66675, -80, 146.66675, -63.333374, 170, -60, 223.33337, -3.333374, 230, -16.666687, 236.66675, -10, 236.66675, -96.66669, 13.333374, -170, -226.66663, -113.333374, -260, -20, -246.66663, 23.333313, -226.66663, 23.333313, -223.33325, -3.333374, -156.66663, -60)
+
+[node name="panel1" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+polygon = PackedVector2Array(-153.33325, 6.666626, -153.33325, 40, -70, 40, -70, 6.666626)
+
+[node name="panel2" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+position = Vector2(103.333374, -23.333374)
+polygon = PackedVector2Array(-153.33325, 6.666626, -153.33337, 46.666687, -50, 46.666687, -50, 6.666687)
+
+[node name="panel3" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+position = Vector2(220, -6.666687)
+polygon = PackedVector2Array(-150, 13.333313, -150, 53.333313, -63.333252, 53.333313, -63.333252, 13.333313)
+
+[node name="panel4" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+position = Vector2(180, 50)
+polygon = PackedVector2Array(-150, 13.333313, -150, 53.333313, -63.333252, 53.333313, -63.333252, 13.333313)
+
+[node name="panel5" type="CollisionPolygon2D" parent="ControlRoom/StaticBody2D"]
+position = Vector2(163.33337, 50)
+polygon = PackedVector2Array(-276.66663, 13.333313, -276.66663, 53.333313, -189.99988, 53.333313, -189.99988, 13.333313)
+
+[node name="control_room_trigger" type="Area2D" parent="ControlRoom"]
+
+[node name="control_room" type="CollisionPolygon2D" parent="ControlRoom/control_room_trigger"]
+modulate = Color(1, 1, 1, 0.31764707)
+polygon = PackedVector2Array(-226.66663, 66.666626, -166.66663, 123.33331, 156.66675, 126.666626, 226.66675, 63.333313, 226.66675, -40, 43.333374, -100, -153.33325, -76.66669, -230, -10, -230, 63.333313)
+
+[node name="SpawnPoint" type="Sprite2D" parent="."]
+position = Vector2(508.00003, 348)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("8_ygioq")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SpawnPoint"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SpawnPoint/StaticBody2D"]
+polygon = PackedVector2Array(-26.666748, -100, -26.666748, -43.333374, -26.666748, 20, -40.000122, 36.666626, -40.000122, 56.666626, -73.333374, 100, -90.00012, 90, -96.66675, 90, -96.66675, 166.66663, 103.33325, 166.66663, 103.33325, 96.666626, 93.33325, 96.666626, 83.33325, 103.33325, 46.666626, 76.666626, 53.333252, 66.666626, 53.333252, 53.333252, 36.666626, 43.333252, 33.333252, 33.333252, 33.333252, 23.333252, 33.333252, -103.333374, 33.333252, -116.66675, 66.666626, -116.66675, 163.33325, 96.666626, 133.33325, 210, -153.33337, 196.66663, -180.00012, 26.666626, -153.33337, -30)
+
+[node name="TilesToReactor" type="Sprite2D" parent="."]
+position = Vector2(610.6, 272)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("7_h1bdy")
+
+[node name="LongTileReactor" type="Sprite2D" parent="TilesToReactor"]
+position = Vector2(174.66675, -283.3333)
+texture = ExtResource("8_7c4bj")
+
+[node name="TembokToReactor" type="Sprite2D" parent="."]
+position = Vector2(625.99994, 286)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("10_nrtoj")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="TembokToReactor"]
+position = Vector2(-393.33325, -53.333313)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
+polygon = PackedVector2Array(236.66675, 50, 526.66675, 50, 530, 63.333313, 536.66675, 20, 536.66675, -560, 550, -563.3334, 593.33325, -410, 580, 123.33331, 236.66675, 96.666626)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
+polygon = PackedVector2Array(236.66675, -30, 236.66675, 0, 450, -3.333374, 456.66675, -563.3334, 433.33325, -563.3334, 420, -56.666687, 316.66675, -56.666687)
+
+[node name="ControlRoomTembok" type="Sprite2D" parent="."]
+position = Vector2(507.00003, 295)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("7_b3faq")
+
+[node name="ReactorRoom" type="Sprite2D" parent="."]
+position = Vector2(657, -3)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("12_i4b1j")
+
+[node name="ReactorLeftDown" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(-56.666748, 136.66669)
+texture = ExtResource("13_dwmkc")
+
+[node name="ReactorRightDown" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(53.333252, 146.66666)
+texture = ExtResource("14_30fn3")
+
+[node name="ReactorRoomFloor" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(43.333252, 103.33333)
+texture = ExtResource("13_c0d7e")
+
+[node name="ReactorCore" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(0, 23.333332)
+texture = ExtResource("16_dgldv")
+
+[node name="ReactorLeft" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(-53.333496, 6.666667)
+texture = ExtResource("17_rm3lh")
+
+[node name="ReactorRight" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(53.333252, 13.333333)
+texture = ExtResource("18_yncth")
+
+[node name="ReactorRoomLaser" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(0.7, -30)
+texture = ExtResource("19_jgbtq")
+
+[node name="ReactorDoor" type="Sprite2D" parent="ReactorRoom"]
+position = Vector2(0, 250.00005)
+texture = ExtResource("14_o1tcx")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ReactorRoom"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ReactorRoom/StaticBody2D"]
+polygon = PackedVector2Array(-40, 350, -36.666748, 256.66666, -153.33337, 253.33333, -153.33337, 220, -40, 226.66666, -36.666748, 93.33333, -33.333496, 70, -40, 46.666664, -63.333496, 33.333332, -36.666748, -6.666666, -33.333496, 46.666664, -23.333496, 53.333332, 13.333252, 53.333332, 36.666504, 46.666664, 36.666504, 86.666664, 36.666504, 220, 156.6665, 220, 220, 166.66666, 246.6665, 170, 286.6665, 176.66666, 310, 180, 326.6665, -223.33333, -183.33337, -333.3333, -396.66675, -96.666664, -326.66675, 143.33333, -266.66675, 313.3333, -183.33337, 370)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ReactorRoom/StaticBody2D"]
+polygon = PackedVector2Array(56.666504, 250, 163.33325, 253.33333, 256.6665, 166.66666, 313.33325, 183.33333, 313.33325, 273.3333, 156.6665, 373.3333, 53.333252, 353.3333)
+
 [node name="Player" parent="." instance=ExtResource("2_7g83o")]
-
-[node name="exhausted" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="exhausted"]
-position = Vector2(273.99994, 102.999985)
-scale = Vector2(4.905, 4.905)
-shape = SubResource("RectangleShape2D_7g83o")
-
-[node name="Area2D" type="Area2D" parent="."]
-position = Vector2(382, 312)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource("RectangleShape2D_d1c63")
-debug_color = Color(0.8156863, 0.003921569, 0.9764706, 0.11372549)
-
-[connection signal="area_entered" from="exhausted" to="Player" method="_on_area_2d_area_entered"]
-[connection signal="area_entered" from="Area2D" to="Player" method="_on_area_2d_area_hallway_entered"]
+position = Vector2(567, 279)
+scale = Vector2(0.20000002, 0.20000002)

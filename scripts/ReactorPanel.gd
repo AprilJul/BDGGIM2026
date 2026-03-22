@@ -103,11 +103,21 @@ func _process(_delta: float) -> void:
 		return
 	_update_startup_ui()
 	btn_restart.visible = GameManager.reactor_shutdown
+	var is_running = GameManager.startup_state == GameManager.StartupState.RUNNING
 
 	# Disable semua kontrol saat shutdown
-	var locked = GameManager.reactor_shutdown or GameManager.mcs_active
+	var locked = not is_running or GameManager.mcs_active or GameManager.reactor_shutdown
 	btn_extract_up.disabled = locked or GameManager.extractor_broken
 	btn_extract_down.disabled = locked
+	
+		# Flick mouse ke bawah = tutup panel
+	var mouse_y = get_viewport().get_mouse_position().y
+	var screen_h = get_viewport().get_visible_rect().size.y
+	if mouse_y >= screen_h - 50:
+		close_panel()
+	
+	if not is_running:
+		return
 
 	# Update bar sesuai nilai GameManager
 	extract_bar.value = GameManager.extraction_level
@@ -124,12 +134,6 @@ func _process(_delta: float) -> void:
 	# Disable tombol extract kalau extractor rusak
 	btn_extract_up.disabled = GameManager.extractor_broken
 	btn_extract_down.disabled = GameManager.extractor_broken
-
-	# Flick mouse ke bawah = tutup panel
-	var mouse_y = get_viewport().get_mouse_position().y
-	var screen_h = get_viewport().get_visible_rect().size.y
-	if mouse_y >= screen_h - 50:
-		close_panel()
 
 # ============================================================
 # BUTTON HANDLERS — pakai input delay dari CPU temp!
@@ -217,8 +221,7 @@ func _update_startup_ui() -> void:
 	var state = GameManager.startup_state
 	var is_shutdown = GameManager.reactor_shutdown
 
-	# Tombol START — hanya visible kalau belum pernah running
-	# Tombol RESTART — hanya visible kalau post-MCS shutdown
+	btn_extractor_online.disabled = is_running or is_starting
 	btn_start_reactor.visible = not is_shutdown and not is_running
 	%BtnRestart.visible = is_shutdown and not is_running and not is_starting
 
