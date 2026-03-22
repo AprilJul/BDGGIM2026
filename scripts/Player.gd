@@ -174,8 +174,6 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 func _on_area_2d_area_cpu_entered(area: Area2D) -> void:
 	current_location = "cpu"
 
-func _on_area_2d_area_reactor_entered(area: Area2D) -> void:
-	current_location = "reactor"
 
 func start_screenshake(duration: float, intensity: float) -> void:
 	var camera = get_tree().get_first_node_in_group("player_camera")
@@ -210,3 +208,7 @@ func _on_control_room_trigger_area_entered(area: Area2D) -> void:
 
 func _on_hallway_trigger_area_entered(area: Area2D) -> void:
 	current_location = "hallway"
+
+
+func _on_reactor_room_trigger_area_entered(area: Area2D) -> void:
+	current_location = "reactor"

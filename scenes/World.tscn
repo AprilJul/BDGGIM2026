@@ -192,6 +192,13 @@ scale = Vector2(0.3, 0.3)
 [node name="hallway" type="CollisionPolygon2D" parent="hallway_trigger"]
 polygon = PackedVector2Array(240, 26.783325, 450, 26.783325, 453.33325, -533.2167, 536.66675, -533.2167, 536.66675, 73.45001, 226.66675, 80.1167)
 
+[node name="reactor_room_trigger" type="Area2D" parent="."]
+position = Vector2(508, 260.965)
+scale = Vector2(0.3, 0.3)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="reactor_room_trigger"]
+polygon = PackedVector2Array(230, -729.8833, 336.66675, -626.55, 663.33325, -629.8833, 760, -709.8833, 766.66675, -1009.8833, 656.66675, -1116.5499, 316.66675, -1106.5499, 216.66675, -1019.8833)
+
 [node name="control_room_trigger" type="Area2D" parent="."]
 position = Vector2(508, 260.965)
 scale = Vector2(0.3, 0.3)
@@ -201,4 +208,5 @@ modulate = Color(1, 1, 1, 0.31764707)
 polygon = PackedVector2Array(-226.66663, 66.666626, -166.66663, 123.33331, 156.66675, 126.666626, 226.66675, 63.333313, 226.66675, -40, 43.333374, -100, -153.33325, -76.66669, -230, -10, -230, 63.333313)
 
 [connection signal="area_entered" from="hallway_trigger" to="Player" method="_on_hallway_trigger_area_entered"]
+[connection signal="area_entered" from="reactor_room_trigger" to="Player" method="_on_reactor_room_trigger_area_entered"]
 [connection signal="area_entered" from="control_room_trigger" to="Player" method="_on_control_room_trigger_area_entered"]
