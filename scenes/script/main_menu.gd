@@ -3,9 +3,10 @@ extends Control
 # Corrected paths to match your CanvasLayer nesting
 @onready var main_buttons: VBoxContainer = $Background/CanvasLayer/MainButton
 @onready var settings_popup: ColorRect = $Background/CanvasLayer/ColorRect
-@onready var master_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/MasterVolume/VolumeSlider
-@onready var sfx_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/SFXVolume/SFXSlider
-@onready var music_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/MusicVolume/MusicSlider
+@onready var master_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/SliderContainer/MasterVolume/MasterSlider
+@onready var sfx_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/SliderContainer/SFXVolume/SFXSlider
+@onready var music_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/SliderContainer/MusicVolume/MusicSlider
+@onready var dialogue_slider: HSlider = $Background/CanvasLayer/ColorRect/VBoxContainer/SliderContainer/DialogueVolume/DialogueSlider
 
 func _ready() -> void:
 	# Hide settings by default
@@ -16,6 +17,7 @@ func _ready() -> void:
 		master_slider.value = AudioManager.volumes.master 
 		sfx_slider.value = AudioManager.volumes.sfx 
 		music_slider.value = AudioManager.volumes.music
+		dialogue_slider.value = AudioManager.volumes.dialogue
 
 func _on_start_button_pressed() -> void:
 	set_process_input(false) 
@@ -44,3 +46,6 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 
 func _on_music_slider_value_changed(value: float) -> void:
 	AudioManager.set_music(value)
+
+func _on_dialogue_slider_value_changed(value: float) -> void:
+	AudioManager.set_dialogue(value)
