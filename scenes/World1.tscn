@@ -1,0 +1,111 @@
+[gd_scene load_steps=0 format=3 uid="uid://im44ekc13phv"]
+
+[ext_resource type="Script" uid="uid://cw4t57dw6qklw" path="res://scenes/script/world.gd" id="1_32lhk"]
+[ext_resource type="PackedScene" uid="uid://bvcikxlnam8v" path="res://scenes/Player.tscn" id="2_7g83o"]
+[ext_resource type="Resource" uid="uid://okumj0jid6k1" path="res://dialogue/dialogue_text/test.dialogue" id="2_d1c63"]
+[ext_resource type="Texture2D" uid="uid://ct6fhbm0kmck4" path="res://scenes/CPU_room.png" id="4_c0d7e"]
+[ext_resource type="Texture2D" uid="uid://cjq23tbqkklh" path="res://scenes/server.png" id="5_o1tcx"]
+[ext_resource type="Texture2D" uid="uid://ch3rl46xcake7" path="res://scenes/tannga.png" id="6_rpuxp"]
+[ext_resource type="Texture2D" uid="uid://06h8287cm311" path="res://scenes/jalan.png" id="7_nthub"]
+[ext_resource type="Texture2D" uid="uid://dx8rtfvj6ksiy" path="res://scenes/tembok.png" id="8_44lqw"]
+[ext_resource type="Texture2D" uid="uid://cumnnsy8x80vp" path="res://scenes/fog1.png" id="9_dwmkc"]
+[ext_resource type="Texture2D" uid="uid://ccb8w75uf8ffx" path="res://scenes/1.png" id="10_30fn3"]
+[ext_resource type="Texture2D" uid="uid://dkirsyye21i8j" path="res://scenes/2.png" id="11_dgldv"]
+[ext_resource type="Texture2D" uid="uid://c8mcguspuxadm" path="res://scenes/fan.png" id="12_rm3lh"]
+[ext_resource type="Texture2D" uid="uid://bcc17yjflmqtm" path="res://scenes/CPU.png" id="13_yncth"]
+[ext_resource type="Texture2D" uid="uid://c7u0bpv230rjy" path="res://scenes/tangga2.png" id="14_jgbtq"]
+[ext_resource type="Texture2D" uid="uid://d20lw5epebkyo" path="res://scenes/fog2.png" id="15_4q8dg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7g83o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d1c63"]
+size = Vector2(129, 120)
+
+[node name="World" type="Node2D" unique_id=202090325]
+script = ExtResource("1_32lhk")
+dialogue_resource = ExtResource("2_d1c63")
+
+[node name="Player" parent="." unique_id=1925984318 instance=ExtResource("2_7g83o")]
+
+[node name="exhausted" type="Area2D" parent="." unique_id=765890324]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="exhausted" unique_id=1414216983]
+position = Vector2(273.99994, 102.999985)
+scale = Vector2(4.905, 4.905)
+shape = SubResource("RectangleShape2D_7g83o")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=855403190]
+position = Vector2(382, 312)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=931042336]
+shape = SubResource("RectangleShape2D_d1c63")
+debug_color = Color(0.8156863, 0.003921569, 0.9764706, 0.11372549)
+
+[node name="CpuRoom1" type="Sprite2D" parent="." unique_id=896046649]
+position = Vector2(106.00001, 343)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_c0d7e")
+
+[node name="Server" type="Sprite2D" parent="CpuRoom1" unique_id=152115038]
+position = Vector2(-43.33333, -3.333252)
+texture = ExtResource("5_o1tcx")
+
+[node name="Tangga" type="Sprite2D" parent="CpuRoom1" unique_id=1886413555]
+position = Vector2(-113.33333, -30)
+texture = ExtResource("6_rpuxp")
+
+[node name="Jalan" type="Sprite2D" parent="CpuRoom1" unique_id=774534448]
+position = Vector2(17.666656, 37.999878)
+texture = ExtResource("7_nthub")
+
+[node name="Tembok" type="Sprite2D" parent="CpuRoom1" unique_id=859200274]
+position = Vector2(7.6666565, 61.333374)
+texture = ExtResource("8_44lqw")
+
+[node name="Fog" type="Sprite2D" parent="CpuRoom1" unique_id=186762468]
+position = Vector2(1.0000305, -2.000122)
+texture = ExtResource("9_dwmkc")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="CpuRoom1" unique_id=1932524299]
+position = Vector2(-353.33337, -1143.3333)
+scale = Vector2(3.3333333, 3.3333333)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CpuRoom1/StaticBody2D2" unique_id=1671627526]
+polygon = PackedVector2Array(60, 334, 44, 342, 44, 348, 44, 348, 44, 354, 48, 354, 49, 361, 57, 369, 57, 367, 66, 368, 68, 370, 69, 369, 72, 368, 78, 368, 80, 369, 89, 366, 92, 367, 97, 365, 103, 359, 163, 359, 172, 376, 169, 394, 158, 404, 48, 404, 28, 383, 20, 339, 45, 299, 86, 297, 105, 308, 156, 304, 177, 318, 177, 352, 174, 342, 161, 341, 152, 336, 150, 336, 150, 342, 102, 342, 84, 334, 85, 355, 82, 357, 77, 361, 71, 362, 67, 362, 64, 360, 61, 357, 61, 333)
+
+[node name="CpuRoom2" type="Sprite2D" parent="." unique_id=712848473]
+position = Vector2(112.700005, 212.95)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("10_30fn3")
+
+[node name="TembokLantai2" type="Sprite2D" parent="CpuRoom2" unique_id=962964894]
+position = Vector2(-3.3332825, 126.66681)
+texture = ExtResource("11_dgldv")
+
+[node name="Fan" type="Sprite2D" parent="CpuRoom2" unique_id=1313687527]
+position = Vector2(36.666718, -29.999939)
+texture = ExtResource("12_rm3lh")
+
+[node name="Cpu" type="Sprite2D" parent="CpuRoom2" unique_id=2037353136]
+position = Vector2(53.333344, 0.00018310547)
+texture = ExtResource("13_yncth")
+
+[node name="Tangga2" type="Sprite2D" parent="CpuRoom2" unique_id=1539980994]
+position = Vector2(-126.66667, 3.333435)
+texture = ExtResource("14_jgbtq")
+
+[node name="Fog2" type="Sprite2D" parent="CpuRoom2" unique_id=251064198]
+position = Vector2(-3.3332825, 6.666809)
+texture = ExtResource("15_4q8dg")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="CpuRoom2" unique_id=170236060]
+position = Vector2(-375.6667, -709.8333)
+scale = Vector2(3.3333333, 3.3333333)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CpuRoom2/StaticBody2D" unique_id=1495584482]
+position = Vector2(-57.999996, 0)
+scale = Vector2(2.2621245, 0.99999964)
+polygon = PackedVector2Array(47.548496, 187, 47.548496, 263, 65.67305, 263, 102.116394, 263.00006, 102.116394, 239.00006, 102.116394, 188.00005, 100.348145, 187.00005, 61.004597, 187.00005, 61.004597, 191.00005, 61.004597, 208.00005, 61.44666, 209.00005, 80.54753, 209.99333, 80.8974, 220.00005, 83.10771, 219.00005, 84.4339, 217.00005, 84.4339, 230.00006, 87.08627, 236.00006, 88.41246, 237.00006, 99.46402, 237.00006, 99.46402, 212.00005, 92.7377, 210.62726, 95.616516, 210.77698, 99.90608, 211.00005, 99.90608, 224.00006, 99.90608, 238.00006, 84.4339, 238.00006, 62.33078, 239.00006, 64.983154, 239.00006, 65.86728, 234.00006, 65.86728, 231.00006, 65.42522, 228.00006, 64.983154, 225.00006, 63.214905, 221.00005, 61.455757, 220.35097, 60.810364, 209, 60.810364, 194, 60.120472, 187.00005, 55.947678, 187)
+
+[connection signal="area_entered" from="exhausted" to="Player" method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="Area2D" to="Player" method="_on_area_2d_area_hallway_entered"]
