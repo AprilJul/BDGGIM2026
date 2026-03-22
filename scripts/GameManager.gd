@@ -75,6 +75,9 @@ signal monitor_toggled(is_on: bool)
 var reactor_temp: float = 20.0        # dingin saat mati
 var reactor_pressure: float = 100.0   # pressure rendah
 
+#Game Over
+var game_over_reason: String = ""
+
 # Batas bahaya
 const TEMP_MAX: float = 900.0
 const TEMP_MIN: float = 0.0
@@ -1502,5 +1505,10 @@ func _update_emergency_vent(delta: float) -> void:
 		print("Emergency Vent complete")
 
 func _end_game(reason: String) -> void:
+	if game_over: return
 	game_over = true
+	game_over_reason = reason
 	emit_signal("game_ended", reason)
+	
+	# SESUAIKAN PATH INI DENGAN LOKASI FILE .tscn KAMU
+	get_tree().call_deferred("change_scene_to_file", "res://scenes/ui/GameOver.tscn")

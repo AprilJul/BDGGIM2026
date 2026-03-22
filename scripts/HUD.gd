@@ -76,8 +76,19 @@ func _process(delta: float) -> void:
 	if GameManager.mcs_blackout_active:
 		reactor_monitor.visible = false
 		return
-
+		
 	_update_player_hud()
+
+	# ReactorMonitor has priority — always show it in control room
+	# regardless of whether a panel is open
+	var in_trigger_area = GameManager.current_room == "control_room" \
+		and GameManager.monitor_on \
+		and GameManager.startup_state == GameManager.StartupState.RUNNING
+
+	reactor_monitor.visible = in_trigger_area  # panel state does NOT affect this
+
+	if in_trigger_area:
+		_update_reactor_monitor(delta)
 
 	# Monitor hanya visible di control room + monitor nyala
 	var show_monitor = GameManager.current_room == "control_room" \

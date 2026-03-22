@@ -110,6 +110,12 @@ func _process(_delta: float) -> void:
 	btn_extract_up.disabled = locked or GameManager.extractor_broken
 	btn_extract_down.disabled = locked
 	
+		# Flick mouse ke bawah = tutup panel
+	var mouse_y = get_viewport().get_mouse_position().y
+	var screen_h = get_viewport().get_visible_rect().size.y
+	if mouse_y >= screen_h - 50:
+		close_panel()
+	
 	if not is_running:
 		return
 
@@ -128,12 +134,6 @@ func _process(_delta: float) -> void:
 	# Disable tombol extract kalau extractor rusak
 	btn_extract_up.disabled = GameManager.extractor_broken
 	btn_extract_down.disabled = GameManager.extractor_broken
-
-	# Flick mouse ke bawah = tutup panel
-	var mouse_y = get_viewport().get_mouse_position().y
-	var screen_h = get_viewport().get_visible_rect().size.y
-	if mouse_y >= screen_h - 50:
-		close_panel()
 
 # ============================================================
 # BUTTON HANDLERS — pakai input delay dari CPU temp!
