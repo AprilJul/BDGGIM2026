@@ -170,8 +170,6 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 		world.start_my_dialogue("exhausted")
 
 
-func _on_area_2d_area_hallway_entered(area: Area2D) -> void:
-	current_location = "hallway"
 
 func _on_area_2d_area_cpu_entered(area: Area2D) -> void:
 	current_location = "cpu"
@@ -204,3 +202,11 @@ func _on_mcs_warning() -> void:
 	tween.tween_property(camera, "offset",
 		Vector2(randf_range(-8, 8), randf_range(-8, 8)), 0.05)
 	tween.tween_property(camera, "offset", Vector2.ZERO, 0.0)
+
+
+func _on_control_room_trigger_area_entered(area: Area2D) -> void:
+	current_location = "lobby_control"
+
+
+func _on_hallway_trigger_area_entered(area: Area2D) -> void:
+	current_location = "hallway"

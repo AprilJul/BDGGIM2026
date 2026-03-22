@@ -90,12 +90,6 @@ polygon = PackedVector2Array(-150, 13.333313, -150, 53.333313, -63.333252, 53.33
 position = Vector2(163.33337, 50)
 polygon = PackedVector2Array(-276.66663, 13.333313, -276.66663, 53.333313, -189.99988, 53.333313, -189.99988, 13.333313)
 
-[node name="control_room_trigger" type="Area2D" parent="ControlRoom"]
-
-[node name="control_room" type="CollisionPolygon2D" parent="ControlRoom/control_room_trigger"]
-modulate = Color(1, 1, 1, 0.31764707)
-polygon = PackedVector2Array(-226.66663, 66.666626, -166.66663, 123.33331, 156.66675, 126.666626, 226.66675, 63.333313, 226.66675, -40, 43.333374, -100, -153.33325, -76.66669, -230, -10, -230, 63.333313)
-
 [node name="SpawnPoint" type="Sprite2D" parent="."]
 position = Vector2(508.00003, 348)
 scale = Vector2(0.3, 0.3)
@@ -114,25 +108,6 @@ texture = ExtResource("7_h1bdy")
 [node name="LongTileReactor" type="Sprite2D" parent="TilesToReactor"]
 position = Vector2(174.66675, -283.3333)
 texture = ExtResource("8_7c4bj")
-
-[node name="TembokToReactor" type="Sprite2D" parent="."]
-position = Vector2(625.99994, 286)
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("10_nrtoj")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="TembokToReactor"]
-position = Vector2(-393.33325, -53.333313)
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
-polygon = PackedVector2Array(236.66675, 50, 526.66675, 50, 530, 63.333313, 536.66675, 20, 536.66675, -560, 550, -563.3334, 593.33325, -410, 580, 123.33331, 236.66675, 96.666626)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
-polygon = PackedVector2Array(236.66675, -30, 236.66675, 0, 450, -3.333374, 456.66675, -563.3334, 433.33325, -563.3334, 420, -56.666687, 316.66675, -56.666687)
-
-[node name="ControlRoomTembok" type="Sprite2D" parent="."]
-position = Vector2(507.00003, 295)
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("7_b3faq")
 
 [node name="ReactorRoom" type="Sprite2D" parent="."]
 position = Vector2(657, -3)
@@ -182,3 +157,48 @@ polygon = PackedVector2Array(56.666504, 250, 163.33325, 253.33333, 256.6665, 166
 [node name="Player" parent="." instance=ExtResource("2_7g83o")]
 position = Vector2(567, 279)
 scale = Vector2(0.20000002, 0.20000002)
+
+[node name="ControlRoomTembok" type="Sprite2D" parent="."]
+position = Vector2(507.00003, 295)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("7_b3faq")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ControlRoomTembok"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ControlRoomTembok/StaticBody2D"]
+polygon = PackedVector2Array(-223.3335, -66.66669, -166.66687, -10, -30.000122, -10, -26.66687, 76.66669, -206.66687, 76.66669, -270.00012, 6.666687, -246.66687, -53.333313)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="ControlRoomTembok/StaticBody2D"]
+polygon = PackedVector2Array(36.666504, 69.99994, 36.666504, -6.666687, 156.6665, -6.666687, 226.6665, -70, 236.6665, -60, 246.6665, 13.333313, 219.99988, 79.99994, 106.666504, 86.66669, 39.999878, 73.33331)
+
+[node name="TembokToReactor" type="Sprite2D" parent="."]
+position = Vector2(625.99994, 286)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("10_nrtoj")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="TembokToReactor"]
+position = Vector2(-393.33325, -53.333313)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
+polygon = PackedVector2Array(236.66675, 50, 526.66675, 50, 530, 63.333313, 536.66675, 20, 536.66675, -560, 550, -563.3334, 593.33325, -410, 580, 123.33331, 236.66675, 96.666626)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TembokToReactor/StaticBody2D"]
+polygon = PackedVector2Array(236.66675, -30, 236.66675, 0, 450, -3.333374, 456.66675, -563.3334, 433.33325, -563.3334, 420, -56.666687, 316.66675, -56.666687)
+
+[node name="hallway_trigger" type="Area2D" parent="."]
+position = Vector2(508, 260.965)
+scale = Vector2(0.3, 0.3)
+
+[node name="hallway" type="CollisionPolygon2D" parent="hallway_trigger"]
+polygon = PackedVector2Array(240, 26.783325, 450, 26.783325, 453.33325, -533.2167, 536.66675, -533.2167, 536.66675, 73.45001, 226.66675, 80.1167)
+
+[node name="control_room_trigger" type="Area2D" parent="."]
+position = Vector2(508, 260.965)
+scale = Vector2(0.3, 0.3)
+
+[node name="control_room" type="CollisionPolygon2D" parent="control_room_trigger"]
+modulate = Color(1, 1, 1, 0.31764707)
+polygon = PackedVector2Array(-226.66663, 66.666626, -166.66663, 123.33331, 156.66675, 126.666626, 226.66675, 63.333313, 226.66675, -40, 43.333374, -100, -153.33325, -76.66669, -230, -10, -230, 63.333313)
+
+[connection signal="area_entered" from="hallway_trigger" to="Player" method="_on_hallway_trigger_area_entered"]
+[connection signal="area_entered" from="control_room_trigger" to="Player" method="_on_control_room_trigger_area_entered"]

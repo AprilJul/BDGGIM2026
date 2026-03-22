@@ -1,8 +1,9 @@
-[gd_scene load_steps=71 format=3 uid="uid://bvcikxlnam8v"]
+[gd_scene load_steps=73 format=3 uid="uid://bvcikxlnam8v"]
 
 [ext_resource type="Script" uid="uid://dghxbxeplh3o1" path="res://scripts/Player.gd" id="1_p0vlq"]
 [ext_resource type="Texture2D" uid="uid://dweaji7qtwosu" path="res://art/Character/all_chara.PNG" id="2_v6fml"]
 [ext_resource type="AudioStream" uid="uid://b2rminmivm4c1" path="res://art/sound/sfx/walking_sound_short.WAV" id="3_3li8b"]
+[ext_resource type="Texture2D" uid="uid://hwawiu82nmin" path="res://art/Character/moving_chara.PNG" id="3_mdl7e"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3li8b"]
 atlas = ExtResource("2_v6fml")
@@ -171,6 +172,10 @@ region = Rect2(430, 228, 40, 70)
 [sub_resource type="AtlasTexture" id="AtlasTexture_fq1a3"]
 atlas = ExtResource("2_v6fml")
 region = Rect2(220, 86, 40, 70)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_unhkg"]
+atlas = ExtResource("3_mdl7e")
+region = Rect2(258, 75, 42, 75)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gu4mg"]
 atlas = ExtResource("2_v6fml")
@@ -568,6 +573,9 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fq1a3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_unhkg")
 }],
 "loop": true,
 "name": &"walk1_hallway_back",
@@ -707,8 +715,7 @@ script = ExtResource("1_p0vlq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_6e537")
-animation = &"walk1_cpu_back"
-frame_progress = 0.81145245
+animation = &"walk1_hallway_back"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 22)
