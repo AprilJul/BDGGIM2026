@@ -1,7 +1,8 @@
-[gd_scene load_steps=70 format=3 uid="uid://bvcikxlnam8v"]
+[gd_scene load_steps=71 format=3 uid="uid://bvcikxlnam8v"]
 
 [ext_resource type="Script" uid="uid://dghxbxeplh3o1" path="res://scripts/Player.gd" id="1_p0vlq"]
 [ext_resource type="Texture2D" uid="uid://dweaji7qtwosu" path="res://art/Character/all_chara.PNG" id="2_v6fml"]
+[ext_resource type="AudioStream" uid="uid://b2rminmivm4c1" path="res://art/sound/sfx/walking_sound_short.WAV" id="3_3li8b"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3li8b"]
 atlas = ExtResource("2_v6fml")
@@ -529,7 +530,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_cpu_back",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -540,7 +541,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_cpu_front",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -551,7 +552,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_cpu_left",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -562,7 +563,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_cpu_right",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -570,7 +571,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_hallway_back",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -581,7 +582,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_hallway_front",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -592,7 +593,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_hallway_left",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -603,7 +604,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_hallway_right",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -614,7 +615,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_lobby_control_back",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -625,7 +626,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_lobby_control_front",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -636,7 +637,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_lobby_control_left",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -647,7 +648,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_lobby_control_right",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -658,7 +659,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_reactor_back",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -669,7 +670,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_reactor_front",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -680,7 +681,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_reactor_left",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -691,7 +692,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk1_reactor_right",
-"speed": 5.0
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5q5h1"]
@@ -704,7 +705,8 @@ script = ExtResource("1_p0vlq")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_6e537")
-animation = &"holding_cpu_right"
+animation = &"walk1_cpu_back"
+frame_progress = 0.81145245
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_5q5h1")
@@ -714,3 +716,7 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector"]
 shape = SubResource("CircleShape2D_v6fml")
+
+[node name="WalkSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_3li8b")
+bus = &"SFX"

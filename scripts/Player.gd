@@ -22,26 +22,22 @@ var current_location = "lobby_control" # Default location
 @onready var sprite = $AnimatedSprite2D
 @onready var interaction_detector = $InteractionDetector
 @onready var world = get_parent()    # [cite: 5]
+@onready var walk_sound = $WalkSound
 
 # Panel yang sedang dalam jangkauan (kalau ada)
 var nearby_panel: Node = null
+
 
 # ============================================================
 # GERAK UTAMA
 # ============================================================
 func _physics_process(delta: float) -> void:
-	# Lock input saat SYSTEM//ADMIN
-	if GameManager.sysadmin_active:
+	# Combined freeze check:
+	# Checks GameManager (Panel Mode) and the dialogue 'can_move' state [cite: 5, 7]
+	if GameManager.is_in_panel_mode or not can_move:
 		velocity = Vector2.ZERO
-		# Tapi player masih bisa gerak! Hanya panel yang terkunci
-		# Uncomment baris di bawah kalau mau benar-benar lock:
-		# return
-		_handle_movement(delta)  # player masih bisa lari evakuasi
-		move_and_slide()
-		return
-	
-	if GameManager.is_in_panel_mode:
-		velocity = Vector2.ZERO
+		player_state = "idle"         # [cite: 5]
+		play_animation(Vector2.ZERO)  # [cite: 5]
 		return
 
 	_handle_movement(delta)
@@ -53,9 +49,15 @@ func _handle_movement(delta: float) -> void:
 
 	if direction != Vector2.ZERO:
 		player_state = "walking"
-		last_direction = direction # Save the direction for idle reference
+		last_direction = direction
 		
 		velocity = velocity.move_toward(direction * SPEED, ACCELERATION * delta)
+		
+		# START SOUND: Play only if it isn't already playing 
+		if not walk_sound.playing:
+			# Add a slight random pitch variation (between 0.9 and 1.1)
+			walk_sound.pitch_scale = randf_range(0.9, 1.1) 
+			walk_sound.play()
 		
 		if waiting_for_tutorial_move:
 			waiting_for_tutorial_move = false
@@ -63,6 +65,9 @@ func _handle_movement(delta: float) -> void:
 	else:
 		player_state = "idle"
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		
+		# STOP SOUND: Stop playing when the player is idle 
+		walk_sound.stop()
 	
 	play_animation(direction)
 
@@ -131,7 +136,7 @@ func _on_left_panel(area: Area2D) -> void:
 	if area.get_parent() == nearby_panel:
 		nearby_panel = null
 
-
+# Just for testing, will be deleted soon
 func _on_area_2d_area_entered(area: Area2D) -> void:
 	if world.has_method("start_my_dialogue"):
 		world.start_my_dialogue("exhausted")
